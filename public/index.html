@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/assets/images/favicon.svg" />
+    <meta name="viewport" content="width=device-width,initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="stylesheet" href="./assets/css/uikit.min.css" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.16.22/css/uikit.min.css"
+      integrity="sha512-9Vf9unGvBRQVXVPQM6pox/JQvQ4f9ZWfAZBJMmHRrTm8kbeli3QMULMz8uUeeMWqUF2tjbVARtsF+dZVU/eFJA=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <link rel="stylesheet" href="./assets/css/style.css" />
+    <script>
+      window.fbAsyncInit = function () {
+        FB.init({
+          appId: "235839840615867",
+          autoLogAppEvents: true,
+          xfbml: true,
+          version: "v18.0",
+        });
+      };
+    </script>
+    <script
+      async
+      defer
+      crossorigin="anonymous"
+      src="https://connect.facebook.net/en_US/sdk.js"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.16.22/js/uikit.min.js"
+      integrity="sha512-cpJeryUDz9T+fWrS0kE0oe8E0AwfmCYaD6ByNf734hDAlttcOnVoqtuq/WX/5ikmkRlIBfOP2UgQh/k1cLSrsQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/uikit/3.16.22/js/uikit-icons.min.js"
+      integrity="sha512-CdpjTxevheS4vMPm381FkkwsdKW/371n2aBh2GyRd8/avdR+Sd1/6Olyw208B+3L/7wnvsY7fT/YoKAA/4fffQ=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script
+      src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.7.0/jquery.min.js"
+      integrity="sha512-3gJwYpMe3QewGELv8k/BX9vcqhryRdzRMxVfq6ngyWXwo03GFEzjsUm8Q7RZcHPHksttq7/GFoxjCVUjkjvPdw=="
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    ></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.20.0/jquery.validate.min.js"></script>
+
+    <title>Devsol</title>
+  </head>
+  <body>
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    <div id="root"></div>
+    <script>
+      $(document).ready(function () {
+        $(".loadingbar").delay(1500).animate({ left: "0" }, 3000);
+        $(".loadingBox").delay(500).animate({ opacity: "1" }, 1000);
+        // $(".splashScreen").delay(4500).animate({ top: "-101%" }, 1500);
+        setTimeout(() => {
+          $(".splashScreen").delay(2000).animate({ opacity: "0" }, 500);
+          $(".splashBehind").delay(5000).animate({ opacity: "1" }, 500);
+        }, 2200);
+
+        $(document).ready(function () {
+          // Check if the URL contains "/special-page"
+          if (window.location.href.indexOf("/welcome") > -1) {
+            $("body")
+              .delay(5000)
+              .queue(function () {
+                $("body").addClass("visibleSplash");
+              });
+          } else {
+            // Remove the class from the body on other pages
+            $("body").removeClass("visibleSplash");
+          }
+        });
+      });
+    </script>
+  </body>
+</html>
