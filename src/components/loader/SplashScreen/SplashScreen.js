@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import loaderIcon from "../../../assets/images/splashicon.png";
+import loaderIcon from "../../../assets/images/splashicon.svg";
 import Footer from "../../common/Footer/Footer";
 import Header from "../../common/Header/Header";
 import { useNavigate } from "react-router-dom";
@@ -30,7 +30,7 @@ const SplashScreen = () => {
         <div className="splashScreen">
           <div className="loadingContainer">
             <div className="loadingBox">
-              <img src={loaderIcon} className="splashLogo" alt="" />
+              <img src={loaderIcon} className="splashLogo" alt="" style={{width:'200px'}} />
               <div className="loadingBarContainer">
                 <div className="loadingbar"></div>
               </div>

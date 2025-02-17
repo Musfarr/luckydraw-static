@@ -301,8 +301,10 @@ const CampaignReport = () => {
                   <th>CALLER NUMBER</th>
                   <th>RETRY COUNT</th>
                   <th>RESPONSE</th>
-                  <th>DTMF</th>
-                  <th>NUMBER</th>
+                  <th>Question1</th>
+                  <th>Question2</th>
+                  <th>Question3</th>
+                  {/* <th>NUMBER</th> */}
                   <th>START DATE</th>
                   <th>START TIME</th>
                   <th>END DATE</th>
@@ -343,8 +345,10 @@ const CampaignReport = () => {
                         </td>
                         <td className="textCapatalize">{val.retry_count}</td>
                         <td>{val.response === "" ? "-" : val.response}</td>
-                        <td>{val.DTMF}</td>
-                        <td>{val.number}</td>
+                        <td>{val.question1}</td>
+                        <td>{val.question2}</td>
+                        <td>{val.question3}</td>
+                        {/* <td>{val.number}</td> */}
                         <td>{val.start_date}</td>
                         <td>{val.start_time}</td>
                         <td>{val.end_date}</td>

@@ -23,7 +23,7 @@ const CampaignList = () => {
       setIsLoading(false);
     };
     const onFailure = (error) => {
-      console.log(error);
+      setData([])
       setIsLoading(false);
     };
     let params = { 
@@ -215,7 +215,7 @@ const CampaignList = () => {
                       {data === null ? (
                         <div uk-spinner=""></div>
                       ) : (
-                        ""
+                        " No data found "
                       )}
                     </td>
                   </tr>
