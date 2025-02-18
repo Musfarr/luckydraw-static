@@ -311,6 +311,7 @@ const CampaignReport = () => {
                   <th>END TIME</th>
                   <th>CALL SECONDS</th>
                   <th>CALL UNITS</th>
+                  <th>RECORDING</th>
                 </tr>
               </thead>
               <tbody>
@@ -355,6 +356,17 @@ const CampaignReport = () => {
                         <td>{val.end_time}</td>
                         <td>{val.call_seconds}</td>
                         <td>{val.call_units}</td>
+                        <td>
+                          
+                          <audio controls>
+                            <source src={val.recording} type="audio/mpeg" />
+                            Your browser does not support the audio element.
+                          </audio>
+                          
+
+
+
+                        </td>
                       </tr>
                     );
                   })

@@ -124,7 +124,7 @@ const Units = () => {
                       value={category}
                     >
                       <option value="" disabled>Select a category</option>
-                      <option value="1">Yumnaz Perfume</option>
+                      <option value="1">Unilever</option>
                     </select>
                   </div>
                 </div>

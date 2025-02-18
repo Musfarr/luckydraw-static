@@ -175,7 +175,7 @@ const CreateCampaign = () => {
                       <option value="" disabled selected>
                         Select a call type
                       </option>
-                      <option value="1">Yumnaz Perfume</option>
+                      <option value="1">Unilever</option>
                       
                     </select>
                     {submittedData.callType === "" && errorEnable && (
