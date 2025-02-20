@@ -52,8 +52,8 @@ const Sidebar = () => {
             <li>
               <Link
                 className="character-btn"
-                to="/list-campaign"
-                uk-tooltip="title: List Camapaign; pos: right"
+                to="/audit-survey"
+                uk-tooltip="title: Audit; pos: right"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"

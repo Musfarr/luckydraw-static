@@ -1,3 +1,11 @@
+
+:root{
+  --primaryColor: #1F36C7;
+  --primaryHoverColor: #264983;
+  --secondaryColor: #868686;
+  --secondaryHoverColor: #b9b9b9;
+}
+
 .formInput h2 {
     font-size: 18px;
     font-weight: 500;
@@ -121,7 +129,7 @@
 }
 
 .pagination li.active {
-  background-color: #1e87f0;
+  background-color: var(--primaryColor);
 }
 
 .pagination li.active a {

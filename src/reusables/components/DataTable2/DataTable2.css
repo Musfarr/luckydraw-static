@@ -1,0 +1,54 @@
+.table-container {
+  margin: 20px 0;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+}
+
+.status {
+  padding: 5px 10px;
+  border-radius: 4px;
+  font-size: 12px;
+  font-weight: 500;
+  text-transform: capitalize;
+}
+
+.status.pending {
+  background-color: #fff4e5;
+  color: #ff9800;
+}
+
+.status.completed {
+  background-color: #e8f5e9;
+  color: #4caf50;
+}
+
+.status.active {
+  background-color: #e3f2fd;
+  color: #2196f3;
+}
+
+.start-call-btn {
+  background-color: var(--primaryColor);
+  color: white;
+  border: none;
+  padding: 5px 15px;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s;
+}
+
+.start-call-btn:hover {
+  background-color: var(--primaryHoverColor);
+}
+
+.pagination-container {
+  display: flex;
+  justify-content: center;
+  margin-top: 20px;
+}
+

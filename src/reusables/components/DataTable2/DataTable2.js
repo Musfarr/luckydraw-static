@@ -2,7 +2,7 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
 
-const DataTable1 = ({ 
+const DataTable2 = ({ 
   data, 
   isLoading, 
   currentPage, 
@@ -17,20 +17,22 @@ const DataTable1 = ({
       <table className="uk-table">
         <thead>
           <tr>
-            <th>S.NO</th>
+            <th>ID</th>
             <th>CALL ID</th>
             <th>CUSTOMER INFO</th>
             <th>CITY/LOCATION</th>
             <th>CALL TIME</th>
             <th>CALL TIME STATUS</th>
             <th>CALL DURATION</th>
-            <th>ACTION</th>
+            <th>PRODUCT YOU PURCHASE ?</th>
+            <th>PRODUCT EXPERIENCE</th>
+            <th>MESSAGE</th>
           </tr>
         </thead>
         <tbody>
           {isLoading && data?.length > 0 && (
             <tr>
-              <td colSpan={8} style={{ position: 'relative', height: '200px' }}>
+              <td colSpan={10} style={{ position: 'relative', height: '200px' }}>
                 <div className="loading-spinner">
                   <div uk-spinner=""></div>
                 </div>
@@ -56,19 +58,14 @@ const DataTable1 = ({
                   </span>
                 </td>
                 <td>{val.duration || '-'}</td>
-                <td>
-                  <button
-                    className="start-call-btn"
-                    onClick={() => onCancelCampaign(val.id, index)}
-                  >
-                    Start Call
-                  </button>
-                </td>
+                <td>{val.product_you_purchase || '-'}</td>
+                <td>{val.product_experience || '-'}</td>
+                <td>{val.message || '-'}</td>
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={8} className="dataNotFound">
+              <td colSpan={10} className="dataNotFound">
                 {data === null ? (
                   <div uk-spinner=""></div>
                 ) : (
@@ -105,4 +102,4 @@ const DataTable1 = ({
   );
 };
 
-export default DataTable1;
+export default DataTable2;

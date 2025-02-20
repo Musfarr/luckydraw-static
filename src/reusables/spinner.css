@@ -1,76 +1,50 @@
 .loading-spinner-overlay {
-    position: absolute;
-    top: 77px;
-    left: 2px;
-    right: 0;
-    bottom: 0;
-    background-color: #f0f0f0;
-    backdrop-filter: blur(3px);
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    /* z-index: 999; */
+  position: absolute;
+  top: 77px;
+  left: 61px;
+  right: 0;
+  bottom: 0;
+  background-color: rgba(255, 255, 255, 0.9);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+}
+
+.loading-spinner-overlay svg {
+  width: 6.25em;
+  transform-origin: center;
+  animation: rotate4 2s linear infinite;
+}
+
+.loading-spinner-overlay circle {
+  fill: none;
+  stroke: var(--primaryColor);
+  stroke-width: 2;
+  stroke-dasharray: 1, 200;
+  stroke-dashoffset: 0;
+  stroke-linecap: round;
+  animation: dash4 1.5s ease-in-out infinite;
+}
+
+@keyframes rotate4 {
+  100% {
+    transform: rotate(360deg);
   }
-  
-  .loading-spinner-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    width: 200px;
-    height: 200px;
+}
+
+@keyframes dash4 {
+  0% {
+    stroke-dasharray: 1, 200;
+    stroke-dashoffset: 0;
   }
-  
-  .spinner-ring-loader {
-    position: relative;
-    width: 100px;
-    height: 100px;
-    border-radius: 50%;
-    background: linear-gradient(45deg, transparent, transparent 40%, #00e676);
-    animation: glow 0.8s linear infinite;
+
+  50% {
+    stroke-dasharray: 90, 200;
+    stroke-dashoffset: -35px;
   }
-  
-  @keyframes glow {
-    0% {
-      transform: rotate(0deg);
-    }
-    100% {
-      transform: rotate(360deg);
-    }
+
+  100% {
+    stroke-dashoffset: -125px;
   }
-  
-  .spinner-ring-loader::before {
-    content: "";
-    position: absolute;
-    top: 3px;
-    left: 3px;
-    right: 3px;
-    bottom: 3px;
-    background: #f0f0f0;
-    border-radius: 50%;
-    z-index: 1000;
-  }
-  
-  .spinner-ring-loader::after {
-    content: "";
-    position: absolute;
-    top: 0px;
-    left: 0px;
-    right: 0px;
-    bottom: 0px;
-    background: linear-gradient(45deg, transparent, transparent 40%, #00e676);
-    border-radius: 50%;
-    z-index: 1;
-    filter: blur(20px);
-    animation: pulse 1.5s ease-in-out infinite;
-    opacity: 0.8;
-  }
-  
-  @keyframes pulse {
-    0%, 100% {
-      opacity: 0.5;
-    }
-    50% {
-      opacity: 0.9;
-    }
-  }
-  
+}
