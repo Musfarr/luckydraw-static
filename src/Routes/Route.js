@@ -33,17 +33,17 @@ export const protectedRoutesWithSidebarLayout = [
     padding: true,
   },
   {
-    path: "/survey-calls",
+    path: "/survey-calls/:id",
     component: <SurveyCall />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },
-  {
-    path: "/create-campaign",
-    component: <CreateCampaign />,
-    footer: <Footer extraPadding="70px" />,
-    padding: true,
-  },
+  // {
+  //   path: "/create-campaign",
+  //   component: <CreateCampaign />,
+  //   footer: <Footer extraPadding="70px" />,
+  //   padding: true,
+  // },
   {
     path: "/audit-survey",
     component: <AuditSurvey />,

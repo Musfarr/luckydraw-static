@@ -1,4 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { apiGet, apiPost } from "../../Utils/apiServices";
+
+import Spinner from "../../reusables/Spinner";
 import angryGrey from "../../assets/images/icons/angry-grey.svg";
 import angryColor from "../../assets/images/icons/angry-color.svg";
 import upsetColor from "../../assets/images/icons/upset-color.svg";
@@ -11,7 +15,11 @@ import excitedGrey from "../../assets/images/icons/excited-grey.svg";
 import excitedColor from "../../assets/images/icons/excited-color.svg";
 
 const SurveyCall = () => {
+  const { id } = useParams();
+  const navigate = useNavigate();
   const [selected, setSelected] = useState("");
+  const [isLoading, setIsLoading] = useState(true);
+  const [callData, setCallData] = useState(null);
 
   const images = [
     { id: "angryGrey", grey: angryGrey, color: angryColor },
@@ -21,9 +29,39 @@ const SurveyCall = () => {
     { id: "excitedGrey", grey: excitedGrey, color: excitedColor },
   ];
 
+  useEffect(() => {
+    const fetchCallData = () => {
+      setIsLoading(true);
+      
+      const onSuccess = (response) => {
+        setCallData(response.data);
+        setIsLoading(false);
+      };
+
+      const onFailure = (error) => {
+        console.log('Error fetching call data:', error);
+        setIsLoading(false);
+      };
+
+      apiPost(`/calls/${id}`, onSuccess, onFailure);
+    };
+
+    if (id) {
+      fetchCallData();
+    }
+  }, [id]);
+
+  const handleCancel = () => {
+    navigate('/audit-survey');
+  };
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="addTeamWrp">
-      <div className="uk-container uk-container-large ">
+      <div className="uk-container uk-container-large">
         <div className="addTeamHeading">
           <h3>Survey call</h3>
         </div>
@@ -64,29 +102,19 @@ const SurveyCall = () => {
                     </div>
                   </div>
                 </div>
-                <div className="uk-width-1-2">
-                  <div className="formInput">
-                    <label htmlFor="userEmail">User Email</label>
-                    <input
-                      type="text"
-                      placeholder="Enter Name"
-                      className="uk-input"
-                    />
-                  </div>
-                </div>
-                <div className="uk-width-1-2">
-                  <div className="formInput">
-                    <label htmlFor="userEmail">User Email</label>
-                    <input
-                      type="text"
-                      placeholder="Enter Name"
-                      className="uk-input"
-                    />
-                  </div>
-                </div>
+
+
+
+                
+              
                 <div className="uk-width-1-2">
                   <div className="uk-grid uk-grid-small" uk-grid="">
-                    <div className="uk-width-1-1">
+
+                    {callData?.survey?.questions?.map((question) => (
+                     
+                     question.type === "input" ? (
+
+                      <div className="uk-width-1-1">
                       <div className="formInput">
                         <label htmlFor="userName">
                           Q1, What is your name ?
@@ -98,80 +126,60 @@ const SurveyCall = () => {
                         />
                       </div>
                     </div>
-                    <div className="uk-width-1-1">
-                      <div className="formInput">
-                        <label htmlFor="userName">
-                          Q1, What is your name ?
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter Name"
-                          className="uk-input"
-                        />
-                      </div>
-                    </div>
-                    <div className="uk-width-1-1">
-                      <div className="formInput">
-                        <label htmlFor="userName">
-                          Q1, What is your name ?
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter Name"
-                          className="uk-input"
-                        />
-                      </div>
-                    </div>
-                    <div className="uk-width-1-1">
-                      <div className="formInput">
-                        <label htmlFor="userName">
-                          Q1, What is your name ?
-                        </label>
-                        <input
-                          type="text"
-                          placeholder="Enter Name"
-                          className="uk-input"
-                        />
-                      </div>
-                    </div>
-                  </div>
-                </div>
-                <div className="uk-width-1-2">
-                  <div className="formInput">
-                    <label htmlFor="userEmail">User Email</label>
-                    <textarea name="" className="uk-textarea"></textarea>
-                  </div>
-                </div>
-                <div className="uk-width-1-1">
-                  <div class="formInput">
-                    <label htmlFor="userEmail">
-                      Q7, You purchase unilever product. How about your
-                      experience ?
-                    </label>
-                    <div className="radio-wrapper">
-                      {images.map((img) => (
-                        <div key={img.id}>
-                          <input
-                            type="radio"
-                            id={img.id}
-                            name="img-radio"
-                            className="hidden"
-                            onChange={() => setSelected(img.id)}
-                          />
-                          <label className="radio-label" htmlFor={img.id}>
-                            <img
-                              src={selected === img.id ? img.color : img.grey}
-                              alt={img.id}
-                            />
-                          </label>
+                      
+                     ) : question.type === "textarea" ? (
+                      <div className="uk-width-1-2">
+                        <div className="formInput">
+                          <label htmlFor="userEmail">User Email</label>
+                          <textarea name="" className="uk-textarea"></textarea>
                         </div>
-                      ))}
+                      </div>
+                      
+                     ) :  (
+                      <div className="uk-width-1-1">
+                      <div className="formInput">
+                        <label htmlFor="userEmail">
+                          Q7, You purchase unilever product. How about your
+                          experience ?
+                        </label>
+                        <div className="radio-wrapper">
+                          {images.map((img) => (
+                            <div key={img.id}>
+                              <input
+                                type="radio"
+                                id={img.id}
+                                name="img-radio"
+                                className="hidden"
+                                onChange={() => setSelected(img.id)}
+                              />
+                              <label className="radio-label" htmlFor={img.id}>
+                                <img
+                                  src={selected === img.id ? img.color : img.grey}
+                                  alt={img.id}
+                                />
+                              </label>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
+                     )
+                     
+                    ))}
+                    
+
+
+
                   </div>
                 </div>
+                
+               
+
+
+
                 <div className="uk-width-1-1">
                   <div className="btnwrp">
-                    <button type="button" className="btn-1">
+                    <button type="button" className="btn-1" onClick={handleCancel}>
                       Cancel
                     </button>
                     <button type="submit" className="btn-2">

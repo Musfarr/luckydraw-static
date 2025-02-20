@@ -33,7 +33,7 @@ const Sidebar = () => {
             <li>
               <Link
                 className="character-btn"
-                to="/create-campaign"
+                to="/survey-calls"
                 uk-tooltip="title: Survey Call; pos: right"
               >
                 <svg
@@ -68,7 +68,7 @@ const Sidebar = () => {
                 </svg>
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className="character-btn"
                 to="/units"
@@ -90,7 +90,7 @@ const Sidebar = () => {
                   />
                 </svg>
               </Link>
-            </li>
+            </li> */}
           </ul>
           <ul className="scnd-navwrp">
             

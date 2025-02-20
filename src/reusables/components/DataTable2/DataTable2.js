@@ -59,7 +59,7 @@ const DataTable2 = ({
                 </td>
                 <td>{val.duration || '-'}</td>
                 <td>{val.product_you_purchase || '-'}</td>
-                <td>{val.product_experience || '-'}</td>
+                <td >{val.product_experience || '-'}</td>
                 <td><a>View</a></td>
               </tr>
             ))

@@ -1,6 +1,8 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+
+
 
 const DataTable1 = ({ 
   data, 
@@ -12,6 +14,9 @@ const DataTable1 = ({
   onCancelCampaign,
   row
 }) => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="userTableWrp">
       <table className="uk-table">
@@ -59,9 +64,9 @@ const DataTable1 = ({
                 <td>
                   <button
                     className="start-call-btn"
-                    onClick={() => onCancelCampaign(val.id, index)}
+                    onClick={() => navigate(`/survey-calls/${val.id}`)}
                   >
-                    Start Call
+                    view Call
                   </button>
                 </td>
               </tr>
