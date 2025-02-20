@@ -13,11 +13,44 @@ import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
 const AuditSurvey = () => {
   let PageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
+  const [currentPage2, setCurrentPage2] = useState(1);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [Paginationdata, setPaginationData] = useState(null);
   // set row record
   const [row, setRow] = useState(null);
+
+  // Static data for DataTable2
+  const staticTable2Data = [
+    {
+      id: 1,
+      phone_no: "03335249073",
+      name: "Mudassir Ahmed",
+      city_location: "Karachi, Pakistan",
+      created_at: "2025-02-20 14:17:34",
+      status: "completed",
+      duration: "00:15:30",
+      product_you_purchase: "Lifebuoy Soap",
+      product_experience: "Excellent",
+      message: "The product quality is very good and I'm satisfied with it."
+    },
+    {
+      id: 2,
+      phone_no: "03335249074",
+      name: "Ali Khan",
+      city_location: "Lahore, Pakistan",
+      created_at: "2025-02-20 14:18:34",
+      status: "completed",
+      duration: "00:12:45",
+      product_you_purchase: "Surf Excel",
+      product_experience: "Good",
+      message: "Works well but price is a bit high."
+    }
+  ];
+
+  const paginationData2 = {
+    total_records: staticTable2Data.length
+  };
 
   const getCampaigns = () => {
     setIsLoading(true);
@@ -131,7 +164,14 @@ const AuditSurvey = () => {
                           <DataTable1/>
                         </li>
                         <li>
-                          <DataTable2/>
+                          <DataTable2
+                            data={staticTable2Data}
+                            isLoading={isLoading}
+                            currentPage={currentPage2}
+                            setCurrentPage={setCurrentPage2}
+                            PageSize={PageSize}
+                            Paginationdata={paginationData2}
+                          />
                         </li>
                         
                       </ul>
