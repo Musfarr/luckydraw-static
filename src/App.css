@@ -1,5 +1,5 @@
 :root {
-  --primaryColor: #0C2349;
+  --primaryColor: #1F36C7;
   --primaryHoverColor: #264983;
   --secondaryColor: #868686;
   --secondaryHoverColor: #b9b9b9;
@@ -6768,6 +6768,63 @@ span.available {
   min-height: calc(100vh - 60px);
   padding: 120px 0 60px;
 }
+
+
+.userTableWrp {
+  margin-top: 20px;
+}
+
+.loading-spinner {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 255, 255, 0.8);
+  padding: 20px;
+  border-radius: 5px;
+  z-index: 1000;
+}
+
+.dataNotFound {
+  text-align: center;
+  padding: 20px;
+}
+
+
+
+.start-call-btn{
+  background: var(--primaryColor) !important;
+  color: white !important;
+  border: none !important;
+  padding: 5px 15px !important;
+  border-radius: 3px !important;
+  cursor: pointer;
+}
+
+.status {
+  padding: 3px 8px;
+  border-radius: 3px;
+  font-size: 0.9em;
+}
+
+.status.active {
+  color: #32d296;
+}
+
+.status.pending {
+  color: #faa05a;
+}
+
+.status.completed {
+  color: #1e87f0;
+}
+
+
+
+
+
+
+
 
 /* ===================================================user page====================================== */
 

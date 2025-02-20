@@ -111,166 +111,179 @@ const CreateCampaign = () => {
           </Link> */}
         </div>
         <div className="addTeamHeading">
-          <h3>Launch Campaign</h3>
+          <h3>Survey Call</h3>
         </div>
         <div className="addTeamBox">
           <div className="formwrp">
             <form onSubmit={addUser} autoComplete="off">
               <div className="uk-grid uk-grid-small" uk-grid="">
+                
+                
                 <div className="uk-width-1-2">
                   <div className="formInput">
-                    <label htmlFor="f_name">Campaign Name</label>
+                    <label htmlFor="">Q1, What is your name ?</label>
                     <input
                       type="text"
-                      placeholder="Please enter campaign name"
-                      className="uk-input"
+                      placeholder="Enter your name"
                       value={submittedData.campaignName}
-                      onChange={(e) => {
+                      onChange={(e) =>
                         setSubmittedData({
                           ...submittedData,
                           campaignName: e.target.value,
-                        });
-                      }}
+                        })
+                      }
                     />
-
+                   
                     {submittedData.campaignName === "" && errorEnable && (
-                      <div className="formErrors">
-                        Campaign name is required
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="uk-width-1-2">
-                  <div className="formInput dateTimePicker">
-                    <label htmlFor="">Campaign Start Date</label>
-                    <Datetime
-                      value={currentDateTime} // Show nothing by default, updated after selection
-                      onChange={handleDateChange}
-                      dateFormat="YYYY-MM-DD"
-                      timeFormat="HH:mm:ss"
-                      inputProps={{ placeholder: "Select a date..." }}
-                    />
-                    <Calendar />
-                    {submittedData.campaignStartDate === "" && errorEnable && (
-                      <div className="formErrors">
-                        Campaign date time is required
-                      </div>
-                    )}
-                  </div>
-                </div>
-                <div className="uk-width-1-2">
-                  <div className="formInput">
-                    <label htmlFor="">Select Call Type</label>
-                    <select
-                      name=""
-                      className="uk-select"
-                      onChange={(e) => {
-                        setSubmittedData({
-                          ...submittedData,
-                          callType: e.target.value,
-                        });
-                      }}
-                      value={submittedData.callType}
-                    >
-                      <option value="" disabled selected>
-                        Select a call type
-                      </option>
-                      <option value="1">Unilever</option>
-                      
-                    </select>
-                    {submittedData.callType === "" && errorEnable && (
                       <div className="formErrors">Call type is required</div>
                     )}
                   </div>
                 </div>
                 <div className="uk-width-1-2">
                   <div className="formInput">
-                    <label htmlFor="">Campaign Number</label>
-                    {/* <input
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
                       type="text"
-                      placeholder="Please enter campaign number"
-                      className="uk-input"
-                      value={submittedData.campaignNumber}
-                      onChange={(e) => {
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
                         setSubmittedData({
                           ...submittedData,
-                          campaignNumber: e.target.value,
-                        });
-                      }}
-                    /> */}
-                    <select
-                      name=""
-                      className="uk-select"
-                      onChange={(e) => {
-                        setSubmittedData({
-                          ...submittedData,
-                          campaignNumber: e.target.value,
-                        });
-                      }}
-                      value={submittedData.campaignNumber}
-                    >
-                      <option value="" disabled selected>
-                        Select a number
-                      </option>
-                      <option value="3497772340">3497772340</option>
-                    </select>
-                    {submittedData.campaignNumber === "" && errorEnable && (
-                      <div className="formErrors">Number is required</div>
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
                     )}
                   </div>
                 </div>
                 <div className="uk-width-1-2">
                   <div className="formInput">
-                    <label htmlFor="">Upload Numbers (.CSV File Only)</label>
-                    <div className="js-upload uk-placeholder uk-text-center uk-margin-remove">
-                      <span uk-icon="icon: cloud-upload"></span>
-                      <div uk-form-custom="">
-                        <input
-                          type="file"
-                          aria-label="Custom controls"
-                          style={{ width: "100%" }}
-                          accept={".csv"}
-                          onChange={(e) => handleFile(e)}
-                        />
-                        <span className="uk-link">&nbsp; Upload file</span>
-                        {/* end new work  */}
-                      </div>
-                    </div>
-                    {submittedData?.csvFile && (
-                      <div>{submittedData.csvFile.name}</div>
-                    )}
-                    {submittedData.csvFile === "" && errorEnable && (
-                      <div className="formErrors">Csv file is required</div>
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
                     )}
                   </div>
                 </div>
                 <div className="uk-width-1-2">
                   <div className="formInput">
-                    <label htmlFor="">Download Sample Format</label>
-                    <div>
-                      <a href={campaignFile} download="import-contact">
-                        <img
-                          src={excel}
-                          style={{ width: "75px", cursor: "pointer" }}
-                        />
-                      </a>
-                    </div>
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
+                    )}
                   </div>
                 </div>
-                {resultData && (
-                  <div className="uk-width-1-1">
-                    <div className="campaignListResult">
-                      <p>
-                        Total Uploaded Numbers:{" "}
-                        <span> {resultData?.total_uploaded_numbers}</span>
-                      </p>
-                      <p>
-                        Total Accepted Numbers:{" "}
-                        <span> {resultData?.total_accepted_numbers}</span>
-                      </p>
-                    </div>
+                <div className="uk-width-1-2">
+                  <div className="formInput">
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
+                    )}
                   </div>
-                )}
+                </div>
+                <div className="uk-width-1-2">
+                  <div className="formInput">
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
+                    )}
+                  </div>
+                </div>
+                <div className="uk-width-1-2">
+                  <div className="formInput">
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
+                    )}
+                  </div>
+                </div>
+                
+                <div className="uk-width-1-2">
+                  <div className="formInput">
+                    <label htmlFor="">Q1, What is your name ?</label>
+                    <input
+                      type="text"
+                      placeholder="Enter your name"
+                      value={submittedData.campaignName}
+                      onChange={(e) =>
+                        setSubmittedData({
+                          ...submittedData,
+                          campaignName: e.target.value,
+                        })
+                      }
+                    />
+                   
+                    {submittedData.campaignName === "" && errorEnable && (
+                      <div className="formErrors">Call type is required</div>
+                    )}
+                  </div>
+                </div>
+                
+                
+               
+                
                 <div className="adminRoleWrp uk-margin-remove">
                   <div className="btnwrp">
                     <button className="btn-2 w-80" type="submit">
