@@ -6631,7 +6631,7 @@ span.available {
 }
 
 .userTableWrp table tbody tr td {
-  font-size: 12px;
+  font-size: 13px;
   color: #454545;
   padding: 24px 12px;
   vertical-align: middle;
@@ -6650,7 +6650,7 @@ span.available {
 }
 
 .userTableWrp table tbody tr td span {
-  font-size: 12px;
+  font-size: 13px;
   padding: 5px 8px;
   border-radius: 14px;
 }
@@ -6797,8 +6797,9 @@ span.available {
   color: white !important;
   border: none !important;
   padding: 5px 15px !important;
-  border-radius: 3px !important;
+  border-radius: 25px !important;
   cursor: pointer;
+  font-size: 12px;
 }
 
 .status {
@@ -6808,11 +6809,11 @@ span.available {
 }
 
 .status.active {
-  color: #32d296;
+  color: #38D500;
 }
 
 .status.pending {
-  color: #faa05a;
+  color: #FFBB00;
 }
 
 .status.completed {
@@ -8683,7 +8684,7 @@ span.filtername {
   box-shadow: 0px 1px 10px #00000029;
   border-radius: 8px;
   padding: 16px 24px 32px;
-  margin-bottom: 24px !important;
+  margin-bottom: 50px !important;
 }
 
 .overviewContent .mainBox .boxHeading {
@@ -8706,10 +8707,14 @@ span.filtername {
   text-align: center;
 }
 
-.overviewContent .mainBox .boxContent .txtwrp h2 {
-  font-size: 44px;
-  color: #202020;
+.overviewContent .mainBox .boxContent .txtwrp svg{
   margin-bottom: 8px;
+}
+
+.overviewContent .mainBox .boxContent .txtwrp h2 {
+  font-size: 53px;
+  color: #202020;
+  margin: 0 0 8px;
   font-family: "SF Pro Regular";
 }
 

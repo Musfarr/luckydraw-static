@@ -100,15 +100,15 @@ const Dashboard = () => {
                 >
                   <div className="uk-grid uk-flex-middle" uk-grid="">
                     <div className="uk-width-1-2 uk-margin-remove">
-                      <h2>Hi , User</h2>
-                      <p>Agent</p>
+                      <h2 className="uk-margin-remove">Hi , User</h2>
+                      <p className="uk-margin-remove">Agent</p>
                     </div>
 
                     <div className="uk-width-1-1 uk-margin-remove">
                       <div className="overviewMainContent">
                         <div className="mainBox">
                           <div className="boxHeading">
-                            <span>Call Performance Summary</span>
+                            <span>Agent Overview</span>
                           </div>
                           <div className="boxContent">
                             <div className="uk-grid" uk-grid="">
@@ -116,12 +116,12 @@ const Dashboard = () => {
                                 <div className="txtwrp">
                                   <Phone
                                     style={{
-                                      fill: "#1ED760",
+                                      fill: "#1F36C7",
                                       width: "24px",
                                       height: "24px",
                                     }}
                                   />
-                                  <h2 className="uk-margin-remove">
+                                  <h2>
                                     {data.totalCalls}
                                   </h2>
                                   <span>Total Calls</span>
@@ -131,45 +131,45 @@ const Dashboard = () => {
                                 <div className="txtwrp">
                                   <PhoneOutgoing
                                     style={{
-                                      fill: "#1ED760",
+                                      fill: "#1F36C7",
                                       width: "24px",
                                       height: "24px",
                                     }}
                                   />
-                                  <h2 className="uk-margin-remove">
+                                  <h2>
                                     {data.totalAnswers}
                                   </h2>
-                                  <span>Delivered</span>
+                                  <span>Total Pending Calls</span>
                                 </div>
                               </div>
                               <div className="uk-width-1-4">
                                 <div className="txtwrp">
                                   <PhoneBlock
                                     style={{
-                                      fill: "#A8200D",
+                                      fill: "#1F36C7",
                                       width: "24px",
                                       height: "24px",
                                     }}
                                   />
-                                  <h2 className="uk-margin-remove">
+                                  <h2>
                                     {data.totalNoAnswers}
                                   </h2>
-                                  <span>Total UnAnswer Calls</span>
+                                  <span>Total Call duration</span>
                                 </div>
                               </div>
                               <div className="uk-width-1-4">
                                 <div className="txtwrp">
                                   <Hourglass
                                     style={{
-                                      fill: "#1ED760",
+                                      fill: "#1F36C7",
                                       width: "24px",
                                       height: "24px",
                                     }}
                                   />
-                                  <h2 className="uk-margin-remove">
+                                  <h2>
                                     {data.avgMonthlyAnswerCalls}
                                   </h2>
-                                  <span>AVG Answer Monthly</span>
+                                  <span>Success Rate</span>
                                 </div>
                               </div>
                             </div>
