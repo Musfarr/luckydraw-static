@@ -34,7 +34,7 @@ const Sidebar = () => {
               <Link
                 className="character-btn"
                 to="/create-campaign"
-                uk-tooltip="title: Create Camapaign; pos: right"
+                uk-tooltip="title: Survey Call; pos: right"
               >
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
