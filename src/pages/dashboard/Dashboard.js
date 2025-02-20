@@ -77,7 +77,7 @@ const Dashboard = () => {
 
     setTimeout(() => {
       setIsLoading(false);
-    }, 90);
+    }, 90000);
 
   };
 
