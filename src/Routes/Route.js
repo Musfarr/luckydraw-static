@@ -1,5 +1,4 @@
 import CreateCampaign from "../pages/Camapign/CreateCampaign";
-import CampaignList from "../pages/Camapign/CampaignList";
 import CampaignReport from "../pages/Camapign/CampaignReport";
 import SplashScreen from "../components/loader/SplashScreen/SplashScreen";
 import Footer from "../components/common/Footer/Footer";
@@ -7,6 +6,7 @@ import NotFound from "../pages/404/NotFound";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Units from "../pages/Units/Units";
+import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
 
 export const publicRoutes = [
   {
@@ -38,8 +38,8 @@ export const protectedRoutesWithSidebarLayout = [
     padding: true,
   },
   {
-    path: "/list-campaign",
-    component: <CampaignList />,
+    path: "/audit-survey",
+    component: <AuditSurvey />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },

@@ -1,89 +1,69 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Hourglass,
   Phone,
   PhoneBlock,
   PhoneOutgoing,
 } from "@carbon/icons-react";
-import { useEffect } from "react";
 import { apiGet } from "../../Utils/apiServices";
 import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
 import Spinner from "../../reusables/Spinner";
 
-
-
 const Dashboard = () => {
   const [data, setData] = useState({
-    totalCalls: 1250,
-    totalAnswers: 850,
-    totalNoAnswers: 400,
-    avgMonthlyAnswerCalls: 780
+    totalCalls: 0,
+    totalPending: 0,
+    totalDuration: "0 min 0s",
+    successRate: 0
   });
   const [isLoading, setIsLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
   const PageSize = 10;
   const [tableRow, setTableRow] = useState(null);
+  const [callData, setCallData] = useState([]);
   const [numberGraphData, setNumberGraphData] = useState({
     label: [],
     count: [],
   });
 
-  // Static data for DataTable1
-  const staticTableData = [
-    {
-      call_id: "033352490736",
-      customer_info: "Mudassir",
-      city_location: "Surjani, Karachi",
-      call_time: "16:54:12",
-      call_status: "Active",
-      call_duration: "00:15:30"
-    },
-    {
-      call_id: "033352490736",
-      customer_info: "Mudassir",
-      city_location: "Surjani, Karachi",
-      call_time: "16:54:11",
-      call_status: "Pending",
-      call_duration: "-"
-    },
-    {
-      call_id: "033352490736",
-      customer_info: "Mudassir",
-      city_location: "Surjani, Karachi",
-      call_time: "16:54:10",
-      call_status: "Completed",
-      call_duration: "00:15:30"
-    },
-    {
-      call_id: "033352490736",
-      customer_info: "Mudassir",
-      city_location: "Surjani, Karachi",
-      call_time: "16:54:09",
-      call_status: "Active",
-      call_duration: "00:15:30"
-    }
-  ];
-
-  const handleCancelCampaign = (campaignId, index) => {
-    console.log(`Cancelled campaign ${campaignId} at index ${index}`);
-  };
-
-  const paginationData = {
-    total_records: staticTableData.length
-  };
 
   const getCampaign = () => {
     setIsLoading(true);
 
-    setTimeout(() => {
-      setIsLoading(false);
-    }, 90000);
+    const onSuccess = (response) => {
+      let data = response.data; 
 
+      setData({
+        totalCalls: data.total_calls,
+        totalPending: data.total_pending,
+        totalDuration: data.total_duration,
+        successRate: data.success_rate
+      });
+
+      setCallData(data.calls.data);
+
+      setIsLoading(false);
+    };
+
+    const onFailure = (error) => {
+      console.log(error);
+      setIsLoading(false);
+    };
+
+    apiGet('/agent/dashboard', onSuccess, onFailure);
   };
 
   useEffect(() => {
     getCampaign();
   }, []);
+
+  const handleCancelCampaign = (campaignId, index) => {
+    console.log(`Starting call ${campaignId} at index ${index}`);
+  };
+
+  const paginationData = {
+    total_records: callData.length
+  };
 
   return isLoading ? (
     <Spinner />
@@ -137,7 +117,7 @@ const Dashboard = () => {
                                     }}
                                   />
                                   <h2>
-                                    {data.totalAnswers}
+                                    {data.totalPending}
                                   </h2>
                                   <span>Total Pending Calls</span>
                                 </div>
@@ -152,7 +132,7 @@ const Dashboard = () => {
                                     }}
                                   />
                                   <h2>
-                                    {data.totalNoAnswers}
+                                    {data.totalDuration}
                                   </h2>
                                   <span>Total Call duration</span>
                                 </div>
@@ -167,7 +147,7 @@ const Dashboard = () => {
                                     }}
                                   />
                                   <h2>
-                                    {data.avgMonthlyAnswerCalls}
+                                    {data.successRate}%
                                   </h2>
                                   <span>Success Rate</span>
                                 </div>
@@ -180,7 +160,7 @@ const Dashboard = () => {
 
 
                       <DataTable1 
-                        data={staticTableData}
+                        data={callData}
                         isLoading={isLoading}
                         currentPage={currentPage}
                         setCurrentPage={setCurrentPage}
