@@ -202,7 +202,7 @@ a:hover {
 }
 
 .green-btn:hover {
-  background-color: var(--primaryHoverColor) ;
+  background-color: var(--primaryHoverColor);
   transition: all 0.3s ease;
 }
 
@@ -6792,7 +6792,7 @@ span.available {
 
 
 
-.start-call-btn{
+.start-call-btn {
   background: var(--primaryColor) !important;
   color: white !important;
   border: none !important;
@@ -6905,7 +6905,7 @@ span.available {
   padding: 0px;
 }
 
-.addTeamWrp .addTeamBox .formwrp .formInput input {
+.addTeamWrp .addTeamBox .formwrp .formInput .uk-input {
   padding: 8px 16px;
   font-size: 15px;
   color: #202020;
@@ -8707,7 +8707,7 @@ span.filtername {
   text-align: center;
 }
 
-.overviewContent .mainBox .boxContent .txtwrp svg{
+.overviewContent .mainBox .boxContent .txtwrp svg {
   margin-bottom: 8px;
 }
 
@@ -15573,11 +15573,108 @@ img.image-web-ke {
 .campaignListResult p span {
   font-weight: 600;
 }
-.term-service-text{
-color: #000000;
+
+.term-service-text {
+  color: #000000;
 }
 
-.term-service-text a{
-color: #000000;
-text-decoration: underline;
+.term-service-text a {
+  color: #000000;
+  text-decoration: underline;
+}
+
+.formDataWrp {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  margin-bottom: 24px !important;   
+}
+
+.formDataWrp .dataBox {
+  border: 1px solid #E4E4E4;
+  background-color: #FAFAFA;
+  border-radius: 4px;
+  padding: 8px;
+  min-width: 101px;
+}
+
+.formDataWrp .dataBox span {
+  margin: 0;
+  font-size: 24px;
+  line-height: 32px;
+  color: var(--primaryColor);
+  letter-spacing: -0.29px;
+}
+
+.formDataWrp .dataBox p {
+  font-size: 13px;
+  color: #6A6A6A;
+  line-height: 16px;
+  margin: 0 0 8px;
+}
+
+.formDataWrp .divider {
+  border-left: 1px solid #E4E4E4;
+  width: 1px;
+  height: 75px;
+}
+
+.formDataWrp .dataBtn button {
+  font-size: 18px;
+  padding: 4px 16px;
+  border: 1px solid;
+  border-radius: 5px;
+  min-width: 86px;
+  transition: 0.3s all ease-in-out;
+}
+
+.formDataWrp .dataBtn button.pause-btn {
+  margin-bottom: 6px;
+  color: var(--primaryColor);
+  border-color: var(--primaryColor);
+  background-color: #1F36C712;
+}
+
+.formDataWrp .dataBtn button.pause-btn:hover{
+  color: #fff;
+  background-color: var(--primaryColor);
+}
+
+.formDataWrp .dataBtn button.end-btn {
+  color: #fff;
+  border-color: #FB0000;
+  background-color: #FB0000;
+}
+
+.formDataWrp .dataBtn button.end-btn:hover{
+  color: #FB0000;
+  background-color: #c71f1f12;
+  border-color: #FB0000
+}
+
+
+
+
+.radio-wrapper {
+  display: flex;
+  gap: 10px;
+}
+
+.radio-wrapper input[type="radio"] {
+  display: none;
+}
+
+.radio-label {
+  cursor: pointer;
+  border: 2px solid transparent;
+  border-radius: 8px;
+  overflow: hidden;
+  transition: border 0.3s;
+}
+
+
+.radio-label img {
+  width: 46px;
+  height: 46px;
+  object-fit: cover;
 }
