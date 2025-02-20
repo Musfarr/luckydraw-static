@@ -59,7 +59,9 @@ const DataTable2 = ({
                 </td>
                 <td>{val.duration || '-'}</td>
                 <td>{val.product_you_purchase || '-'}</td>
-                <td >{val.product_experience || '-'}</td>
+                <td>
+                {<img className='review-img' src={val.product_experience} alt="" /> || "-"} 
+                </td>
                 <td><a>View</a></td>
               </tr>
             ))

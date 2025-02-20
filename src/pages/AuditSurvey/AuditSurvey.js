@@ -7,8 +7,9 @@ import { toast } from "react-toastify";
 import ReactPaginate from "react-paginate";
 import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
 import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
-
-
+import angryImg from "../../assets/images/icons/angry-color.svg";
+import happyImg from "../../assets/images/icons/happy-color.svg";
+import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 
 const AuditSurvey = () => {
   let PageSize = 10;
@@ -31,8 +32,8 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:15:30",
       product_you_purchase: "Lifebuoy Soap",
-      product_experience: "Excellent",
-      message: "The product quality is very good and I'm satisfied with it."
+      product_experience: angryImg,
+      message: "The product quality is very good and I'm satisfied with it.",
     },
     {
       id: 2,
@@ -43,13 +44,13 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:12:45",
       product_you_purchase: "Surf Excel",
-      product_experience: "Good",
-      message: "Works well but price is a bit high."
-    }
+      product_experience: happyImg,
+      message: "Works well but price is a bit high.",
+    },
   ];
 
   const paginationData2 = {
-    total_records: staticTable2Data.length
+    total_records: staticTable2Data.length,
   };
 
   const getCampaigns = () => {
@@ -60,10 +61,10 @@ const AuditSurvey = () => {
       setIsLoading(false);
     };
     const onFailure = (error) => {
-      setData([])
+      setData([]);
       setIsLoading(false);
     };
-    let params = { 
+    let params = {
       page: currentPage,
       limit: PageSize,
     };
@@ -135,51 +136,91 @@ const AuditSurvey = () => {
     <div className="userWrp">
       <div className="userTabContent">
         <div className="uk-container uk-container-large">
-          <div uk-grid="" className="uk-margin-top">
+          <div className="backbtn">
+            <button type="button">
+              <ChevronLeft /> Back
+            </button>
+          </div>
+          <div uk-grid="" className="uk-grid uk-margin-top uk-flex-middle">
             <div className="uk-width-1-2">
               <div className="campaignHeading">
                 <p>AUDIT SURVEY CALLS</p>
               </div>
             </div>
+            <div className="uk-width-1-2 btnSection">
+              <button className="exportBtn">
+                <Download /> Export Data
+              </button>
+
+              <div className="uk-inline">
+                <button className="calenderBtn rangeBtn">
+                  <Calendar /> Last 30 days{" "}
+                  <span className="uk-inline">
+                    <ChevronDown />
+                  </span>
+                </button>
+                <div uk-dropdown="mode: click" className="calendarDropdown">
+                  <div className="dropDownHeading">
+                    <span>Select a range</span>
+                  </div>
+                  <ul>
+                    <li className="active">
+                      <button type="button" className="rangeBtn">
+                        <span className="rangeBtnCircle"></span> Last 30 days
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button" className="rangeBtn">
+                        <span className="rangeBtnCircle"></span> This week
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button" className="rangeBtn">
+                        <span className="rangeBtnCircle"></span> Last week
+                      </button>
+                    </li>
+                    <li>
+                      <button type="button" className="rangeBtn">
+                        <span className="rangeBtnCircle"></span> This month
+                      </button>
+                    </li>
+                  </ul>
+                </div>
+              </div>
+            </div>
           </div>
 
           <div className="analyticsContainer formCentralContainer">
-                    <ul
-                      className="uk-subnav uk-subnav-pill  OrdersTabs "
-                      uk-switcher="connect: #analyticsTabs"
-                    >
-                    
-                      <li>
-                        <a>Pending Calls </a>
-                      </li>
-                      <li>
-                        <a>Completed Calls </a>
-                      </li>
-
-                    
-                    </ul>
-                    <div className="tabContent">
-                      <ul className="uk-switcher uk-margin" id="analyticsTabs">
-                        <li>
-                          <DataTable1/>
-                        </li>
-                        <li>
-                          <DataTable2
-                            data={staticTable2Data}
-                            isLoading={isLoading}
-                            currentPage={currentPage2}
-                            setCurrentPage={setCurrentPage2}
-                            PageSize={PageSize}
-                            Paginationdata={paginationData2}
-                          />
-                        </li>
-                        
-                      </ul>
-                    </div>
-                  </div>
-
-          
-      </div>
+            <ul
+              className="uk-subnav uk-subnav-pill  OrdersTabs "
+              uk-switcher="connect: #analyticsTabs"
+            >
+              <li>
+                <a>Pending Calls </a>
+              </li>
+              <li>
+                <a>Completed Calls </a>
+              </li>
+            </ul>
+            <div className="tabContent">
+              <ul className="uk-switcher uk-margin" id="analyticsTabs">
+                <li>
+                  <DataTable1 />
+                </li>
+                <li>
+                  <DataTable2
+                    data={staticTable2Data}
+                    isLoading={isLoading}
+                    currentPage={currentPage2}
+                    setCurrentPage={setCurrentPage2}
+                    PageSize={PageSize}
+                    Paginationdata={paginationData2}
+                  />
+                </li>
+              </ul>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   );

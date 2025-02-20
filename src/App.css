@@ -5246,7 +5246,7 @@ span.statusBlocked:hover {
 
 /* ========================================Resusing CSS===================================== */
 /* back btn  */
-.backbtn {
+.backbtn button {
   background: transparent;
   outline: none;
   border: none;
@@ -5260,6 +5260,7 @@ span.statusBlocked:hover {
 .backbtn svg {
   width: 24px;
   height: 24px;
+  transform: translateY(-2px);
 }
 
 /* for button sections  */
@@ -6082,6 +6083,10 @@ span.completeTag.redCancel {
   padding: 0;
 }
 
+.exportBtn svg{
+  transform: translateY(-2px);
+}
+
 .analyticsContainer .analyticsTab .btnSection .calenderBtn {
   display: flex;
   align-items: center;
@@ -6092,6 +6097,8 @@ span.completeTag.redCancel {
 .analyticsContainer .analyticsTab .btnSection .calenderBtn svg {
   margin-right: 4px;
 }
+
+
 
 .calendarDropdown {
   padding: 10px 0;
@@ -6636,6 +6643,7 @@ span.available {
   padding: 24px 12px;
   vertical-align: middle;
   text-align: center !important;
+  font-family: 'SF Pro Regular';
 }
 
 .userTableWrp table tbody tr td .btn-pending {
@@ -6712,6 +6720,11 @@ span.available {
 
 .userTableWrp table tbody tr td img {
   width: 24px;
+}
+
+.userTableWrp table tbody tr td .review-img{
+  width: 40px;
+  height: 40px;
 }
 
 .userTableWrp table tbody tr td button {
@@ -8647,7 +8660,7 @@ span.filtername {
   min-height: calc(100vh - 231px);
 }
 
-.overviewContent .btnSection {
+.btnSection {
   text-align: right;
 }
 
@@ -8890,7 +8903,8 @@ span.filtername {
   text-align: right;
 }
 
-.broadcastTabWrp .btnSection button {
+.calendarDropdown button,
+.calenderBtn {
   background: none;
   border: none;
   cursor: pointer;
@@ -8905,16 +8919,16 @@ span.filtername {
   margin-right: 4px;
 }
 
-.broadcastTabWrp .btnSection .exportBtn {
+.exportBtn {
   margin-right: 16px;
 }
 
-.broadcastTabWrp .btnSection .calenderBtn {
+.calenderBtn {
   display: flex;
   align-items: center;
 }
 
-.broadcastTabWrp .btnSection .calenderBtn svg {
+.calenderBtn svg {
   margin-right: 4px;
 }
 
@@ -15527,6 +15541,7 @@ img.image-web-ke {
   color: #6a6a6a;
   font-size: 31px;
   font-weight: 300;
+  margin-bottom: 0;
 }
 
 .reportMainBox .txtwrp {
