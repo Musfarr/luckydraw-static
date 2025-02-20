@@ -6,6 +6,7 @@ import NotFound from "../pages/404/NotFound";
 import Login from "../pages/Login/Login";
 import Dashboard from "../pages/dashboard/Dashboard";
 import Units from "../pages/Units/Units";
+import SurveyCall from "../pages/SurveyCall/SurveyCall";
 import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
 
 export const publicRoutes = [
@@ -28,6 +29,12 @@ export const protectedRoutesWithSidebarLayout = [
   {
     path: "/dashboard",
     component: <Dashboard />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+  },
+  {
+    path: "/survey-calls",
+    component: <SurveyCall />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },
