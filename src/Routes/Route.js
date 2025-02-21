@@ -11,6 +11,7 @@ import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
 import AdminHome from "../pages/AdminHome/AdminHome";
 import AddUser from "../pages/AddUser/AddUser";
 import AgentList from "../pages/AgentList/AgentList";
+import AgentProfile from "../pages/AgentProfile/AgentProfile";
 
 export const publicRoutes = [
   {
@@ -64,6 +65,13 @@ export const protectedRoutesWithSidebarLayout = [
   {
     path: "/agent-list",
     component: <AgentList />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/agent-profile",
+    component: <AgentProfile />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,

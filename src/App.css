@@ -4144,7 +4144,8 @@ span.available {
 .userTableWrp {
   margin-top: 20px;
 }
-.userTableWrp h2{
+
+.userTableWrp h2 {
   font-size: 31px;
   color: #6A6A6A;
   font-weight: 300 !important;
@@ -4196,6 +4197,7 @@ span.available {
 .status.completed {
   color: #1F36C7 !important;
 }
+
 .status.danger {
   color: #F50000 !important;
 }
@@ -12356,7 +12358,7 @@ img.image-web-ke {
 /* Ticket css end */
 
 .js-upload {
-  border: 2px solid var(--primaryColor)!important;
+  border: 2px solid var(--primaryColor) !important;
 }
 
 .js-upload span {
@@ -12616,8 +12618,7 @@ img.image-web-ke {
   border: none;
   background: #E7FBF0;
   color: var(--primaryColor);
-  display: flex
-;
+  display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
@@ -12651,7 +12652,7 @@ img.image-web-ke {
 }
 
 .simpleTable th {
-  
+
   text-align: center;
   padding: 12px 16px;
   color: #6a6a6a;
@@ -12673,6 +12674,7 @@ img.image-web-ke {
   white-space: nowrap;
   text-align: center;
 }
+
 .simpleTable tbody tr:nth-child(even) {
   background-color: #f8f8f8;
 }
@@ -12754,3 +12756,331 @@ img.image-web-ke {
 }
 
 /* user card */
+
+
+/* agent profile */
+
+.agent-profile-container {
+  display: flex;
+  gap: 24px;
+  width: 100%;
+}
+
+.agent-basic-info {
+  background: white;
+  border-radius: 8px;
+  padding: 21px 30px;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 16px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  width: 280px;
+}
+
+.agent-status-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 14px;
+  color: #666;
+}
+
+.status-indicator {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #ccc;
+}
+
+.status-indicator.active {
+  background: #1ED760;
+}
+
+.agent-avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.agent-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.agent-name {
+  font-size: 16px;
+  font-weight: 500;
+  color: #000;
+  font-family: "SF Pro Medium" !important;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.agent-role {
+  font-size: 12px;
+  color: #6C6C6C;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.edit-button {
+  background: none;
+  border: none;
+  padding: 4px;
+  color: #666;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 4px;
+}
+
+.edit-button:hover {
+  background: #f5f5f5;
+  color: #333;
+}
+
+.agent-phone {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.agent-phone label {
+  font-size: 14px;
+  color: #333;
+}
+
+.phone-input {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  width: 100%;
+}
+
+.phone-input p {
+  font-size: 12px;
+  color: #6C6C6C;
+  margin-bottom: 0;
+}
+
+.phone-input input {
+  flex: 1;
+  padding: 8px 12px;
+  border: 1px solid #E4E4E4;
+  border-radius: 4px;
+  font-size: 14px;
+}
+
+.phone-input input:focus {
+  outline: none;
+  border-color: #5048E5;
+}
+
+.agent-profile-details {
+  background: white;
+  border-radius: 8px;
+  padding: 37px 33px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+  flex: 1;
+}
+
+.card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.card-header h3 {
+  margin: 0;
+  font-size: 16px;
+  font-weight: 500;
+  color: #333;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-header svg {
+  width: 15px;
+  height: 15px;
+}
+
+.workload-stats {
+  display: flex;
+  gap: 32px;
+}
+
+.sec-divider {
+  padding: 20px 0 20px 0;
+  border-bottom: 1px solid #dedede;
+  border-top: 1px solid #dedede;
+}
+
+.workload-section h4 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 15px;
+  color: #202020;
+  line-height: 18px;
+}
+
+.workload-stats .label {
+  font-size: 13px;
+  color: #6B6B6B;
+  font-weight: 400;
+  line-height: 15px;
+}
+
+.workload-stats .value {
+  font-weight: 400;
+  font-size: 13px;
+  color: #1ED760;
+  line-height: 15px;
+}
+
+.activate-switch {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  font-size: 14px;
+  color: #666;
+}
+
+.switch {
+  position: relative;
+  display: inline-block;
+  width: 40px;
+  height: 20px;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  cursor: pointer;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background-color: #E4E4E4;
+  transition: .1s;
+  border-radius: 20px;
+}
+
+.slider:before {
+  position: absolute;
+  content: "";
+  height: 16px;
+  width: 16px;
+  left: 2px;
+  bottom: 2px;
+  background-color: white;
+  transition: .3s;
+  border-radius: 50%;
+}
+
+input:checked+.slider {
+  background-color: #1ED760;
+}
+
+input:checked+.slider:before {
+  transform: translateX(20px);
+}
+
+/* agent profile */
+
+/* Company Cards  */
+.companyCard {
+  position: relative;
+  background: white;
+  border-radius: 6px;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  transition: transform 0.2s ease-in-out;
+}
+
+.companyCard:hover {
+  transform: scale(1.03);
+}
+
+.companyCard .status {
+  position: absolute;
+  top: 16px;
+  right: 16px;
+  font-size: 14px;
+  padding: 4px 12px;
+  border-radius: 12px;
+  text-transform: capitalize;
+}
+
+.companyCard .status.online {
+  background: #E7FBF0;
+  color: #1ED760;
+}
+
+.companyCard .status.offline {
+  background: #FFF4E5;
+  color: #FFA726;
+}
+
+.companyCard .profileImage {
+  width: 100px;
+  height: 100px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.companyCard .profileImage img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.companyCard .userInfo h3 {
+  margin: 0 0 4px;
+  font-size: 16px;
+  font-weight: 600;
+  color: #1e1e1e;
+}
+
+.companyCard .userInfo .role {
+  display: block;
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--primaryColor);
+  margin-bottom: 4px;
+}
+
+.companyCard .userInfo .email {
+  display: block;
+  font-size: 12px;
+  color: #6a6a6a;
+  word-break: break-all;
+}
+
+.companyCard:hover .userInfo .role {
+  text-decoration: underline;
+}
+
+/* Company Cards  */
