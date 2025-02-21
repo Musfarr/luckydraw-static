@@ -6,7 +6,7 @@ ChartJS.register(ArcElement, Tooltip, Legend);
 
 const PieChart = ({
   degree,
-  backgroudColor,
+  backgroundColor,
   borderColor,
   graphData,
   graphlabels,
@@ -23,6 +23,7 @@ const PieChart = ({
       },
     },
   };
+  
 
   const data = {
     labels: graphlabels || [
@@ -37,7 +38,7 @@ const PieChart = ({
       {
         // label: "# of Votes",
         data: graphData,
-        backgroundColor: backgroudColor,
+        backgroundColor: backgroundColor,
         // borderColor: borderColor,
         borderWidth: 1,
         // cutout: "90%",
@@ -47,11 +48,9 @@ const PieChart = ({
     ],
   };
 
-  
-
   return (
     <div>
-      <Pie options ={options}data={data} />
+      <Pie options={options} data={data} />
     </div>
   );
 };

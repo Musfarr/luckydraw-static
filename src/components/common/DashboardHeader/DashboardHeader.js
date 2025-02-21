@@ -1,4 +1,4 @@
-import { Logout } from "@carbon/icons-react";
+import { Add, ChevronDown, Logout } from "@carbon/icons-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import userImg from "../../../assets/images/user-img.png";
@@ -26,8 +26,11 @@ const DashboardHeader = () => {
   };
   return (
     <div className="dashboardHeader">
-      <div>
-        {/* <div className="statusDropdown">
+      <div className="uk-flex uk-flex-middle uk-flex-right" style={{gap: '16px'}}>
+      <div className="headerBtn">
+        <Link to="#"><Add />Create Survey</Link>
+      </div>
+        <div className="statusDropdown">
           <div class="uk-inline">
             <button class="statusDropdownBtn" type="button">
               <span className="online"></span>Online <ChevronDown />
@@ -36,15 +39,15 @@ const DashboardHeader = () => {
               <h6>Chat status</h6>
               <ul>
                 <li>
-                  <button type="button">
-                    <span className="online"></span>
+                    <button type="button">
+                      <span className="online"></span>
                     <p>Online</p>
                   </button>
                 </li>
               </ul>
             </div>
           </div>
-        </div> */}
+        </div>
         <div className="onlineImg">
           <div className="userInfo ">
             <div className="uk-inline">
@@ -102,7 +105,7 @@ const DashboardHeader = () => {
               </div>
             </div>
           </div>
-          <span className="mark onlineMark availableMark"></span>
+          {/* <span className="mark onlineMark availableMark"></span> */}
         </div>
       </div>
       {openLogoutModal && <LogoutModal closeModal={handleCloseLogoutModal} />}

@@ -8,6 +8,8 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import Units from "../pages/Units/Units";
 import SurveyCall from "../pages/SurveyCall/SurveyCall";
 import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
+import AdminHome from "../pages/AdminHome/AdminHome";
+import AddUser from "../pages/AddUser/AddUser";
 
 export const publicRoutes = [
   {
@@ -59,15 +61,17 @@ export const protectedRoutesWithSidebarLayout = [
     padding: true,
   },
   {
-    path: "/campaign-report/:id",
-    component: <CampaignReport />,
+    path: "/admin-home",
+    component: <AdminHome />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
+    headerBtn: true,
   },
   {
-    path: "/Units",
-    component: <Units />,
+    path: "/add-user",
+    component: <AddUser />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
+    headerBtn: true,
   },
 ];
