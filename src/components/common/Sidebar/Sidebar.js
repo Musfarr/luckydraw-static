@@ -30,7 +30,7 @@ const Sidebar = () => {
                 <Home />
               </Link>
             </li>
-            <li>
+            {/* <li>
               <Link
                 className="character-btn"
                 to="/survey-calls"
@@ -48,7 +48,7 @@ const Sidebar = () => {
                   />
                 </svg>
               </Link>
-            </li>
+            </li> */}
             <li>
               <Link
                 className="character-btn"

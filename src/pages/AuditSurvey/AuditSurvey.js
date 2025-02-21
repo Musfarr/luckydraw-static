@@ -1,15 +1,13 @@
 import React, { useEffect, useMemo, useState } from "react";
 import { Link } from "react-router-dom";
 import { apiGet, apiPost } from "../../Utils/apiServices";
-import { debounce, set } from "lodash";
-import Pagination from "../../components/Pagination/Pagination";
-import { toast } from "react-toastify";
-import ReactPaginate from "react-paginate";
 import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
 import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
 import angryImg from "../../assets/images/icons/angry-color.svg";
 import happyImg from "../../assets/images/icons/happy-color.svg";
 import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
+import Spinner from "../../reusables/Spinner";
+
 
 const AuditSurvey = () => {
   let PageSize = 10;
@@ -20,6 +18,11 @@ const AuditSurvey = () => {
   const [Paginationdata, setPaginationData] = useState(null);
   // set row record
   const [row, setRow] = useState(null);
+  const [selectedtab, setSelectedtab] = useState('pending');
+
+
+
+
 
   // Static data for DataTable2
   const staticTable2Data = [
@@ -53,13 +56,16 @@ const AuditSurvey = () => {
     total_records: staticTable2Data.length,
   };
 
-  const getCampaigns = () => {
+  const getSurvey = () => {
     setIsLoading(true);
     const onSuccess = (response) => {
       setData(response.data);
-      setPaginationData(response?.pagination);
+      // setPaginationData(response?.pagination);
       setIsLoading(false);
     };
+
+
+
     const onFailure = (error) => {
       setData([]);
       setIsLoading(false);
@@ -67,70 +73,18 @@ const AuditSurvey = () => {
     let params = {
       page: currentPage,
       limit: PageSize,
+      type: selectedtab
     };
-    apiGet(`/campaign/list`, onSuccess, onFailure, undefined, params);
+    apiGet(`agent/dashboard`, onSuccess, onFailure, undefined, params);
   };
 
   useEffect(() => {
-    getCampaigns();
-  }, [currentPage]);
+    getSurvey();
+  }, [currentPage ,selectedtab]);
 
-  const onChange = (e) => {
-    setData(null);
-    var searchedValue = e.target.value;
 
-    if (searchedValue !== "") {
-      apiGet(
-        `/agent/search/${searchedValue}`,
-        onSuccessSearch,
-        onFailureSearch
-      );
-    } else {
-      getCampaigns();
-    }
-  };
-  const debouncedOnChange = debounce(onChange, 1000);
 
-  const onSuccessSearch = (response) => {
-    if (response.status === 0) {
-      // setCurrentPage(1)
-      setData(response?.data);
-    }
-  };
-  const onFailureSearch = (error) => {
-    console.log(error);
-  };
 
-  const currentTableData = useMemo(() => {
-    return data || [];
-  }, [data]);
-
-  const cancelCamapign = (id) => {
-    const onSuccess = (response) => {
-      // Update only the specific row's campaign_status
-      setData((prevData) =>
-        prevData.map((item) =>
-          item.campaign_id === id ? { ...item, campaign_status: 5 } : item
-        )
-      );
-
-      setTimeout(() => {
-        toast.success("Camapign cancelled successfully", {
-          position: toast.POSITION.TOP_RIGHT,
-          autoClose: 1000,
-        });
-        setTimeout(() => {
-          window.location.reload();
-        }, 700);
-        setRow(null);
-      }, 1000);
-    };
-    const onFailure = (error) => {
-      console.log(error);
-      setRow(null);
-    };
-    apiPost("/campaign/cancel", onSuccess, onFailure, { campaign_id: id });
-  };
 
   return (
     <div className="userWrp">
@@ -196,20 +150,27 @@ const AuditSurvey = () => {
               uk-switcher="connect: #analyticsTabs"
             >
               <li>
-                <a>Pending Calls </a>
+                <a onClick={() => setSelectedtab('pending')}>Pending Calls </a>
               </li>
               <li>
-                <a>Completed Calls </a>
+                <a onClick={() => setSelectedtab('completed')}>Completed Calls </a>
               </li>
             </ul>
             <div className="tabContent">
               <ul className="uk-switcher uk-margin" id="analyticsTabs">
                 <li>
-                  <DataTable1 />
+                  <DataTable1
+                  data={data?.calls?.data}
+                  isLoading={isLoading}
+                  currentPage={currentPage2}
+                  setCurrentPage={setCurrentPage2}
+                  PageSize={PageSize}
+                  Paginationdata={paginationData2}
+                  />
                 </li>
                 <li>
                   <DataTable2
-                    data={staticTable2Data}
+                    data={data?.calls?.data}
                     isLoading={isLoading}
                     currentPage={currentPage2}
                     setCurrentPage={setCurrentPage2}

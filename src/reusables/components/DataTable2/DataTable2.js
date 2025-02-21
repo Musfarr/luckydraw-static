@@ -1,6 +1,7 @@
 import React from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import ReactPaginate from 'react-paginate';
+
 
 const DataTable2 = ({ 
   data, 
@@ -12,6 +13,9 @@ const DataTable2 = ({
   onCancelCampaign,
   row
 }) => {
+
+  const navigate = useNavigate();
+
   return (
     <div className="userTableWrp">
       <table className="uk-table">
@@ -24,23 +28,21 @@ const DataTable2 = ({
             <th>CALL TIME</th>
             <th>CALL TIME STATUS</th>
             <th>CALL DURATION</th>
-            <th>PRODUCT YOU PURCHASE ?</th>
+            <th>Action</th>
+            {/* <th>PRODUCT YOU PURCHASE ?</th>
             <th>PRODUCT EXPERIENCE</th>
-            <th>MESSAGE</th>
+            <th>MESSAGE</th> */}
           </tr>
         </thead>
         <tbody>
-          {isLoading && data?.length > 0 && (
+          {isLoading ? (
             <tr>
-              <td colSpan={10} style={{ position: 'relative', height: '200px' }}>
-                <div className="loading-spinner">
+              <td colSpan={8} className="text-center">
                   <div uk-spinner=""></div>
-                </div>
               </td>
             </tr>
-          )}
-          {!isLoading && data?.length > 0 ? (
-            data?.map((val, index) => (
+          ) : data && data.length > 0 ? (
+            data.map((val, index) => (
               <tr key={val.id}>
                 <td>{index + 1 + (currentPage - 1) * PageSize}</td>
                 <td className='uk-text-bold'>{val.phone_no}</td>
@@ -58,21 +60,18 @@ const DataTable2 = ({
                   </span>
                 </td>
                 <td>{val.duration || '-'}</td>
-                <td>{val.product_you_purchase || '-'}</td>
+                <td><a className='uk-text-bold' onClick={() => navigate(`/survey-calls/view/${val.id}`)}>View</a></td>
+                {/* <td>{val.product_you_purchase || '-'}</td>
                 <td>
                 {<img className='review-img' src={val.product_experience} alt="" /> || "-"} 
                 </td>
-                <td><a>View</a></td>
+                <td><a>View</a></td> */}
               </tr>
             ))
           ) : (
             <tr>
-              <td colSpan={10} className="dataNotFound">
-                {data === null ? (
-                  <div uk-spinner=""></div>
-                ) : (
-                  " No data found "
-                )}
+              <td colSpan={8} className="text-center">
+                No data found
               </td>
             </tr>
           )}

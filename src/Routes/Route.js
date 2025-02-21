@@ -38,6 +38,14 @@ export const protectedRoutesWithSidebarLayout = [
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },
+
+
+  {
+    path: "/survey-calls/view/:id",
+    component: <SurveyCall />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+  },
   // {
   //   path: "/create-campaign",
   //   component: <CreateCampaign />,

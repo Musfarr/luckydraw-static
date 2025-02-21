@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { useParams, useNavigate } from "react-router-dom";
+import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { apiGet, apiPost } from "../../Utils/apiServices";
 
 import Spinner from "../../reusables/Spinner";
@@ -14,12 +14,21 @@ import HappyColor from "../../assets/images/icons/happy-color.svg";
 import excitedGrey from "../../assets/images/icons/excited-grey.svg";
 import excitedColor from "../../assets/images/icons/excited-color.svg";
 
+
+
+
 const SurveyCall = () => {
+
+
+  const location = useLocation();
+  const isviewmode = location.pathname.includes('view');
   const { id } = useParams();
   const navigate = useNavigate();
   const [selected, setSelected] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [callData, setCallData] = useState(null);
+  const [ispaused , setIsPaused] = useState(false)
+  const [time, setTime] = useState(0)
 
   const images = [
     { id: "angryGrey", grey: angryGrey, color: angryColor },
@@ -28,6 +37,37 @@ const SurveyCall = () => {
     { id: "HappyGrey", grey: HappyGrey, color: HappyColor },
     { id: "excitedGrey", grey: excitedGrey, color: excitedColor },
   ];
+
+  const formatTime = (totalSeconds) => {
+    const hours = Math.floor(totalSeconds / 3600);
+    const minutes = Math.floor((totalSeconds % 3600) / 60);
+    const seconds = totalSeconds % 60;
+
+    return [
+      hours.toString().padStart(2, '0'),
+      minutes.toString().padStart(2, '0'),
+      seconds.toString().padStart(2, '0')
+    ].join(':');
+  };
+
+  useEffect(() => {
+    console.log(isviewmode)
+  },[]);
+
+
+
+
+  // call duration timer
+  useEffect(() => {
+
+    if(!ispaused){
+    const timer = setInterval(() => {
+      setTime(prevTime => prevTime + 1);
+    }, 1000);
+
+    return () => clearInterval(timer);
+    }
+  }, [ispaused]);
 
   useEffect(() => {
     const fetchCallData = () => {
@@ -39,11 +79,11 @@ const SurveyCall = () => {
       };
 
       const onFailure = (error) => {
-        console.log('Error fetching call data:', error);
         setIsLoading(false);
       };
 
-      apiPost(`/calls/${id}`, onSuccess, onFailure);
+      !isviewmode ? apiPost(`/calls/${id}`, onSuccess, onFailure) :
+                    apiGet(`/calls/${id}/view`, onSuccess, onFailure)
     };
 
     if (id) {
@@ -73,32 +113,47 @@ const SurveyCall = () => {
                   <div className="formDataWrp">
                     <div className="dataBox">
                       <p>Call</p>
-                      <span>033352490736</span>
+                      <span>{callData?.phone_no}</span>
                     </div>
                     <div className="dataBox">
                       <p>Call Duration</p>
-                      <span>00:15:30</span>
+
+                      
+                      <span>{ isviewmode ? callData.duration :formatTime(time)   }</span>
                     </div>
                     <div className="dataBox">
                       <p>Call Time</p>
-                      <span>16:54:10</span>
+                      <span>{callData.call_time}</span>
                     </div>
                     <div className="divider"></div>
                     <div className="dataBox">
                       <p>Call status</p>
-                      <span>Active</span>
+                      <span>{callData.status}</span>
                     </div>
                     <div className="dataBtn">
+
+                      {
+                        !isviewmode &&
+                        (
                       <div>
-                        <button className="pause-btn" type="button">
-                          Pause
+                        <button className="pause-btn" type="button"  onClick={() => setIsPaused(!ispaused)}>
+                          {!ispaused ? 'Call in progress' : 'Start Call'}
+                        </button>
+                      </div>
+                        )
+                      }
+
+
+                      {/* <div>
+                        <button className="pause-btn" type="button" onClick={() => setIsPaused(!ispaused)}>
+                          {ispaused ? 'Resume' : 'Pause'}
                         </button>
                       </div>
                       <div>
                         <button className="end-btn" type="button">
                           End
                         </button>
-                      </div>
+                      </div> */}
                     </div>
                   </div>
                 </div>
@@ -107,14 +162,9 @@ const SurveyCall = () => {
 
                 
               
-                <div className="uk-width-1-2">
+                <div className="uk-width-1-1">
                   <div className="uk-grid uk-grid-small" uk-grid="">
-
-                    {callData?.survey?.questions?.map((question) => (
-                     
-                     question.type === "input" ? (
-
-                      <div className="uk-width-1-1">
+                  <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userName">
                           Q1, What is your name ?
@@ -123,6 +173,37 @@ const SurveyCall = () => {
                           type="text"
                           placeholder="Enter Name"
                           className="uk-input"
+                          
+                        />
+                      </div>
+                    </div>
+                    <div className="uk-width-1-2">
+                      <div className="formInput">
+                        <label htmlFor="userName">
+                          Q1, What is your city ?
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter Name"
+                          className="uk-input"
+                        />
+                      </div>
+                    </div>
+
+                    {callData?.survey?.questions?.map((question) => (
+                     
+                     question.type === "input" ? (
+
+                      <div className="uk-width-1-2">
+                      <div className="formInput">
+                        <label htmlFor="userName">
+                          {question.question}
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter Name"
+                          className="uk-input"
+                          value={ isviewmode ? question.answer :''}
                         />
                       </div>
                     </div>
@@ -136,14 +217,13 @@ const SurveyCall = () => {
                       </div>
                       
                      ) :  (
-                      <div className="uk-width-1-1">
+                      <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userEmail">
-                          Q7, You purchase unilever product. How about your
-                          experience ?
+                          {question.question}
                         </label>
                         <div className="radio-wrapper">
-                          {images.map((img) => (
+                          {images.reverse().map((img) => (
                             <div key={img.id}>
                               <input
                                 type="radio"
@@ -176,17 +256,19 @@ const SurveyCall = () => {
                
 
 
-
+              
+              { !isviewmode && (
                 <div className="uk-width-1-1">
                   <div className="btnwrp">
                     <button type="button" className="btn-1" onClick={handleCancel}>
                       Cancel
                     </button>
-                    <button type="submit" className="btn-2">
+                    <button type="submit" className="btn-2" >
                       Submit
                     </button>
                   </div>
                 </div>
+              )}
               </div>
             </form>
           </div>

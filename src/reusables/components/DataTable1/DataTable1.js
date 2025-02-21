@@ -25,7 +25,8 @@ const DataTable1 = ({
             <th>S.NO</th>
             <th>CALL ID</th>
             <th>CUSTOMER INFO</th>
-            <th>CITY/LOCATION</th>
+            <th>CITY</th>
+            <th>LOCATION</th>
             <th>CALL TIME</th>
             <th>CALL TIME STATUS</th>
             <th>CALL DURATION</th>
@@ -33,22 +34,22 @@ const DataTable1 = ({
           </tr>
         </thead>
         <tbody>
-          {isLoading && data?.length > 0 && (
+          {isLoading ? (
             <tr>
-              <td colSpan={8} style={{ position: 'relative', height: '200px' }}>
-                <div className="loading-spinner">
+              <td colSpan={9} className="text-center">
+                
                   <div uk-spinner=""></div>
-                </div>
+                
               </td>
             </tr>
-          )}
-          {!isLoading && data?.length > 0 ? (
-            data?.map((val, index) => (
+          ) : data && data.length > 0 ? (
+            data.map((val, index) => (
               <tr key={val.id}>
                 <td>{index + 1 + (currentPage - 1) * PageSize}</td>
                 <td className='uk-text-bold'>{val.phone_no}</td>
                 <td>{val.name || '-'}</td>
-                <td>{val.city_location || '-'}</td>
+                <td>{val.city || '-'}</td>
+                <td>{val.location || '-'}</td>
                 <td>{new Date(val.created_at).toLocaleTimeString('en-US', { 
                   hour12: false,
                   hour: '2-digit',
@@ -73,12 +74,8 @@ const DataTable1 = ({
             ))
           ) : (
             <tr>
-              <td colSpan={8} className="dataNotFound">
-                {data === null ? (
-                  <div uk-spinner=""></div>
-                ) : (
-                  " No data found "
-                )}
+              <td colSpan={9} className="text-center">
+                No data found
               </td>
             </tr>
           )}
