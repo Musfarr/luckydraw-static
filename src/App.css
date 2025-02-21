@@ -278,6 +278,12 @@ span.lightGreenDot {
   background: #1ce783;
 }
 
+.formSubHeading h3 {
+  font-size: 18px;
+  color: #6A6A6A;
+  margin: 24px 0 19px;
+}
+
 /* utilities */
 
 div pre {
@@ -13084,3 +13090,82 @@ input:checked+.slider:before {
 }
 
 /* Company Cards  */
+
+/* create survey */
+
+.addFieldWrp {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+}
+
+.addFieldWrp .formInput select {
+  width: 150px !important;
+}
+
+.addFieldWrp .formInput input {
+  width: 300px !important;
+}
+
+.addFieldWrp .formCheckbox {
+  text-align: center;
+}
+
+.addFieldWrp .formCheckbox label {
+  display: block;
+  color: #6a6a6a;
+  font-size: 13px;
+  margin-bottom: 18px;
+}
+
+.addFieldWrp .formDltBtn {
+  margin-top: 25px;
+}
+
+.addFieldWrp .formDltBtn button.delete-btn {
+  width: 42px;
+  height: 42px;
+  background-color: #D5D5D5;
+  border-radius: 50%;
+  border: none;
+  transition: 0.4s all ease-in-out;
+}
+
+.addFieldWrp .formDltBtn button.delete-btn svg{
+  width: 20px;
+  height: 20px;
+}
+
+.addFieldWrp .formDltBtn button.delete-btn:hover {
+  background-color: #A8200D;
+}
+
+.addFieldWrp .formDltBtn button.delete-btn:hover svg {
+  fill: #fff;
+}
+
+.addFieldBtn {
+  margin-top: 40px;
+}
+
+.addFieldBtn button {
+  background-color: #1F36C71C;
+  border: 1px solid var(--primaryColor);
+  color: var(--primaryColor);
+  padding: 8px;
+  border-radius: 4px;
+  transition: 0.4s all ease-in-out;
+}
+
+.addFieldBtn button svg {
+  width: 24px;
+  height: 24px;
+  transform: translateY(-1px);
+}
+
+.addFieldBtn button:hover {
+  background-color: var(--primaryColor);
+  color: #fff;
+}
+
+/* create survey */

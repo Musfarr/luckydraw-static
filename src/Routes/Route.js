@@ -12,6 +12,7 @@ import AdminHome from "../pages/AdminHome/AdminHome";
 import AddUser from "../pages/AddUser/AddUser";
 import AgentList from "../pages/AgentList/AgentList";
 import AgentProfile from "../pages/AgentProfile/AgentProfile";
+import CreateSurvey from "../pages/CreateSurvey/CreateSurvey";
 
 export const publicRoutes = [
   {
@@ -72,6 +73,13 @@ export const protectedRoutesWithSidebarLayout = [
   {
     path: "/agent-profile",
     component: <AgentProfile />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/create-survey",
+    component: <CreateSurvey />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,
