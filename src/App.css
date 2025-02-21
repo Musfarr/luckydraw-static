@@ -4206,7 +4206,6 @@ span.available {
 
 
 
-
 /* ===================================================user page====================================== */
 
 /* =================================================add team============================================== */
@@ -12357,11 +12356,11 @@ img.image-web-ke {
 /* Ticket css end */
 
 .js-upload {
-  border: 2px solid #0C2349 !important;
+  border: 2px solid var(--primaryColor)!important;
 }
 
 .js-upload span {
-  color: #0C2349 !important;
+  color: var(--primaryColor) !important;
 }
 
 .searchField input {
