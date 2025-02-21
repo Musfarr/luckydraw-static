@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useParams, useNavigate, useLocation } from "react-router-dom";
 import { apiGet, apiPost } from "../../Utils/apiServices";
+import Swal from "sweetalert2";
 
 import Spinner from "../../reusables/Spinner";
 import angryGrey from "../../assets/images/icons/angry-grey.svg";
@@ -13,23 +14,29 @@ import HappyGrey from "../../assets/images/icons/happy-grey.svg";
 import HappyColor from "../../assets/images/icons/happy-color.svg";
 import excitedGrey from "../../assets/images/icons/excited-grey.svg";
 import excitedColor from "../../assets/images/icons/excited-color.svg";
+import { toast } from "react-toastify";
 
-
-
-
+// SurveyCall component
 const SurveyCall = () => {
-
-
+  // Router and navigation hooks
   const location = useLocation();
   const isviewmode = location.pathname.includes('view');
   const { id } = useParams();
   const navigate = useNavigate();
+
+  // Component state management
   const [selected, setSelected] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [callData, setCallData] = useState(null);
-  const [ispaused , setIsPaused] = useState(false)
-  const [time, setTime] = useState(0)
+  const [ispaused, setIsPaused] = useState(false);
+  const [CurrentTime, setCurrentTime] = useState('00:00:00');
+  const [time, setTime] = useState(0);
+  const [isCallLoading, setIsCallLoading] = useState(false);
+  const [timerId, setTimerId] = useState(null);
+  const [selectedEmojis, setSelectedEmojis] = useState({});
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
+  // Initial survey data state
   const [surveyData, setSurveyData] = useState({
     name: "",
     city: "",
@@ -39,14 +46,20 @@ const SurveyCall = () => {
     responses: []
   });
 
+  // Emoji images configuration for mood selection
   const images = [
-    { id: "angryGrey", grey: angryGrey, color: angryColor },
-    { id: "upsetGrey", grey: upsetGrey, color: upsetColor },
-    { id: "neutralGrey", grey: neutralGrey, color: neutralColor },
-    { id: "HappyGrey", grey: HappyGrey, color: HappyColor },
-    { id: "excitedGrey", grey: excitedGrey, color: excitedColor },
+    { id: 1, grey: excitedGrey, color: excitedColor },
+    { id: 2, grey: HappyGrey, color: HappyColor },
+    { id: 3, grey: neutralGrey, color: neutralColor },
+    { id: 4, grey: upsetGrey, color: upsetColor },
+    { id: 5, grey: angryGrey, color: angryColor }
   ];
 
+  /**
+   * Formats seconds into HH:MM:SS string format
+   * @param {number} totalSeconds - Total seconds to format
+   * @returns {string} Formatted time string
+   */
   const formatTime = (totalSeconds) => {
     const hours = Math.floor(totalSeconds / 3600);
     const minutes = Math.floor((totalSeconds % 3600) / 60);
@@ -59,19 +72,26 @@ const SurveyCall = () => {
     ].join(':');
   };
 
-
-  // call duration timer
-  useEffect(() => {
-
-    if(!ispaused){
+  /**
+   * Starts the call timer and updates time state
+   * @returns {number} Timer ID for cleanup
+   */
+  const StartCallTimer = () => {
+    setIsPaused(true);
     const timer = setInterval(() => {
-      setTime(prevTime => prevTime + 1);
+      setTime(prevTime => {
+        const newTime = prevTime + 1;
+        setSurveyData(prev => ({ ...prev, duration: newTime }));
+        return newTime;
+      });
     }, 1000);
+    setTimerId(timer);
+    return timer;
+  }
 
-    return () => clearInterval(timer);
-    }
-  }, [ispaused]);
-
+  /**
+   * Fetches call data on component mount
+   */
   useEffect(() => {
     const fetchCallData = () => {
       setIsLoading(true);
@@ -85,6 +105,7 @@ const SurveyCall = () => {
         setIsLoading(false);
       };
 
+      // Different API endpoints for view and edit modes
       !isviewmode ? apiPost(`/calls/${id}`, onSuccess, onFailure) :
                     apiGet(`/calls/${id}/view`, onSuccess, onFailure)
     };
@@ -94,20 +115,169 @@ const SurveyCall = () => {
     }
   }, [id]);
 
-  const handleCancel = () => {
-    navigate('/audit-survey');
-  };
-
-
-  const formatTimeFromDate = (dateString) => {
-    const date = new Date(dateString);
-    return date.toLocaleTimeString('en-US', {
-      hour12: false,
-      hour: '2-digit',
-      minute: '2-digit',
-      second: '2-digit'
+  /**
+   * Saves answers to survey questions
+   * @param {string} Q_ID - Question ID
+   * @param {string} answer - Answer value
+   */
+  const SaveAnswers = (Q_ID, answer) => {
+    setSelectedEmojis(prev => ({ ...prev, [Q_ID]: answer }));
+    setSurveyData(prev => {
+      const existingResponses = [...prev.responses];
+      const existingIndex = existingResponses.findIndex(r => r.question_id === Q_ID);
+      
+      if (existingIndex !== -1) {
+        existingResponses[existingIndex] = { question_id: Q_ID, answer: answer };
+      } else {
+        existingResponses.push({ question_id: Q_ID, answer: answer });
+      }
+      
+      return {
+        ...prev,
+        responses: existingResponses
+      };
     });
+  }
+
+  /**
+   * Handles form cancellation
+   */
+  const handleCancel = () => {
+    navigate(`/dashboard`);
   };
+
+  /**
+   * Formats date string to time string in HH:MM:SS format
+   * Handles invalid or null dates
+   * @param {string} dateString - Date string to format
+   * @returns {string} Formatted time string or '--:--:--' if invalid
+   */
+  const formatTimeFromDate = (dateString) => {
+    if (!dateString) return '--:--:--';
+    
+    try {
+      const date = new Date(dateString);
+      if (isNaN(date.getTime())) return '--:--:--';
+
+      return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    } catch (error) {
+      return '--:--:--';
+    }
+  };
+
+  /**
+   * Gets only the time portion from a datetime string
+   * @param {string} datetime - Datetime string
+   * @returns {string} Time portion or '--:--:--' if invalid
+   */
+  const getTimeFromDateTime = (datetime) => {
+    if (!datetime) return '--:--:--';
+    try {
+      const date = new Date(datetime);
+      if (isNaN(date.getTime())) return '--:--:--';
+      
+      return date.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+    } catch (error) {
+      return '--:--:--';
+    }
+  };
+
+  /**
+   * Handles form submission
+   * @param {Event} e - Form submit event
+   */
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    setIsSubmitting(true);
+    
+    // Stop timer immediately
+    if (timerId) {
+      clearInterval(timerId);
+      setTimerId(null);
+    }
+
+    const finalData = {
+      ...surveyData,
+      duration: formatTime(time),
+      status: "completed"
+    };
+    
+    const onSuccess = (response) => {
+      setCallData(prev => ({ ...prev, status: "completed" }));
+      setIsPaused(false);
+      setIsSubmitting(false);
+      Swal.fire({
+        icon: 'success',
+        title: 'Success!',
+        text: 'Survey submitted successfully',
+        timer: 1500,
+        showConfirmButton: false
+      }).then(() => {
+        navigate(`/survey-calls/view/${id}`);
+      });
+    };
+    const onFailure = (error) => {
+      setIsSubmitting(false);
+      toast.error(error?.response?.data?.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    };
+
+    apiPost(`/calls/${id}/update`, onSuccess, onFailure, finalData);
+  };
+
+  /**
+   * Starts a new call and initializes timer
+   */
+  const StartCall = () => {
+    setIsCallLoading(true);
+
+    // Prepare form data for API
+    var formData = new FormData();
+    formData.append("status", 'active');
+
+    const CallonSuccess = (response) => {
+      const now = new Date();
+      const currentTimeFormatted = now.toLocaleTimeString('en-US', {
+        hour12: false,
+        hour: '2-digit',
+        minute: '2-digit',
+        second: '2-digit'
+      });
+      
+      setCurrentTime(currentTimeFormatted);
+      StartCallTimer();
+      setIsCallLoading(false);
+    };
+
+    const CallonFailure = (error) => {
+      setIsCallLoading(false);
+      toast.error(error?.response?.data?.message, {
+        position: toast.POSITION.TOP_RIGHT,
+      });
+    };
+
+    apiPost(`/calls/${id}/update-call-time`, CallonSuccess, CallonFailure, formData);
+  }
+
+  // Cleanup timer on component unmount
+  useEffect(() => {
+    return () => {
+      if (timerId) {
+        clearInterval(timerId);
+      }
+    };
+  }, [timerId]);
 
   if (isLoading) {
     return <Spinner />;
@@ -126,18 +296,16 @@ const SurveyCall = () => {
                 <div className="uk-width-1-1">
                   <div className="formDataWrp">
                     <div className="dataBox">
-                      <p>Call</p>
+                      <p>Phone</p>
                       <span>{callData?.phone_no}</span>
                     </div>
                     <div className="dataBox">
                       <p>Call Duration</p>
-
-                      
-                      <span>{ isviewmode ? formatTimeFromDate(callData.duration) :formatTime(time)   }</span>
+                      <span>{ isviewmode ? callData.duration :formatTime(time)   }</span>
                     </div>
                     <div className="dataBox">
-                      <p>Call Time</p>
-                      <span>{callData.call_time}</span>
+                      <p>Call Start Time</p>
+                      <span>{isviewmode ? getTimeFromDateTime(callData?.call_time) : CurrentTime}</span>
                     </div>
                     <div className="divider"></div>
                     <div className="dataBox">
@@ -150,8 +318,17 @@ const SurveyCall = () => {
                         !isviewmode &&
                         (
                       <div>
-                        <button className="pause-btn" type="button"  onClick={() => setIsPaused(!ispaused)}>
-                          {!ispaused ? 'Call in progress' : 'Start Call'}
+                        <button 
+                          className="pause-btn" 
+                          type="button" 
+                          disabled={ispaused || isCallLoading}  
+                          onClick={StartCall}
+                        >
+                          {isCallLoading ? (
+                            <div uk-spinner=""></div>
+                          ) : (
+                            ispaused ? 'Call in progress' : 'Start Call'
+                          )}
                         </button>
                       </div>
                         )
@@ -188,56 +365,63 @@ const SurveyCall = () => {
                           placeholder="Enter Name"
                           className="uk-input"
                           value={isviewmode ? callData.name : surveyData.name}
-                          onChange={(e) => setSurveyData({ ...surveyData, name: e.target.value })}
-                          
+                          onChange={(e) => !isviewmode && setSurveyData({ ...surveyData, name: e.target.value })}
+                          disabled={isviewmode}
                         />
                       </div>
                     </div>
+
+
+
                     <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userName">
-                          Q1, What is your city ?
+                          Q2, What is your city ?
                         </label>
                         <input
                           type="text"
-                          placeholder="Enter Name"
+                          placeholder="Enter City"
                           className="uk-input"
                           value={isviewmode ? callData.city : surveyData.city}
-                          onChange={(e) => setSurveyData({ ...surveyData, city: e.target.value })}
+                          onChange={(e) => !isviewmode && setSurveyData({ ...surveyData, city: e.target.value })}
+                          disabled={isviewmode}
                         />
                       </div>
                     </div>
-
+                        
 
                     <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userName">
-                          Q1, What is your Location ?
+                          Q3, What is your Location ?
                         </label>
                         <input
                           type="text"
-                          placeholder="Enter Name"
+                          placeholder="Enter Location"
                           className="uk-input"
                           value={isviewmode ? callData.location : surveyData.location}
-                          onChange={(e) => setSurveyData({ ...surveyData, location: e.target.value })}
+                          onChange={(e) => !isviewmode && setSurveyData({ ...surveyData, location: e.target.value })}
+                          disabled={isviewmode}
                         />
                       </div>
                     </div>
 
-                    {callData?.survey?.questions?.map((question) => (
+                    {callData?.survey?.questions?.map((question , index) => (
                      
                      question.type === "input" ? (
 
                       <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userName">
-                          {question.question}
+                          Q{index + 4}, {question.question}
                         </label>
                         <input
                           type="text"
                           placeholder="Enter Name"
                           className="uk-input"
-                          value={ isviewmode ? question.answer :''}
+                          value={isviewmode ? question.answer : surveyData.responses.find(response => response.question_id === question.id)?.answer || ''}
+                          onChange={(e) => !isviewmode && SaveAnswers(question.id, e.target.value)}
+                          disabled={isviewmode}
                         />
                       </div>
                     </div>
@@ -245,8 +429,14 @@ const SurveyCall = () => {
                      ) : question.type === "textarea" ? (
                       <div className="uk-width-1-2">
                         <div className="formInput">
-                          <label htmlFor="userEmail">User Email</label>
-                          <textarea name="" className="uk-textarea"></textarea>
+                          <label htmlFor="userEmail">Q{index + 4}{question.question}</label>
+                          <textarea 
+                            name="" 
+                            className="uk-textarea"
+                            value={isviewmode ? question.answer : surveyData.responses.find(response => response.question_id === question.id)?.answer || ''}
+                            onChange={(e) => !isviewmode && SaveAnswers(question.id, e.target.value)}
+                            disabled={isviewmode}
+                          ></textarea>
                         </div>
                       </div>
                       
@@ -254,26 +444,33 @@ const SurveyCall = () => {
                       <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userEmail">
-                          {question.question}
+                        Q{index + 4} {question.question}
                         </label>
                         <div className="radio-wrapper">
-                          {images.reverse().map((img) => (
-                            <div key={img.id}>
-                              <input
-                                type="radio"
-                                id={img.id}
-                                name="img-radio"
-                                className="hidden"
-                                onChange={() => setSelected(img.id)}
-                              />
-                              <label className="radio-label" htmlFor={img.id}>
-                                <img
-                                  src={selected === img.id ? img.color : img.grey}
-                                  alt={img.id}
+                          {images.map((img) => {
+                            const answer = isviewmode ? question.answer : selectedEmojis[question.id];
+                            const isSelected = answer === img.id.toString();
+                            
+                            return (
+                              <div key={img.id}>
+                                <input
+                                  type="radio"
+                                  id={`${question.id}_${img.id}`}
+                                  name={`question_${question.id}`}
+                                  className="hidden"
+                                  checked={isSelected}
+                                  onChange={() => !isviewmode && SaveAnswers(question.id, img.id.toString())}
+                                  disabled={isviewmode}
                                 />
-                              </label>
-                            </div>
-                          ))}
+                                <label className="radio-label" htmlFor={`${question.id}_${img.id}`}>
+                                  <img
+                                    src={isSelected ? img.color : img.grey}
+                                    alt={img.id}
+                                  />
+                                </label>
+                              </div>
+                            );
+                          })}
                         </div>
                       </div>
                     </div>
@@ -297,8 +494,15 @@ const SurveyCall = () => {
                     <button type="button" className="btn-1" onClick={handleCancel}>
                       Cancel
                     </button>
-                    <button type="submit" className="btn-2" >
-                      Submit
+                    <button 
+                      type="submit" 
+                      className="btn-2" 
+                      onClick={handleSubmit}
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <div uk-spinner=""></div>
+                      ) : 'Submit'}
                     </button>
                   </div>
                 </div>
