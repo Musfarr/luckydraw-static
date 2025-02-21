@@ -1,4 +1,4 @@
-import { ChevronDown, Logout } from "@carbon/icons-react";
+import { Add, ChevronDown, Logout } from "@carbon/icons-react";
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
 import userImg from "../../../assets/images/user-img.png";
@@ -27,6 +27,9 @@ const DashboardHeader = () => {
   return (
     <div className="dashboardHeader">
       <div className="uk-flex uk-flex-middle uk-flex-right" style={{gap: '16px'}}>
+      <div className="headerBtn">
+        <Link to="#"><Add />Create Survey</Link>
+      </div>
         <div className="statusDropdown">
           <div class="uk-inline">
             <button class="statusDropdownBtn" type="button">

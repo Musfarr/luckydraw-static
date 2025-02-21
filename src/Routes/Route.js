@@ -8,6 +8,7 @@ import Dashboard from "../pages/dashboard/Dashboard";
 import Units from "../pages/Units/Units";
 import SurveyCall from "../pages/SurveyCall/SurveyCall";
 import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
+import AdminHome from "../pages/AdminHome/AdminHome";
 
 export const publicRoutes = [
   {
@@ -39,27 +40,16 @@ export const protectedRoutesWithSidebarLayout = [
     padding: true,
   },
   {
-    path: "/create-campaign",
-    component: <CreateCampaign />,
-    footer: <Footer extraPadding="70px" />,
-    padding: true,
-  },
-  {
     path: "/audit-survey",
     component: <AuditSurvey />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },
   {
-    path: "/campaign-report/:id",
-    component: <CampaignReport />,
+    path: "/admin-home",
+    component: <AdminHome />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
-  },
-  {
-    path: "/Units",
-    component: <Units />,
-    footer: <Footer extraPadding="70px" />,
-    padding: true,
+    headerBtn: true,
   },
 ];

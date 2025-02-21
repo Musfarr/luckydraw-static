@@ -47,8 +47,8 @@
   font-family: "SF Pro Display";
   src: url("./assets/fonts/SFProDisplay-LightItalic.woff2") format("woff2"),
     url("./assets/fonts/SFProDisplay-LightItalic.woff") format("woff");
-    font-weight: 200;
-    font-style: initial;
+  font-weight: 200;
+  font-style: initial;
   font-display: swap;
 }
 
@@ -65,7 +65,7 @@
   font-family: "SF Pro Regular";
   src: url("./assets/fonts/SFProDisplay-Regular.woff2") format("woff2"),
     url("./assets/fonts/SFProDisplay-Regular.woff") format("woff");
-    font-weight: normal;
+  font-weight: normal;
   font-style: normal;
   font-display: swap;
 }
@@ -96,6 +96,7 @@
   font-style: italic;
   font-display: swap;
 }
+
 /* fonts */
 
 /* utilities */
@@ -269,6 +270,13 @@ input::placeholder {
   width: 290px;
 }
 
+span.orangeDot {
+  background-color: #ED7D31;
+}
+
+span.lightGreenDot {
+  background: #1ce783;
+}
 
 /* utilities */
 
@@ -648,6 +656,33 @@ header .logowrp img {
   z-index: 9;
 }
 
+.dashboardHeader .headerBtn {}
+
+.dashboardHeader .headerBtn a {
+  background-color: var(--primaryColor);
+  border: 1px solid var(--primaryColor);
+  color: #fff;
+  padding: 6px 18px;
+  border-radius: 25px;
+  transition: all 0.3s ease-in-out;
+}
+
+.dashboardHeader .headerBtn a:hover {
+  background-color: #fff;
+  color: var(--primaryColor);
+}
+
+.dashboardHeader .headerBtn a:hover svg {
+  fill: var(--primaryColor);
+}
+
+.dashboardHeader .headerBtn a svg {
+  fill: #fff;
+  transform: translateY(-2px);
+  width: 24px;
+  height: 24px;
+}
+
 .statusDropdown .statusDropdownBtn {
   padding: 10px;
   font-size: 13px;
@@ -981,7 +1016,7 @@ header .logowrp img {
   position: relative;
 }
 
-.userInfo                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                        ul .agentStatus button span {
+.userInfo ul .agentStatus button span {
   width: 8px;
   height: 8px;
   display: inline-block;
@@ -4109,6 +4144,12 @@ span.available {
 .userTableWrp {
   margin-top: 20px;
 }
+.userTableWrp h2{
+  font-size: 31px;
+  color: #6A6A6A;
+  font-weight: 300 !important;
+  margin-bottom: 16px;
+}
 
 .loading-spinner {
   position: absolute;
@@ -4145,15 +4186,18 @@ span.available {
 }
 
 .status.active {
-  color: #38D500;
+  color: #38D500 !important;
 }
 
 .status.pending {
-  color: #FFBB00;
+  color: #FFC400 !important;
 }
 
 .status.completed {
-  color: #1e87f0;
+  color: #1F36C7 !important;
+}
+.status.danger {
+  color: #F50000 !important;
 }
 
 
@@ -5582,7 +5626,7 @@ span.filtername {
   box-shadow: 0px 1px 10px #00000029;
   border-radius: 8px;
   padding: 16px 24px 32px;
-  margin-bottom: 50px !important;
+  margin-bottom: 50px;
 }
 
 .overviewContent .mainBox .boxHeading {
@@ -6014,7 +6058,7 @@ span.pinkDot {
   padding: 0;
   display: flex;
   justify-content: space-between;
-  width: 260px;
+  width: 100%;
   margin: 5px auto;
 }
 
@@ -12486,3 +12530,152 @@ img.image-web-ke {
   height: 46px;
   object-fit: cover;
 }
+
+/* User Creation box */
+
+.cardbox {
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0px 1px 10px #00000029;
+  padding: 16px 24px 32px;
+}
+
+.cardbox .cardHeading {
+  /* padding: 12px 16px; */
+  border-bottom: 1px solid #e4e4e4;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 15px;
+  padding-bottom: 9px;
+
+}
+
+.cardHeading span {
+  font-size: 15px;
+  color: #202020;
+  font-family: "SF Pro Medium";
+}
+
+.view-all-link {
+  background: none;
+  border: none;
+  color: var(--primaryColor);
+  font-size: 14px;
+  cursor: pointer;
+  padding: 0;
+}
+
+/* .user-creation-content {
+  padding: 0 16px;
+} */
+
+
+.user-list {
+  display: flex;
+  gap: 18px;
+  flex-wrap: wrap;
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.user-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.user-avatar-btn {
+  background: none;
+  border: none;
+  padding: 0;
+  cursor: pointer;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  overflow: hidden;
+}
+
+.user-avatar {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.user-name {
+  font-size: 14px;
+  color: var(--primaryColor);
+  font-weight: 500;
+}
+
+.add-user-btn {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  border: none;
+  background: #E7FBF0;
+  color: var(--primaryColor);
+  display: flex
+;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.add-user-btn:hover {
+  background: var(--primaryColor);
+  color: #fff;
+  scale: 1.05;
+}
+
+.add-user-text {
+  font-size: 14px;
+  color: #333;
+}
+
+/* User Creation box */
+
+/* Simple table */
+
+.simpleTable {
+  width: 100%;
+  overflow-x: auto;
+  padding: 24px 0;
+}
+
+.simpleTable table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.simpleTable th {
+  
+  text-align: center;
+  padding: 12px 16px;
+  color: #6a6a6a;
+  font-weight: normal;
+  /* border-bottom: 1px solid #e4e4e4; */
+  white-space: nowrap;
+}
+
+.simpleTable .agentName {
+  color: var(--primaryColor);
+  font-weight: 500;
+  text-align: left !important;
+}
+
+.simpleTable td {
+  padding: 12px 16px;
+  color: #1e1e1e;
+  /* border-bottom: 1px solid #e4e4e4; */
+  white-space: nowrap;
+  text-align: center;
+}
+.simpleTable tbody tr:nth-child(even) {
+  background-color: #f8f8f8;
+}
+
+/* Simple table */
