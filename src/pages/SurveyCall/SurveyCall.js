@@ -30,6 +30,15 @@ const SurveyCall = () => {
   const [ispaused , setIsPaused] = useState(false)
   const [time, setTime] = useState(0)
 
+  const [surveyData, setSurveyData] = useState({
+    name: "",
+    city: "",
+    location: "",
+    duration: time,
+    status: "completed",
+    responses: []
+  });
+
   const images = [
     { id: "angryGrey", grey: angryGrey, color: angryColor },
     { id: "upsetGrey", grey: upsetGrey, color: upsetColor },
@@ -49,12 +58,6 @@ const SurveyCall = () => {
       seconds.toString().padStart(2, '0')
     ].join(':');
   };
-
-  useEffect(() => {
-    console.log(isviewmode)
-  },[]);
-
-
 
 
   // call duration timer
@@ -95,6 +98,17 @@ const SurveyCall = () => {
     navigate('/audit-survey');
   };
 
+
+  const formatTimeFromDate = (dateString) => {
+    const date = new Date(dateString);
+    return date.toLocaleTimeString('en-US', {
+      hour12: false,
+      hour: '2-digit',
+      minute: '2-digit',
+      second: '2-digit'
+    });
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
@@ -119,7 +133,7 @@ const SurveyCall = () => {
                       <p>Call Duration</p>
 
                       
-                      <span>{ isviewmode ? callData.duration :formatTime(time)   }</span>
+                      <span>{ isviewmode ? formatTimeFromDate(callData.duration) :formatTime(time)   }</span>
                     </div>
                     <div className="dataBox">
                       <p>Call Time</p>
@@ -173,6 +187,8 @@ const SurveyCall = () => {
                           type="text"
                           placeholder="Enter Name"
                           className="uk-input"
+                          value={isviewmode ? callData.name : surveyData.name}
+                          onChange={(e) => setSurveyData({ ...surveyData, name: e.target.value })}
                           
                         />
                       </div>
@@ -186,6 +202,24 @@ const SurveyCall = () => {
                           type="text"
                           placeholder="Enter Name"
                           className="uk-input"
+                          value={isviewmode ? callData.city : surveyData.city}
+                          onChange={(e) => setSurveyData({ ...surveyData, city: e.target.value })}
+                        />
+                      </div>
+                    </div>
+
+
+                    <div className="uk-width-1-2">
+                      <div className="formInput">
+                        <label htmlFor="userName">
+                          Q1, What is your Location ?
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="Enter Name"
+                          className="uk-input"
+                          value={isviewmode ? callData.location : surveyData.location}
+                          onChange={(e) => setSurveyData({ ...surveyData, location: e.target.value })}
                         />
                       </div>
                     </div>

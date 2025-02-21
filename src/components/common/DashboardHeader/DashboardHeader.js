@@ -27,9 +27,14 @@ const DashboardHeader = () => {
   return (
     <div className="dashboardHeader">
       <div className="uk-flex uk-flex-middle uk-flex-right" style={{gap: '16px'}}>
-      <div className="headerBtn">
+      
+      
+      {/* <div className="headerBtn">
         <Link to="#"><Add />Create Survey</Link>
-      </div>
+      </div> */}
+
+
+      
         <div className="statusDropdown">
           <div class="uk-inline">
             <button class="statusDropdownBtn" type="button">
