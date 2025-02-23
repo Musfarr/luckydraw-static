@@ -52,9 +52,11 @@ const AgentList = () => {
                 <div className={`status ${agent.login_status}`}>{agent.login_status}</div>
                 <div className="profileImage">
                   <img
-                    src={agent.photo}
+                    src={agent.photo || "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y"}
                     alt={agent.name}
-                    
+                    onError={(e) => {
+                      e.target.src = "https://www.gravatar.com/avatar/00000000000000000000000000000000?d=mp&f=y";
+                    }}
                   />
                 </div>
                 <div className="userInfo">
