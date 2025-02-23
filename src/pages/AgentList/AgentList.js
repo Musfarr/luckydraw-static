@@ -13,7 +13,7 @@ const AgentList = () => {
           className="addTeaBox uk-grid uk-grid-medium uk-child-width-1-4 uk-margin"
           uk-grid=""
         >
-          <Link to="" style={{ textDecoration: "none" }}>
+          <Link to="/agent-profile" style={{ textDecoration: "none" }}>
             <div className="userCard">
               <div className={`status offline`}>Offline</div>
               <div className="profileImage">

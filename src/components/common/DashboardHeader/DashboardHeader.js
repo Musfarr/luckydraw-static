@@ -31,7 +31,7 @@ const DashboardHeader = () => {
       
       {auth.user.user_type === 'admin' && (
       <div className="headerBtn">
-        <Link to="#"><Add />Create Survey</Link>
+        <Link to="/create-survey"><Add />Create Survey</Link>
       </div>
       )}
 
