@@ -45,7 +45,7 @@ export const protectedRoutesWithSidebarLayout = [
 
   {
     path: "/survey-calls/view/:id",
-    component: <SurveyCall />,
+    component: <SurveyCall key='view' />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
   },

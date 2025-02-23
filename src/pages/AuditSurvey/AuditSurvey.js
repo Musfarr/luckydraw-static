@@ -1,5 +1,5 @@
 import React, { useEffect, useMemo, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { apiGet, apiPost } from "../../Utils/apiServices";
 import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
 import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
@@ -8,6 +8,8 @@ import happyImg from "../../assets/images/icons/happy-color.svg";
 import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 import Spinner from "../../reusables/Spinner";
 
+
+
 const AuditSurvey = () => {
   let PageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -15,118 +17,15 @@ const AuditSurvey = () => {
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
   const [Paginationdata, setPaginationData] = useState(null);
+  // set row record
   const [row, setRow] = useState(null);
   const [selectedtab, setSelectedtab] = useState('pending');
-  const [selectedRange, setSelectedRange] = useState('last_30_days');
-  const [dateRange, setDateRange] = useState({ from: '', to: '' });
 
-  /**
-   * Calculate date range based on selected option
-   * @param {string} range - Selected date range option
-   * @returns {Object} Date range object with from and to dates
-   */
-  const calculateDateRange = (range) => {
-    const today = new Date();
-    const from = new Date();
-    const to = new Date(today);
+  const navigate = useNavigate();
 
-    switch (range) {
-      case 'this_week':
-        from.setDate(today.getDate() - today.getDay()); // Start of current week
-        break;
-      case 'last_week':
-        from.setDate(today.getDate() - today.getDay() - 7); // Start of last week
-        to.setDate(today.getDate() - today.getDay() - 1); // End of last week
-        break;
-      case 'this_month':
-        from.setDate(1); // Start of current month
-        break;
-      case 'last_30_days':
-      default:
-        from.setDate(today.getDate() - 30);
-        break;
-    }
 
-    return {
-      from: from.toISOString().split('T')[0],
-      to: to.toISOString().split('T')[0]
-    };
-  };
 
-  /**
-   * Handle date range selection
-   * @param {string} range - Selected date range
-   */
-  const handleRangeSelect = (range) => {
-    setSelectedRange(range);
-    const dates = calculateDateRange(range);
-    setDateRange(dates);
-  };
 
-  /**
-   * Get surveys with optional date range
-   */
-  const getSurvey = () => {
-    setIsLoading(true);
-    const params = {
-      per_page: PageSize,
-      status: selectedtab,
-      ...(dateRange.from && dateRange.to && {
-        date_from: dateRange.from,
-        date_to: dateRange.to
-      })
-    };
-
-    const onSuccess = (response) => {
-      setData(response.data);
-      setPaginationData(response.meta);
-      setIsLoading(false);
-    };
-
-    const onFailure = (error) => {
-      console.error("Error fetching surveys:", error);
-      setIsLoading(false);
-    };
-
-    apiGet("/agent/dashboard", onSuccess, onFailure, null , params);
-  };
-
-  /**
-   * Export survey data as CSV
-   */
-  const handleExport = () => {
-    setIsLoading(true);
-    const params = {
-      status: selectedtab,
-      download: 'csv',
-      ...(dateRange.from && dateRange.to && {
-        date_from: dateRange.from,
-        date_to: dateRange.to
-      })
-    };
-
-    const onSuccess = (response) => {
-      setIsLoading(false);
-      // Create a temporary link and click it to download the file
-      const link = document.createElement('a');
-      link.href = response.file_path;
-      link.setAttribute('download', 'survey_export.csv');
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-    };
-
-    const onFailure = (error) => {
-      console.error("Error exporting data:", error);
-      setIsLoading(false);
-    };
-
-    apiPost("/agent/dashboard", onSuccess, onFailure, params);
-  };
-
-  useEffect(() => {
-    getSurvey();
-  }, [currentPage, selectedtab, dateRange]);
 
   // Static data for DataTable2
   const staticTable2Data = [
@@ -160,12 +59,42 @@ const AuditSurvey = () => {
     total_records: staticTable2Data.length,
   };
 
+  const getSurvey = () => {
+    setIsLoading(true);
+    const onSuccess = (response) => {
+      setData(response.data);
+      // setPaginationData(response?.pagination);
+      setIsLoading(false);
+    };
+
+
+
+    const onFailure = (error) => {
+      setData([]);
+      setIsLoading(false);
+    };
+    let params = {
+      per_page: 10,
+      // limit: PageSize,
+      type: selectedtab
+    };
+    apiGet(`agent/dashboard`, onSuccess, onFailure, undefined, params);
+  };
+
+  useEffect(() => {
+    getSurvey();
+  }, [currentPage ,selectedtab]);
+
+
+
+
+
   return (
     <div className="userWrp">
       <div className="userTabContent">
         <div className="uk-container uk-container-large">
           <div className="backbtn">
-            <button type="button">
+            <button type="button" onClick={() => navigate(-1)}>
               <ChevronLeft /> Back
             </button>
           </div>
@@ -176,13 +105,13 @@ const AuditSurvey = () => {
               </div>
             </div>
             <div className="uk-width-1-2 btnSection">
-              <button className="exportBtn" onClick={handleExport}>
+              <button className="exportBtn">
                 <Download /> Export Data
               </button>
 
               <div className="uk-inline">
                 <button className="calenderBtn rangeBtn">
-                  <Calendar /> {selectedRange.replace(/_/g, ' ')} {" "}
+                  <Calendar /> Last 30 days{" "}
                   <span className="uk-inline">
                     <ChevronDown />
                   </span>
@@ -192,39 +121,23 @@ const AuditSurvey = () => {
                     <span>Select a range</span>
                   </div>
                   <ul>
-                    <li className={selectedRange === 'last_30_days' ? 'active' : ''}>
-                      <button 
-                        type="button" 
-                        className="rangeBtn"
-                        onClick={() => handleRangeSelect('last_30_days')}
-                      >
+                    <li className="active">
+                      <button type="button" className="rangeBtn">
                         <span className="rangeBtnCircle"></span> Last 30 days
                       </button>
                     </li>
-                    <li className={selectedRange === 'this_week' ? 'active' : ''}>
-                      <button 
-                        type="button" 
-                        className="rangeBtn"
-                        onClick={() => handleRangeSelect('this_week')}
-                      >
+                    <li>
+                      <button type="button" className="rangeBtn">
                         <span className="rangeBtnCircle"></span> This week
                       </button>
                     </li>
-                    <li className={selectedRange === 'last_week' ? 'active' : ''}>
-                      <button 
-                        type="button" 
-                        className="rangeBtn"
-                        onClick={() => handleRangeSelect('last_week')}
-                      >
+                    <li>
+                      <button type="button" className="rangeBtn">
                         <span className="rangeBtnCircle"></span> Last week
                       </button>
                     </li>
-                    <li className={selectedRange === 'this_month' ? 'active' : ''}>
-                      <button 
-                        type="button" 
-                        className="rangeBtn"
-                        onClick={() => handleRangeSelect('this_month')}
-                      >
+                    <li>
+                      <button type="button" className="rangeBtn">
                         <span className="rangeBtnCircle"></span> This month
                       </button>
                     </li>

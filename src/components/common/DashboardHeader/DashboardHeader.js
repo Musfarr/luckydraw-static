@@ -29,9 +29,11 @@ const DashboardHeader = () => {
       <div className="uk-flex uk-flex-middle uk-flex-right" style={{gap: '16px'}}>
       
       
-      {/* <div className="headerBtn">
+      {auth.user.user_type === 'admin' && (
+      <div className="headerBtn">
         <Link to="#"><Add />Create Survey</Link>
-      </div> */}
+      </div>
+      )}
 
 
       
@@ -86,13 +88,13 @@ const DashboardHeader = () => {
                     </div>
                   </li>
 
-                  <li>
+                  {/* <li>
                     <a onClick="/">My profile</a>
                   </li>
 
                   <li>
                     <Link>Account Setting </Link>
-                  </li>
+                  </li> */}
 
                   <li>
                     <button

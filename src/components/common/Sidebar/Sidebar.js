@@ -1,27 +1,59 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Home, Logout, Mobile, Phone } from "@carbon/icons-react";
+import { Add, Home, ListCheckedMirror, Logout, Mobile, Phone } from "@carbon/icons-react";
 import siderbarLogo from "../../../assets/images/favicon.svg";
 import LogoutModal from "../../Modal/LogoutModal";
 import { useAuth } from "../../../Context/AuthProvider";
 import UIkit from "uikit";
 
+
+
 const Sidebar = () => {
   const { auth } = useAuth();
   
 
-  
+  const AdminRoutes = () => {
+    return (
+      <li>
+        <li>
+              <Link
+                className="character-btn"
+                to="/admin-home"
+                uk-tooltip="title: Home; pos: right"
+              >
+                <Home />
+              </Link>
+        </li>
 
-  return (
-    <>
-      <nav className="sideNav">
-        <div className="logowrp">
-          <img src={siderbarLogo} alt="" />
-        </div>
+        <li>
+              <Link
+                className="character-btn"
+                to="/add-user"
+                uk-tooltip="title: add-user; pos: right"
+              >
+                <Add/>
+              </Link>
+        </li>
 
-        <div className="navwrp">
-          <ul>
-            <li>
+        <li>
+              <Link
+                className="character-btn"
+                to="/agent-list"
+                uk-tooltip="title: Agents; pos: right"
+              >
+                <ListCheckedMirror/>
+              </Link>
+        </li>
+
+      </li>
+    )
+  }
+
+
+  const AgentRoutes = () => {
+    return (
+      <li>
+        <li>
               <Link
                 className="character-btn"
                 to="/dashboard"
@@ -29,27 +61,9 @@ const Sidebar = () => {
               >
                 <Home />
               </Link>
-            </li>
-            {/* <li>
-              <Link
-                className="character-btn"
-                to="/survey-calls"
-                uk-tooltip="title: Survey Call; pos: right"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"
-                    fill="#b9b9b9"
-                  />
-                </svg>
-              </Link>
-            </li> */}
-            <li>
+        </li>
+
+        <li>
               <Link
                 className="character-btn"
                 to="/audit-survey"
@@ -68,35 +82,39 @@ const Sidebar = () => {
                 </svg>
               </Link>
             </li>
-            {/* <li>
-              <Link
-                className="character-btn"
-                to="/units"
-                uk-tooltip="title: Units; pos: right"
-              >
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
-                  viewBox="0 0 24 24"
-                >
-                  <path
-                    d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z"
-                    fill="#b9b9b9"
-                  />
-                  <path
-                    d="M7 12h2v5H7v-5zm8-5h2v10h-2V7zm-4 7h2v3h-2v-3zm0-4h2v2h-2v-2z"
-                    fill="#b9b9b9"
-                  />
-                </svg>
-              </Link>
-            </li> */}
+
+        </li>
+    )
+  }
+
+
+  const getSidebarLinks = () => {
+    if (auth.user.user_type === 'admin') {
+      return <AdminRoutes />;
+    } else if (auth.user.user_type === 'agent') {
+      return <AgentRoutes />;
+    } else {
+      return null;
+    }
+  };
+
+
+  
+
+  return (
+    <>
+      <nav className="sideNav">
+        <div className="logowrp">
+          <img src={siderbarLogo} alt="" />
+        </div>
+
+        <div className="navwrp">
+          <ul>
+            {getSidebarLinks()}
           </ul>
           <ul className="scnd-navwrp">
-            
           </ul>
         </div>
-        
       </nav>
     </>
   );
