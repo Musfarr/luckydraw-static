@@ -85,7 +85,7 @@ export const protectedRoutesWithSidebarLayout = [
     headerBtn: true,
   },
   {
-    path: "/agent-profile",
+    path: "/agent-profile/:id",
     component: <AgentProfile />,
     footer: <Footer extraPadding="70px" />,
     padding: true,

@@ -14,7 +14,11 @@ const Login = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   if (auth.token) {
-    navigate("/dashboard");
+    if (auth.user.user_type === "admin") {
+      navigate("/admin-home");
+    } else if (auth.user.user_type === "agent") {
+      navigate("/dashboard");
+    }
   }
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);

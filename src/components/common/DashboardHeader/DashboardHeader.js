@@ -1,14 +1,16 @@
 import { Add, ChevronDown, Logout } from "@carbon/icons-react";
 import React, { useState } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import userImg from "../../../assets/images/user-img.png";
 import LogoutModal from "../../Modal/LogoutModal";
 import UIkit from "uikit";
 import { useAuth } from "../../../Context/AuthProvider";
 
+
 const DashboardHeader = () => {
   const { auth } = useAuth();
   const [openLogoutModal, setOpenLogoutModal] = useState(false);
+  const navigate = useNavigate();
   if (!auth.token) return null;
 
   const handleOpenLogoutModal = () => {
