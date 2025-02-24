@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import mainLogo from "../../assets/images/mainLogo.svg";
-import mainLogo from "../../assets/images/loginimage.png";
+import mainLogo from "../../assets/images/loginImage.png";
 import { View, ViewOff } from "@carbon/icons-react";
 import axios from "axios";
 import { toast } from "react-toastify";
