@@ -138,7 +138,7 @@ const AdminHome = () => {
                                     borderColor={[colors[0]]}
                                     graphlabels={Object.keys(data?.cities || {})}
                                   />
-                                  <div className="chartDataWrapper">
+                                  {/* <div className="chartDataWrapper">
                                     {Object.entries(data?.cities || {}).map(([city, value], index) => (
                                       <ul key={city}>
                                         <li>
@@ -152,7 +152,7 @@ const AdminHome = () => {
                                         </li>
                                       </ul>
                                     ))}
-                                  </div>
+                                  </div> */}
                                 </div>
                               </div>
                             </div>
