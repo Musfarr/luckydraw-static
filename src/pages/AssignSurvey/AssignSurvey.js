@@ -66,7 +66,7 @@ const AssignSurvey = () => {
                 
             },
             (error) => {
-                toast.error(error?.response?.data?.message || 'Failed to assign survey');
+                toast.error(error?.response?.data?.message || 'Failed to assign survey') ;
                 setIsSubmitting(false);
             },
             formData

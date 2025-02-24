@@ -50,7 +50,7 @@ const DataTable1 = ({
                 <td>{val.name || '-'}</td>
                 <td>{val.city || '-'}</td>
                 <td>{val.location || '-'}</td>
-                <td>{new Date(val.created_at).toLocaleTimeString('en-US', { 
+                <td>{new Date(val.call_time).toLocaleTimeString('en-US', { 
                   hour12: false,
                   hour: '2-digit',
                   minute: '2-digit',
@@ -63,12 +63,17 @@ const DataTable1 = ({
                 </td>
                 <td>{val.duration || '-'}</td>
                 <td>
-                  <button
-                    className="start-call-btn"
-                    onClick={() => navigate(`/survey-calls/${val.id}`)}
-                  >
-                    view Call
-                  </button>
+                  {val.status === 'pending' ? (
+                    <button
+                      className="start-call-btn"
+                      onClick={() => navigate(`/survey-calls/${val.id}`)}
+                    >
+                      view Call
+                    </button>
+                  ) : (
+                   '-'
+                  )}
+                  
                 </td>
               </tr>
             ))

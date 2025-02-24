@@ -28,13 +28,34 @@ const SurveyCall = () => {
   const [selected, setSelected] = useState("");
   const [isLoading, setIsLoading] = useState(true);
   const [callData, setCallData] = useState(null);
-  const [ispaused, setIsPaused] = useState(false);
   const [CurrentTime, setCurrentTime] = useState('00:00:00');
   const [time, setTime] = useState(0);
   const [isCallLoading, setIsCallLoading] = useState(false);
   const [timerId, setTimerId] = useState(null);
   const [selectedEmojis, setSelectedEmojis] = useState({});
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [callstatus, setCallStatus] = useState('');
+  const [ispaused, setIsPaused] = useState(false);
+
+  // Calculate elapsed time since call started
+  const calculateElapsedTime = (callTime) => {
+    const startTime = new Date(callTime);
+    const currentTime = new Date();
+    return Math.floor((currentTime - startTime) / 1000); // Convert to seconds
+  };
+
+  useEffect(() => {
+    if (callstatus === "active" && callData?.call_time) {
+      setIsPaused(true);
+      // Set initial time to elapsed time
+      const elapsedTime = calculateElapsedTime(callData.call_time);
+      setTime(elapsedTime);
+      // Start timer from elapsed time
+      StartCallTimer();
+    } else {
+      setIsPaused(false);
+    }
+  }, [callstatus, callData?.call_time]);
 
   // Initial survey data state
   const [surveyData, setSurveyData] = useState({
@@ -98,6 +119,7 @@ const SurveyCall = () => {
       
       const onSuccess = (response) => {
         setCallData(response.data);
+        setCallStatus(response.data.status);
         setIsLoading(false);
       };
 
@@ -114,6 +136,11 @@ const SurveyCall = () => {
       fetchCallData();
     }
   }, [id]);
+
+
+
+
+
 
   /**
    * Saves answers to survey questions
@@ -213,18 +240,21 @@ const SurveyCall = () => {
     };
     
     const onSuccess = (response) => {
-      setCallData(prev => ({ ...prev, status: "completed" }));
-      setIsPaused(false);
-      setIsSubmitting(false);
-      Swal.fire({
-        icon: 'success',
-        title: 'Success!',
-        text: 'Survey submitted successfully',
-        timer: 1500,
-        showConfirmButton: false
-      }).then(() => {
-        navigate(`/survey-calls/view/${id}`);
-      });
+      if (response.code === 200) {
+        
+        setCallData(prev => ({ ...prev, status: "completed" }));
+        setIsPaused(false);
+        setIsSubmitting(false);
+        Swal.fire({
+          icon: 'success',
+          title: 'Success!',
+          text: 'Survey submitted successfully',
+          timer: 1500,
+          showConfirmButton: false
+        }).then(() => {
+          navigate(`/survey-calls/view/${id}`);
+        });
+      } 
     };
     const onFailure = (error) => {
       setIsSubmitting(false);
@@ -301,11 +331,16 @@ const SurveyCall = () => {
                     </div>
                     <div className="dataBox">
                       <p>Call Duration</p>
-                      <span>{ isviewmode ? callData.duration :formatTime(time)   }</span>
+                      <span>{ isviewmode ? callData.duration  : formatTime(time)   }</span>
                     </div>
                     <div className="dataBox">
                       <p>Call Start Time</p>
-                      <span>{isviewmode ? getTimeFromDateTime(callData?.call_time) : CurrentTime}</span>
+                      <span>{isviewmode ? getTimeFromDateTime(callData?.call_time) : callstatus === 'active' ? new Date(callData?.call_time).toLocaleTimeString('en-US', { 
+                  hour12: false,
+                  hour: '2-digit',
+                  minute: '2-digit',
+                  second: '2-digit'
+                }) : CurrentTime}</span>
                     </div>
                     <div className="divider"></div>
                     <div className="dataBox">
