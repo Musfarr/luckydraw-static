@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { useNavigate } from "react-router-dom";
 import { apiPost } from "../../Utils/apiServices";
@@ -10,6 +10,12 @@ const AddUser = () => {
   const { auth } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [Image, setImage] = useState(null);
+
+
+
+  useEffect(() => {
+    console.log(Image , "Image")
+  }, [Image]);
 
   const {
     register,
@@ -25,7 +31,6 @@ const AddUser = () => {
       password: "",
       password_confirmation: "",
       user_type: auth.user.user_type === 'admin' ? 'agent' : '',
-      photo: Image
     }
   });
 
@@ -33,12 +38,21 @@ const AddUser = () => {
 
   const onSubmit = (data) => {
 
+
+    const formData = new FormData();
+    
+    // Append all form fields
+    Object.keys(data).forEach(key => {
+      if (key === 'photo') {
+        formData.append('photo', Image); // Append the actual file
+      } else {
+        formData.append(key, data[key]);
+      }
+    });
+
     setIsSubmitting(true);
 
     const onSuccess = (response) => {
-
-      console.log(response ,'response')
-
 
       if(response?.code === 200){
         setIsSubmitting(false);
@@ -52,7 +66,7 @@ const AddUser = () => {
       // toast.error(error?.response?.data?.message || "Failed to add user");
     };
 
-    apiPost("/auth/register", onSuccess, onFailure, data);
+    apiPost("/auth/register", onSuccess, onFailure, formData);
   };
 
   return (
@@ -172,7 +186,8 @@ const AddUser = () => {
                     </div>
                   </div>
 
-                  <div className="uk-width-1-1">
+
+                  <div className="uk-width-1-2">
                     <div className="formInput">
                       <label>Upload Profile Pic (PNG, JPG File Only)</label>
                       <div className="js-upload uk-placeholder uk-text-center uk-margin-remove">
@@ -191,6 +206,9 @@ const AddUser = () => {
                         </div>
                       </div>
                     </div>
+                  </div>
+                  <div className="uk-width-1-2">
+
                   </div>
 
 

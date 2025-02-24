@@ -16,69 +16,41 @@ const AuditSurvey = () => {
   const [currentPage2, setCurrentPage2] = useState(1);
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(false);
-
-
-
-  const [Paginationdata, setPaginationData] = useState(null);
+  const [Paginationdata, setPaginationData] = useState({
+    total_records: 0,
+    current_page: 1,
+    per_page: PageSize
+  });
   // set row record
   const [row, setRow] = useState(null);
   const [selectedtab, setSelectedtab] = useState('pending');
 
   const navigate = useNavigate();
 
-
-
-
-
-  // Static data for DataTable2
-  const staticTable2Data = [
-    {
-      id: 1,
-      phone_no: "03335249073",
-      name: "Mudassir Ahmed",
-      city_location: "Karachi, Pakistan",
-      created_at: "2025-02-20 14:17:34",
-      status: "completed",
-      duration: "00:15:30",
-      product_you_purchase: "Lifebuoy Soap",
-      product_experience: angryImg,
-      message: "The product quality is very good and I'm satisfied with it.",
-    },
-    {
-      id: 2,
-      phone_no: "03335249074",
-      name: "Ali Khan",
-      city_location: "Lahore, Pakistan",
-      created_at: "2025-02-20 14:18:34",
-      status: "completed",
-      duration: "00:12:45",
-      product_you_purchase: "Surf Excel",
-      product_experience: happyImg,
-      message: "Works well but price is a bit high.",
-    },
-  ];
-
-  const paginationData2 = {
-    total_records: staticTable2Data.length,
-  };
-
   const getSurvey = () => {
     setIsLoading(true);
     const onSuccess = (response) => {
       setData(response.data);
-      // setPaginationData(response?.pagination);
+      setPaginationData({
+        total_records: response.data?.calls?.data?.length || 0,
+        current_page: currentPage2,
+        per_page: PageSize
+      });
       setIsLoading(false);
     };
-
-
 
     const onFailure = (error) => {
       setData([]);
+      setPaginationData({
+        total_records: 0,
+        current_page: 1,
+        per_page: PageSize
+      });
       setIsLoading(false);
     };
     let params = {
-      per_page: 10,
-      // limit: PageSize,
+      per_page: PageSize,
+      page: currentPage2,
       type: selectedtab
     };
     apiGet(`/agent/dashboard`, onSuccess, onFailure, undefined, params);
@@ -86,7 +58,7 @@ const AuditSurvey = () => {
 
   useEffect(() => {
     getSurvey();
-  }, [currentPage ,selectedtab]);
+  }, [currentPage2 ,selectedtab]);
 
 
   const handleDownloadAudio = (audioUrl, fileName) => {
@@ -206,7 +178,7 @@ const AuditSurvey = () => {
                   currentPage={currentPage2}
                   setCurrentPage={setCurrentPage2}
                   PageSize={PageSize}
-                  Paginationdata={paginationData2}
+                  Paginationdata={Paginationdata}
                   />
                 </li>
                 <li>
@@ -216,7 +188,7 @@ const AuditSurvey = () => {
                     currentPage={currentPage2}
                     setCurrentPage={setCurrentPage2}
                     PageSize={PageSize}
-                    Paginationdata={paginationData2}
+                    Paginationdata={Paginationdata}
                   />
                 </li>
               </ul>

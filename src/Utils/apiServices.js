@@ -52,6 +52,15 @@ const SetupInterceptor = () => {
 
       return Promise.reject(error);
       }
+
+      else  {
+          // toast.error(message, {
+          //   position: toast.POSITION.TOP_RIGHT,
+          //   autoClose: 5000
+          // });
+
+      return Promise.reject(error);
+      }
     }
   );
 }

@@ -4,21 +4,15 @@ import { apiPost } from "../../Utils/apiServices";
 import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 
-
-
-
 const CreateSurvey = () => {
-
-
   const navigate = useNavigate();
-
 
   const [name, setName] = useState("");
   const [Image, setImage] = useState(null);
-
   const [fields, setFields] = useState([
     { type: "input", label: "", placeholder: "", required: false },
   ]);
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleAddField = () => {
     setFields([
@@ -40,41 +34,33 @@ const CreateSurvey = () => {
     }
   };
 
-
-
   const handleSubmit = (e) => {
-    
     e.preventDefault();
+    setIsSubmitting(true);
 
     var formdata = new FormData();
 
     formdata.append("name", name);
-    formdata.append("image", Image  );
+    formdata.append("image", Image);
 
-    fields.forEach((field , index) => {
+    fields.forEach((field, index) => {
       formdata.append(`questions[${index}][question]`, field.placeholder);
       formdata.append(`questions[${index}][type]`, field.type);
     })
 
     const onSuccess = (response) => {
+      setIsSubmitting(false);
       toast.success(response?.data?.message || "Survey created successfully");
       // navigate("/survey-list");
     };
 
     const onFailure = (error) => {
+      setIsSubmitting(false);
       toast.error(error?.response?.data?.message || "Failed to create survey");
     };
 
     apiPost("/survey/create", onSuccess, onFailure, formdata);
   }
-
-
-
-  
-
-
-
-
 
   return (
     <div className="addTeamWrp">
@@ -236,12 +222,27 @@ const CreateSurvey = () => {
                   <div className="uk-width-1-2">
 
                   </div>
+                  
                   <div className="btnwrp">
-                    <button className="btn-1" type="button">
+                    <button 
+                      className="btn-1" 
+                      type="button"
+                      disabled={isSubmitting}
+                      onClick={() => navigate(-1)}
+                    >
                       Cancel
                     </button>
-                    <button className="btn-2" type="submit">
-                      Submit Survey
+                    <button 
+                      className="btn-2" 
+                      type="submit"
+                      disabled={isSubmitting}
+                    >
+                      {isSubmitting ? (
+                        <>
+                          <div uk-spinner="ratio: 0.6"></div>
+                          <span style={{marginLeft: '8px'}}>Creating...</span>
+                        </>
+                      ) : 'Submit Survey'}
                     </button>
                   </div>
                 </div>

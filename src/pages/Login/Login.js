@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 // import mainLogo from "../../assets/images/mainLogo.svg";
 import mainLogo from "../../assets/images/loginimage.png";
 import { View, ViewOff } from "@carbon/icons-react";
@@ -13,13 +13,15 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const Login = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  if (auth.token) {
-    if (auth.user.user_type === "admin") {
-      navigate("/admin-home");
-    } else if (auth.user.user_type === "agent") {
-      navigate("/dashboard");
+
+  // Move auth check into useEffect to ensure auth context is ready
+  useEffect(() => {
+    if (auth?.token && auth?.user?.user_type) {
+      const route = auth.user.user_type === "admin" ? "/admin-home" : "/dashboard";
+      navigate(route);
     }
-  }
+  }, [auth, navigate]);
+
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [emailError, setEmailError] = useState("");
@@ -43,28 +45,28 @@ const Login = () => {
             username: user.email,
             password: user.password,
           },
-        }).then(function (result) {
-          if (result.status === 200) {
-            const { token, user } = result.data.data;
-
-            localStorage.setItem("token", token);
-            localStorage.setItem("user", JSON.stringify(user));
-
-            setTimeout(() => {
-              setLoading(false);
-              toast.success("Login successfully", {
-                position: toast.POSITION.TOP_RIGHT,
-                autoClose: 800,
-              });
-            }, 500);
-
-            setTimeout(() => {
-              window.location.href = "/welcome";
-            }, 2000);
-
-            setErrorEnable(false);
-          }
         });
+
+        if (response.status === 200) {
+          const { token, user: userData } = response.data.data;
+
+          localStorage.setItem("token", token);
+          localStorage.setItem("user", JSON.stringify(userData));
+
+          setLoading(false);
+          toast.success("Login successful", {
+            position: toast.POSITION.TOP_RIGHT,
+            autoClose: 800,
+          });
+
+          // Use React Router navigation instead of window.location
+          setTimeout(() => {
+            const route = userData.user_type === "admin" ? "/admin-home" : "/dashboard";
+            navigate(route);
+          }, 1000);
+
+          setErrorEnable(false);
+        }
       } catch (error) {
         handleLoginError(error);
       } finally {

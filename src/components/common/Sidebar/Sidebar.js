@@ -100,9 +100,9 @@ const Sidebar = () => {
 
 
   const getSidebarLinks = () => {
-    if (auth.user.user_type === 'admin') {
+    if (auth?.user?.user_type === 'admin') {
       return <AdminRoutes />;
-    } else if (auth.user.user_type === 'agent') {
+    } else if (auth?.user?.user_type === 'agent') {
       return <AgentRoutes />;
     } else {
       return null;
@@ -121,7 +121,11 @@ const Sidebar = () => {
 
         <div className="navwrp">
           <ul>
-            {getSidebarLinks()}
+            {/* {getSidebarLinks()} */}
+
+            {auth?.user?.user_type === 'admin' && <AdminRoutes />}
+            {auth?.user?.user_type === 'agent' && <AgentRoutes />}
+
           </ul>
           <ul className="scnd-navwrp">
           </ul>

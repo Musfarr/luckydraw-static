@@ -479,7 +479,7 @@ const SurveyCall = () => {
                      ) : question.type === "textarea" ? (
                       <div className="uk-width-1-2">
                         <div className="formInput">
-                          <label htmlFor="userEmail">Q{index + 4}{question.question}</label>
+                          <label htmlFor="userEmail">Q{index + 4} {question.question}</label>
                           <textarea 
                             name="" 
                             className="uk-textarea"
@@ -494,7 +494,7 @@ const SurveyCall = () => {
                       <div className="uk-width-1-2">
                       <div className="formInput">
                         <label htmlFor="userEmail">
-                        Q{index + 4} {question.question}
+                        Q{index + 4}  { question.question}
                         </label>
                         <div className="radio-wrapper">
                           {images.map((img) => {
