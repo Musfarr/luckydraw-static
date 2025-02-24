@@ -45,6 +45,13 @@ const SurveyCall = () => {
   };
 
   useEffect(() => {
+
+    if (callstatus === "completed") {
+      navigate(`/survey-calls/view/${id}`);
+      return;
+    }
+
+
     if (callstatus === "active" && callData?.call_time) {
       setIsPaused(true);
       // Set initial time to elapsed time
@@ -124,6 +131,7 @@ const SurveyCall = () => {
       };
 
       const onFailure = (error) => {
+        console.log('API Error:', error);
         setIsLoading(false);
       };
 
@@ -241,7 +249,6 @@ const SurveyCall = () => {
     
     const onSuccess = (response) => {
       if (response.code === 200) {
-        
         setCallData(prev => ({ ...prev, status: "completed" }));
         setIsPaused(false);
         setIsSubmitting(false);
@@ -254,13 +261,20 @@ const SurveyCall = () => {
         }).then(() => {
           navigate(`/survey-calls/view/${id}`);
         });
+
       } 
     };
+
     const onFailure = (error) => {
+      console.log('API Error:', error);
       setIsSubmitting(false);
-      toast.error(error?.response?.data?.message, {
-        position: toast.POSITION.TOP_RIGHT,
-      });
+      if (error?.message) {
+        toast.error(error.message);
+      } else if (error?.response?.data?.message) {
+        toast.error(error.response.data.message);
+      } else {
+        toast.error('Failed to submit survey');
+      }
     };
 
     apiPost(`/calls/${id}/update`, onSuccess, onFailure, finalData);
@@ -291,6 +305,7 @@ const SurveyCall = () => {
     };
 
     const CallonFailure = (error) => {
+      console.log('API Error:', error);
       setIsCallLoading(false);
       toast.error(error?.response?.data?.message, {
         position: toast.POSITION.TOP_RIGHT,

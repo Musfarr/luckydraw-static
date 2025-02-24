@@ -62,11 +62,14 @@ const DataTable1 = ({
                   </span>
                 </td>
                 <td>{val.duration || '-'}</td>
+
+                {/* if failed then  button wont show  */}
+                {/* {if completed the only view mode then } */}
                 <td>
-                  {val.status === 'pending' ? (
+                  {val.status !== 'failed' ? (
                     <button
                       className="start-call-btn"
-                      onClick={() => navigate(`/survey-calls/${val.id}`)}
+                      onClick={() => navigate(val.status === 'completed' ? `/survey-calls/view/${val.id}` : `/survey-calls/${val.id}`)}
                     >
                       view Call
                     </button>
