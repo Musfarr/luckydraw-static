@@ -1,16 +1,16 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { apiGet, apiPost } from "../../Utils/apiServices";
-import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
-import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
-import angryImg from "../../assets/images/icons/angry-color.svg";
-import happyImg from "../../assets/images/icons/happy-color.svg";
-import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 import Spinner from "../../reusables/Spinner";
+import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
+
+import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
+  import { useNavigate } from "react-router-dom";
+  import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
+
+const CompanySurvey = () => {
 
 
 
-const AuditSurvey = () => {
   let PageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPage2, setCurrentPage2] = useState(1);
@@ -41,7 +41,6 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:15:30",
       product_you_purchase: "Lifebuoy Soap",
-      product_experience: angryImg,
       message: "The product quality is very good and I'm satisfied with it.",
     },
     {
@@ -53,7 +52,6 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:12:45",
       product_you_purchase: "Surf Excel",
-      product_experience: happyImg,
       message: "Works well but price is a bit high.",
     },
   ];
@@ -228,4 +226,4 @@ const AuditSurvey = () => {
   );
 };
 
-export default AuditSurvey;
+export default CompanySurvey;

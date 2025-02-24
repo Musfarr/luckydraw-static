@@ -13,6 +13,7 @@ import AddUser from "../pages/AddUser/AddUser";
 import AgentList from "../pages/AgentList/AgentList";
 import AgentProfile from "../pages/AgentProfile/AgentProfile";
 import CreateSurvey from "../pages/CreateSurvey/CreateSurvey";
+import CompanySurvey from "../pages/CompanySurvey/CompanySurvey";
 
 export const publicRoutes = [
   {
@@ -97,5 +98,11 @@ export const protectedRoutesWithSidebarLayout = [
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,
+  },
+  {
+    path: "/company-survey/:survey_id",
+    component: <CompanySurvey />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
   },
 ];
