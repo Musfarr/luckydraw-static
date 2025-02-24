@@ -1,15 +1,29 @@
 import { Add, TrashCan } from "@carbon/icons-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { apiPost } from "../../Utils/apiServices";
+import { toast } from "react-toastify";
+import { useNavigate } from "react-router-dom";
+
+
+
 
 const CreateSurvey = () => {
+
+
+  const navigate = useNavigate();
+
+
+  const [name, setName] = useState("");
+  const [Image, setImage] = useState(null);
+
   const [fields, setFields] = useState([
-    { type: "Text", label: "", placeholder: "", required: false },
+    { type: "input", label: "", placeholder: "", required: false },
   ]);
 
   const handleAddField = () => {
     setFields([
       ...fields,
-      { type: "Text", label: "", placeholder: "", required: false },
+      { type: "input", label: "", placeholder: "", required: false },
     ]);
   };
 
@@ -27,6 +41,41 @@ const CreateSurvey = () => {
   };
 
 
+
+  const handleSubmit = (e) => {
+    
+    e.preventDefault();
+
+    var formdata = new FormData();
+
+    formdata.append("name", name);
+    formdata.append("image", Image  );
+
+    fields.forEach((field , index) => {
+      formdata.append(`questions[${index}][question]`, field.placeholder);
+      formdata.append(`questions[${index}][type]`, field.type);
+    })
+
+    const onSuccess = (response) => {
+      toast.success(response?.data?.message || "Survey created successfully");
+      // navigate("/survey-list");
+    };
+
+    const onFailure = (error) => {
+      toast.error(error?.response?.data?.message || "Failed to create survey");
+    };
+
+    apiPost("/survey/create", onSuccess, onFailure, formdata);
+  }
+
+
+
+  
+
+
+
+
+
   return (
     <div className="addTeamWrp">
       <div className="uk-container uk-container-large ">
@@ -36,7 +85,7 @@ const CreateSurvey = () => {
         <div className="addTeaBox">
           <div className="addTeamBox">
             <div className="formwrp">
-              <form autoComplete="off">
+              <form autoComplete="off" onSubmit={handleSubmit} >
                 <div className="uk-grid uk-grid-small" uk-grid="">
                   <div className="uk-width-1-2">
                     <div className="formInput">
@@ -45,16 +94,18 @@ const CreateSurvey = () => {
                         type="text"
                         placeholder="Enter Survey name"
                         className="uk-input"
+                        required
+                        onChange={(e) => setName(e.target.value)}
                       />
                     </div>
                   </div>
                   <div className="uk-width-1-2">
-                    <div className="formInput">
-                      <label htmlFor="userEmail">User Email</label>
+                    {/* <div className="formInput">
+                      <label htmlFor="userEmail">Assign Agent</label>
                       <select name="" className="uk-select">
                         <option value="">Mudassir</option>
                       </select>
-                    </div>
+                    </div> */}
                   </div>
                   <div className="uk-width-1-1">
                     <div className="formSubHeading">
@@ -74,12 +125,12 @@ const CreateSurvey = () => {
                               handleFieldChange(index, "type", e.target.value)
                             }
                           >
-                            <option value="Text">Text</option>
-                            <option value="Number">Number</option>
-                            <option value="Email">Email</option>
+                            <option value="input">Text</option>
+                            <option value="textarea">Text Area</option>
+                            <option value="radio">Radio</option>
                           </select>
                         </div>
-                        <div className="formInput">
+                        {/* <div className="formInput">
                           <label htmlFor="userName">Label</label>
                           <input
                             type="text"
@@ -90,10 +141,11 @@ const CreateSurvey = () => {
                               handleFieldChange(index, "label", e.target.value)
                             }
                           />
-                        </div>
+                        </div> */}
                         <div className="formInput">
                           <label htmlFor="userName">Placeholder</label>
                           <input
+                            style={{ minWidth: "800px" }}
                             type="text"
                             placeholder="Enter your Question"
                             className="uk-input"
@@ -107,7 +159,7 @@ const CreateSurvey = () => {
                             }
                           />
                         </div>
-                        <div className="formCheckbox">
+                        {/* <div className="formCheckbox">
                           <label htmlFor="userName">Required</label>
                           <input
                             type="checkbox"
@@ -120,7 +172,7 @@ const CreateSurvey = () => {
                               )
                             }
                           />
-                        </div>
+                        </div> */}
                         <div className="formDltBtn">
                           <button
                             type="button"
@@ -146,7 +198,7 @@ const CreateSurvey = () => {
                       <hr />
                     </div>
                   </div>
-                  <div className="uk-width-1-2">
+                  {/* <div className="uk-width-1-2">
                     <div className="formInput">
                       <label>Upload Numbers (.CSV File Only)</label>
                       <div className="js-upload uk-placeholder uk-text-center uk-margin-remove">
@@ -161,7 +213,7 @@ const CreateSurvey = () => {
                         </div>
                       </div>
                     </div>
-                  </div>
+                  </div> */}
                   <div className="uk-width-1-2">
                     <div className="formInput">
                       <label>Upload Logo (.jpg, .png File Only)</label>
@@ -169,14 +221,20 @@ const CreateSurvey = () => {
                         <span uk-icon="icon: cloud-upload"></span>
                         <div uk-form-custom="">
                           <input
+                          required
                             type="file"
                             aria-label="Custom controls"
                             accept=".png,.jpg,.jpeg"
+                            onChange={(e) => setImage(e.target.files[0])}
                           />
-                          <span className="uk-link">Upload file</span>
+                          <span className="uk-link">{Image ? Image.name : 'Upload file'}</span>
                         </div>
                       </div>
                     </div>
+                  </div>
+
+                  <div className="uk-width-1-2">
+
                   </div>
                   <div className="btnwrp">
                     <button className="btn-1" type="button">

@@ -5,10 +5,44 @@ import {
   PhoneOff,
   UserServiceDesk,
 } from "@carbon/icons-react";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import PieChart from "../../components/Graph/PieChart";
+import { useAuth } from "../../Context/AuthProvider";
+import { apiGet } from "../../Utils/apiServices";
+import Spinner from "../../reusables/Spinner";
+import { useNavigate } from "react-router-dom";
+
 
 const AdminHome = () => {
+
+  const navigate = useNavigate();
+  const { auth } = useAuth();
+  const [data, setData] = useState(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const fetchDashboard = () => {
+    setIsLoading(true);
+    const onSuccess = (response) => {
+      setData(response.data);
+      setIsLoading(false);
+    };
+
+    const onFailure = (error) => {
+      console.error("Failed to fetch dashboard:", error);
+      setIsLoading(false);
+    };
+
+    apiGet('/admin/dashboard', onSuccess, onFailure);
+  };
+
+  useEffect(() => {
+    fetchDashboard();
+  }, []);
+
+  if (isLoading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="boradcastWrp">
       <div className="broadcastContentWrp">
@@ -22,8 +56,10 @@ const AdminHome = () => {
                 >
                   <div className="uk-grid uk-flex-middle" uk-grid="">
                     <div className="uk-width-1-2 uk-margin-remove">
-                      <h2 className="uk-margin-remove">Hi , User</h2>
-                      <p className="uk-margin-remove">Unilever | Super Admin</p>
+                      <h2 className="uk-margin-remove">Hi , {auth?.user?.name}</h2>
+                      <p className="uk-margin-remove">
+                        Unilever | Super Admin
+                      </p>
                     </div>
 
                     <div className="uk-width-1-1 uk-margin-remove">
@@ -43,7 +79,7 @@ const AdminHome = () => {
                                       height: "24px",
                                     }}
                                   />
-                                  <h2>3213</h2>
+                                  <h2>{data?.total_calls}</h2>
                                   <span>Total Calls</span>
                                 </div>
                               </div>
@@ -56,7 +92,7 @@ const AdminHome = () => {
                                       height: "24px",
                                     }}
                                   />
-                                  <h2>31231</h2>
+                                  <h2>{data?.total_pending}</h2>
                                   <span>Total Pending Calls</span>
                                 </div>
                               </div>
@@ -69,7 +105,7 @@ const AdminHome = () => {
                                       height: "24px",
                                     }}
                                   />
-                                  <h2>32%</h2>
+                                  <h2>{data?.failed_rate}%</h2>
                                   <span>Failed Rate</span>
                                 </div>
                               </div>
@@ -82,7 +118,7 @@ const AdminHome = () => {
                                       height: "24px",
                                     }}
                                   />
-                                  <h2>55%</h2>
+                                  <h2>{data?.success_rate}%</h2>
                                   <span>Success Rate</span>
                                 </div>
                               </div>
@@ -90,7 +126,7 @@ const AdminHome = () => {
                           </div>
                         </div>
 
-                        <div className="uk-grid uk-grid-small" uk-grid="">
+                        <div className="uk-grid uk-grid-small" uk-grid="" >
                           <div className="uk-width-1-3">
                             <div className="mainBox">
                               <div className="boxHeading">
@@ -98,69 +134,35 @@ const AdminHome = () => {
                               </div>
                               <div className="boxContent">
                                 <PieChart
-                                  graphData={[1, 2, 3]}
+                                  graphData={Object.values(data?.cities || {})}
                                   backgroundColor={[
-                                    "#1f36c7",
-                                    "#c71fc5",
-                                    "#6ac71f",
-                                  ]}
+                                            "#14B8A6",
+                                            "#FACC15",
+                                            "#F59E0B",
+                                           
+                                          ]}
+                                          borderColor={[
+                                            "#14B8A6",
+                                            "#FACC15",
+                                            "#F59E0B",
+                                            
+                                          ]}
+
                                 />
-                                <div class="chartDataWrapper">
-                                  <ul>
-                                    <li>
-                                      <p>
-                                        <span class="orangeDot"></span>Islamabad
-                                        (Capital city)
-                                      </p>
-                                    </li>
-                                    <li>
-                                      <p className="uk-text-bold">32%</p>
-                                    </li>
-                                  </ul>
-                                  <ul>
-                                    <li>
-                                      <p>
-                                        <span class="lightGreenDot"></span>
-                                        Karachi (Largest city, port city)
-                                      </p>
-                                    </li>
-                                    <li>
-                                      <p className="uk-text-bold">0</p>
-                                    </li>
-                                  </ul>
-                                  <ul>
-                                    <li>
-                                      <p>
-                                        <span class="lightGreenDot"></span>
-                                        Karachi (Largest city, port city)
-                                      </p>
-                                    </li>
-                                    <li>
-                                      <p className="uk-text-bold">0</p>
-                                    </li>
-                                  </ul>
-                                  <ul>
-                                    <li>
-                                      <p>
-                                        <span class="lightGreenDot"></span>
-                                        Karachi (Largest city, port city)
-                                      </p>
-                                    </li>
-                                    <li>
-                                      <p className="uk-text-bold">0</p>
-                                    </li>
-                                  </ul>
-                                  <ul>
-                                    <li>
-                                      <p>
-                                        <span class="lightGreenDot"></span>
-                                        Karachi (Largest city, port city)
-                                      </p>
-                                    </li>
-                                    <li>
-                                      <p className="uk-text-bold">0</p>
-                                    </li>
-                                  </ul>
+                                <div className="chartDataWrapper">
+                                  {Object.entries(data?.cities || {}).map(([city, value], index) => (
+                                    <ul key={city}>
+                                      <li>
+                                        <p>
+                                          <span className={`${index === 0 ? 'orangeDot' : 'lightGreenDot'}`}></span>
+                                          {city}
+                                        </p>
+                                      </li>
+                                      <li>
+                                        <p className="uk-text-bold">{value}</p>
+                                      </li>
+                                    </ul>
+                                  ))}
                                 </div>
                               </div>
                             </div>
@@ -178,35 +180,30 @@ const AdminHome = () => {
                                     <button
                                       type="button"
                                       className="view-all-link"
+                                      onClick={() => navigate("/agent-list")}
                                     >
                                       View All
                                     </button>
                                   </div>
                                   <div className="user-creation-content">
                                     <div className="user-list">
+                                      {data?.agents.map((agent) => (
+                                        <div key={agent.user_id} className="user-item">
+                                          <button type="button" className="user-avatar-btn">
+                                            <img
+                                              src={`https://i.pravatar.cc/300?img=${agent.user_id}`}
+                                              alt=""
+                                              className="user-avatar"
+                                            />
+                                          </button>
+                                          <span className="user-name">{agent.name}</span>
+                                        </div>
+                                      ))}
                                       <div className="user-item">
-                                        <button
-                                          type="button"
-                                          className="user-avatar-btn"
-                                        >
-                                          <img
-                                            src="https://i.pravatar.cc/300?img=12"
-                                            alt=""
-                                            className="user-avatar"
-                                          />
-                                        </button>
-                                        <span className="user-name">Talha</span>
-                                      </div>
-                                      <div className="user-item">
-                                        <button
-                                          type="button"
-                                          className="add-user-btn"
-                                        >
+                                        <button type="button" className="add-user-btn" onClick={()=> navigate("/add-user")}>
                                           <Add size={20} />
                                         </button>
-                                        <span className="add-user-text">
-                                          Add user
-                                        </span>
+                                        <span className="add-user-text">Add user</span>
                                       </div>
                                     </div>
                                   </div>
@@ -229,30 +226,12 @@ const AdminHome = () => {
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          <tr>
-                                            <td className="agentName">
-                                              Mudassir
-                                            </td>
-                                            <td>60%</td>
-                                          </tr>
-                                          <tr>
-                                            <td className="agentName">
-                                              Mudassir
-                                            </td>
-                                            <td>60%</td>
-                                          </tr>
-                                          <tr>
-                                            <td className="agentName">
-                                              Mudassir
-                                            </td>
-                                            <td>60%</td>
-                                          </tr>
-                                          <tr>
-                                            <td className="agentName">
-                                              Mudassir
-                                            </td>
-                                            <td>60%</td>
-                                          </tr>
+                                          {data?.topAgents.map((agent) => (
+                                            <tr key={agent.user_id}>
+                                              <td className="agentName">{agent.name}</td>
+                                              <td>{agent.success_rate}%</td>
+                                            </tr>
+                                          ))}
                                         </tbody>
                                       </table>
                                     </div>
@@ -268,25 +247,25 @@ const AdminHome = () => {
                                     <div className="uk-grid" uk-grid="">
                                       <div className="uk-width-1-4 uk-first-column">
                                         <div className="txtwrp">
-                                          <h2>3213</h2>
+                                          <h2>{data?.realtimeData?.active_calls}</h2>
                                           <span className="status completed">Active Calls</span>
                                         </div>
                                       </div>
                                       <div className="uk-width-1-4">
                                         <div className="txtwrp">
-                                          <h2>31231</h2>
+                                          <h2>{data?.realtimeData?.pending_calls}</h2>
                                           <span className="status pending">Pending Calls</span>
                                         </div>
                                       </div>
                                       <div className="uk-width-1-4">
                                         <div className="txtwrp">
-                                          <h2>32%</h2>
+                                          <h2>{data?.realtimeData?.active_agents}</h2>
                                           <span className="status completed">Active Agent</span>
                                         </div>
                                       </div>
                                       <div className="uk-width-1-4">
                                         <div className="txtwrp">
-                                          <h2>55%</h2>
+                                          <h2>{data?.realtimeData?.inactive_agents}</h2>
                                           <span className="status danger">Unactive Agent</span>
                                         </div>
                                       </div>
@@ -299,7 +278,12 @@ const AdminHome = () => {
                         </div>
 
                         <div className="userTableWrp">
+
+                          <div className="uk-flex uk-flex-between" >
                         <h2>Agent List</h2>
+                        <a className="viewAll" href="/All-Agents-List">See all</a>
+
+                          </div>
                           <table className="uk-table">
                             <thead>
                               <tr>
@@ -315,25 +299,23 @@ const AdminHome = () => {
                               </tr>
                             </thead>
                             <tbody>
-                                  <tr>
-                                    <td>
-                                    1
-                                    </td>
-                                    <td className="uk-text-bold">
-                                    45645
-                                    </td>
-                                    <td>M.Mudassir</td>
-                                    <td>
-                                      <span className={`status completed`}>
-                                        Active
-                                      </span>
-                                    </td>
-                                    <td>16:54:12</td>
-                                    <td>400</td>
-                                    <td>100</td>
-                                    <td>100</td>
-                                    <td>60%</td>
-                                  </tr>
+                              {data?.agents_list.slice(0, 4).map((agent, index) => (
+                                <tr key={agent.user_id}>
+                                  <td>{index + 1}</td>
+                                  <td className="uk-text-bold">{agent.user_id}</td>
+                                  <td>{agent.agent_name}</td>
+                                  <td>
+                                    <span className={`status ${agent.status === 1 ? 'completed' : 'pending'}`}>
+                                      {agent.status === 1 ? 'Active' : 'Inactive'}
+                                    </span>
+                                  </td>
+                                  <td>{agent.last_login_at || 'Never'}</td>
+                                  <td>{agent.calls_completed}</td>
+                                  <td>{agent.pending_calls}</td>
+                                  <td>{agent.list_of_survey}</td>
+                                  <td>{agent.survey_success || '0%'}</td>
+                                </tr>
+                              ))}
                             </tbody>
                           </table>
 

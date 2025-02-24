@@ -104,7 +104,7 @@ const AuditSurvey = () => {
 
     const onDownloadSuccess = (response) => {
       const link = document.createElement("a");
-      link.href = response.data;
+      link.href = response.file_path;
       link.download = "survey.csv";
       document.body.appendChild(link);
       link.click();

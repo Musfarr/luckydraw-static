@@ -4,12 +4,13 @@ import Spinner from "../../reusables/Spinner";
 import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 
 import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
-  import { useNavigate } from "react-router-dom";
+  import { useNavigate, useParams } from "react-router-dom";
   import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
 
 const CompanySurvey = () => {
 
-
+  const params = useParams();
+  const {survey_id} = params;
 
   let PageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
@@ -77,9 +78,10 @@ const CompanySurvey = () => {
     let params = {
       per_page: 10,
       // limit: PageSize,
-      type: selectedtab
+      type: selectedtab,
+      survey_id: survey_id
     };
-    apiGet(`/agent/dashboard`, onSuccess, onFailure, undefined, params);
+    apiGet(`/get-calls`, onSuccess, onFailure, undefined, params);
   };
 
   useEffect(() => {
@@ -102,7 +104,7 @@ const CompanySurvey = () => {
 
     const onDownloadSuccess = (response) => {
       const link = document.createElement("a");
-      link.href = response.data;
+      link.href = response.file_path;
       link.download = "survey.csv";
       document.body.appendChild(link);
       link.click();
@@ -137,7 +139,7 @@ const CompanySurvey = () => {
           <div uk-grid="" className="uk-grid uk-margin-top uk-flex-middle">
             <div className="uk-width-1-2">
               <div className="campaignHeading">
-                <p>AUDIT SURVEY CALLS</p>
+                {/* <p>{data?.calls.data[0].survey.name}</p> */}
               </div>
             </div>
             <div className="uk-width-1-2 btnSection">
@@ -180,7 +182,7 @@ const CompanySurvey = () => {
                   </ul>
                 </div>
               </div>
-            </div>
+            </div>  
           </div>
 
           <div className="analyticsContainer formCentralContainer">

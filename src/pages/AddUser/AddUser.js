@@ -37,7 +37,10 @@ const AddUser = () => {
 
     const onSuccess = (response) => {
 
-      if(response?.data?.code === 200){
+      console.log(response ,'response')
+
+
+      if(response?.code === 200){
         setIsSubmitting(false);
         toast.success("User added successfully!");
         navigate("/agent-list");

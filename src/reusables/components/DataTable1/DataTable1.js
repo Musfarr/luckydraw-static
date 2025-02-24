@@ -83,7 +83,7 @@ const DataTable1 = ({
       </table>
 
       {data?.length > 0 && (
-        <div>
+        <div className=''>
           <div className="paginationcard uk-card uk-card-default uk-margin-remove-top">
             <ReactPaginate
               previousLabel={"←"}
