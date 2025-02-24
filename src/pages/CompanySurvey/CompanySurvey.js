@@ -118,10 +118,11 @@ const CompanySurvey = () => {
 
     var params = {
       type: selectedtab,
-      download: 'csv'
+      download: 'csv',
+      survey_id: survey_id
     }
 
-    apiGet(`/agent/dashboard`, onDownloadSuccess, onDownloadFailure, undefined, params);
+    apiGet(`/get-calls`, onDownloadSuccess, onDownloadFailure, undefined, params);
   }
 
 
@@ -148,12 +149,12 @@ const CompanySurvey = () => {
               </button>
 
               <div className="uk-inline">
-                <button className="calenderBtn rangeBtn">
+                {/* <button className="calenderBtn rangeBtn">
                   <Calendar /> Last 30 days{" "}
                   <span className="uk-inline">
                     <ChevronDown />
                   </span>
-                </button>
+                </button> */}
                 <div uk-dropdown="mode: click" className="calendarDropdown">
                   <div className="dropDownHeading">
                     <span>Select a range</span>

@@ -120,12 +120,12 @@ const AuditSurvey = () => {
               </button>
 
               <div className="uk-inline">
-                <button className="calenderBtn rangeBtn">
+                {/* <button className="calenderBtn rangeBtn">
                   <Calendar /> Last 30 days{" "}
                   <span className="uk-inline">
                     <ChevronDown />
                   </span>
-                </button>
+                </button> */}
                 <div uk-dropdown="mode: click" className="calendarDropdown">
                   <div className="dropDownHeading">
                     <span>Select a range</span>
