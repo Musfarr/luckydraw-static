@@ -19,7 +19,7 @@ const AdminHome = () => {
   const { auth } = useAuth();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
-
+  const colors = ["#14B8A6", "#FACC15", "#F59E0B"];
   const fetchDashboard = () => {
     setIsLoading(true);
     const onSuccess = (response) => {
@@ -132,21 +132,11 @@ const AdminHome = () => {
                                   <span>Total Calls Summary</span>
                                 </div>
                                 <div className="boxContent">
-                                  <PieChart
+                                <PieChart 
                                     graphData={Object.values(data?.cities || {})}
-                                    backgroundColor={[
-                                              "#14B8A6",
-                                              "#FACC15",
-                                              "#F59E0B",
-                                              
-                                            ]}
-                                            borderColor={[
-                                              "#14B8A6",
-                                              "#FACC15",
-                                              "#F59E0B",
-                                              
-                                            ]}
-
+                                    backgroundColor={colors}
+                                    borderColor={[colors[0]]}
+                                    graphlabels={Object.keys(data?.cities || {})}
                                   />
                                   <div className="chartDataWrapper">
                                     {Object.entries(data?.cities || {}).map(([city, value], index) => (

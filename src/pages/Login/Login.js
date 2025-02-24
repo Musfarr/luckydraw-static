@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import mainLogo from "../../assets/images/mainLogo.svg";
-import mainLogo from "../../assets/images/loginImage.png";
+import mainLogo from "../../assets/images/loginimage.png";
 import { View, ViewOff } from "@carbon/icons-react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -13,14 +13,19 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const Login = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  if(auth?.token && auth?.user?.user_type){
+   const route = auth.user.user_type === "admin" ? "/admin-home" : "/dashboard";
+       navigate(route);
+  }
+  
 
   // Move auth check into useEffect to ensure auth context is ready
-  useEffect(() => {
-    if (auth?.token && auth?.user?.user_type) {
-      const route = auth.user.user_type === "admin" ? "/admin-home" : "/dashboard";
-      navigate(route);
-    }
-  }, [auth, navigate]);
+  // useEffect(() => {
+  //   if (auth?.token && auth?.user?.user_type) {
+  //     const route = auth.user.user_type === "admin" ? "/admin-home" : "/dashboard";
+  //     navigate(route);
+  //   }
+  // }, [auth, navigate]);
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -62,7 +67,7 @@ const Login = () => {
           // Use React Router navigation instead of window.location
           setTimeout(() => {
             const route = userData.user_type === "admin" ? "/admin-home" : "/dashboard";
-            navigate(route);
+            window.location.href = route;
           }, 1000);
 
           setErrorEnable(false);

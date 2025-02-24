@@ -123,8 +123,8 @@ const Sidebar = () => {
           <ul>
             {/* {getSidebarLinks()} */}
 
-            {auth?.user?.user_type === 'admin' && <AdminRoutes />}
-            {auth?.user?.user_type === 'agent' && <AgentRoutes />}
+            {auth?.user?.user_type === 'admin' && AdminRoutes()}
+            {auth?.user?.user_type === 'agent' && AgentRoutes()}
 
           </ul>
           <ul className="scnd-navwrp">
