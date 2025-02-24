@@ -1,7 +1,32 @@
 import { Add, TrashCan } from "@carbon/icons-react";
-import React from "react";
+import React, { useState } from "react";
 
 const CreateSurvey = () => {
+  const [fields, setFields] = useState([
+    { type: "Text", label: "", placeholder: "", required: false },
+  ]);
+
+  const handleAddField = () => {
+    setFields([
+      ...fields,
+      { type: "Text", label: "", placeholder: "", required: false },
+    ]);
+  };
+
+  const handleFieldChange = (index, key, value) => {
+    const updatedFields = [...fields];
+    updatedFields[index][key] = value;
+    setFields(updatedFields);
+  };
+
+  const handleRemoveField = (index) => {
+    if (fields.length > 1) {
+      const updatedFields = fields.filter((_, i) => i !== index);
+      setFields(updatedFields);
+    }
+  };
+
+
   return (
     <div className="addTeamWrp">
       <div className="uk-container uk-container-large ">
@@ -36,79 +61,82 @@ const CreateSurvey = () => {
                       <h3>Pre Survey Forms Fiels</h3>
                     </div>
                   </div>
-                  <div className="uk-width-1-1">
-                    <div className="addFieldWrp">
-                      <div className="formInput">
-                        <label htmlFor="userName">Type</label>
-                        <select name="" className="uk-select">
-                          <option value="">Text</option>
-                        </select>
-                      </div>
-                      <div className="formInput">
-                        <label htmlFor="userName">Label</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Label"
-                          className="uk-input"
-                        />
-                      </div>
-                      <div className="formInput">
-                        <label htmlFor="userName">Placeholder</label>
-                        <input
-                          type="text"
-                          placeholder="Enter your Question"
-                          className="uk-input"
-                        />
-                      </div>
-                      <div className="formCheckbox">
-                        <label htmlFor="userName">Required</label>
-                        <input type="checkbox" />
-                      </div>
-                      <div className="formDltBtn">
-                        <button type="button" className="delete-btn">
-                          <TrashCan />
-                        </button>
+                  {fields.map((field, index) => (
+                    <div className="uk-width-1-1">
+                      <div className="addFieldWrp">
+                        <div className="formInput">
+                          <label htmlFor="userName">Type</label>
+                          <select
+                            name=""
+                            className="uk-select"
+                            value={field.type}
+                            onChange={(e) =>
+                              handleFieldChange(index, "type", e.target.value)
+                            }
+                          >
+                            <option value="Text">Text</option>
+                            <option value="Number">Number</option>
+                            <option value="Email">Email</option>
+                          </select>
+                        </div>
+                        <div className="formInput">
+                          <label htmlFor="userName">Label</label>
+                          <input
+                            type="text"
+                            placeholder="Enter Label"
+                            className="uk-input"
+                            value={field.label}
+                            onChange={(e) =>
+                              handleFieldChange(index, "label", e.target.value)
+                            }
+                          />
+                        </div>
+                        <div className="formInput">
+                          <label htmlFor="userName">Placeholder</label>
+                          <input
+                            type="text"
+                            placeholder="Enter your Question"
+                            className="uk-input"
+                            value={field.placeholder}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                index,
+                                "placeholder",
+                                e.target.value
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="formCheckbox">
+                          <label htmlFor="userName">Required</label>
+                          <input
+                            type="checkbox"
+                            checked={field.required}
+                            onChange={(e) =>
+                              handleFieldChange(
+                                index,
+                                "required",
+                                e.target.checked
+                              )
+                            }
+                          />
+                        </div>
+                        <div className="formDltBtn">
+                          <button
+                            type="button"
+                            className="delete-btn"
+                            onClick={() => handleRemoveField(index)}
+                            disabled={fields.length === 1}
+                          >
+                            <TrashCan />
+                          </button>
+                        </div>
                       </div>
                     </div>
-                  </div>
-                  <div className="uk-width-1-1">
-                    <div className="addFieldWrp">
-                      <div className="formInput">
-                        <label htmlFor="userName">Type</label>
-                        <select name="" className="uk-select">
-                          <option value="">Text</option>
-                        </select>
-                      </div>
-                      <div className="formInput">
-                        <label htmlFor="userName">Label</label>
-                        <input
-                          type="text"
-                          placeholder="Enter Label"
-                          className="uk-input"
-                        />
-                      </div>
-                      <div className="formInput">
-                        <label htmlFor="userName">Placeholder</label>
-                        <input
-                          type="text"
-                          placeholder="Enter your Question"
-                          className="uk-input"
-                        />
-                      </div>
-                      <div className="formCheckbox">
-                        <label htmlFor="userName">Required</label>
-                        <input type="checkbox" />
-                      </div>
-                      <div className="formDltBtn">
-                        <button type="button" className="delete-btn">
-                          <TrashCan />
-                        </button>
-                      </div>
-                    </div>
-                  </div>
+                  ))}
                   <div className="uk-width-1-1">
                     <div className="addFieldBtn">
-                      <button type="button">
+                      <button type="button" onClick={handleAddField}>
                         <Add /> Add Field
                       </button>
                     </div>
@@ -155,7 +183,7 @@ const CreateSurvey = () => {
                       Cancel
                     </button>
                     <button className="btn-2" type="submit">
-                    Submit Survey
+                      Submit Survey
                     </button>
                   </div>
                 </div>
