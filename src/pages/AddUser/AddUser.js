@@ -9,6 +9,7 @@ const AddUser = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   const [isSubmitting, setIsSubmitting] = useState(false);
+  const [Image, setImage] = useState(null);
 
   const {
     register,
@@ -24,24 +25,31 @@ const AddUser = () => {
       password: "",
       password_confirmation: "",
       user_type: auth.user.user_type === 'admin' ? 'agent' : '',
-      photo: ''
+      photo: Image
     }
   });
 
   const password = watch("password");
 
   const onSubmit = (data) => {
+
     setIsSubmitting(true);
 
     const onSuccess = (response) => {
-      setIsSubmitting(false);
-      toast.success("User added successfully!");
-      navigate("/agent-list");
+
+      console.log(response ,'response')
+
+
+      if(response?.code === 200){
+        setIsSubmitting(false);
+        toast.success("User added successfully!");
+        navigate("/agent-list");
+      }
     };
 
     const onFailure = (error) => {
       setIsSubmitting(false);
-      toast.error(error?.response?.data?.message || "Failed to add user");
+      // toast.error(error?.response?.data?.message || "Failed to add user");
     };
 
     apiPost("/auth/register", onSuccess, onFailure, data);
@@ -174,9 +182,12 @@ const AddUser = () => {
                             type="file"
                             aria-label="Custom controls"
                             accept=".png,.jpg,.jpeg"
-                            {...register("photo")}
+                            {...register("photo" , { required: "Photo is required" })  }
+                            onChange={(e) => {
+                              setImage(e.target.files[0]);
+                            }}
                           />
-                          <span className="uk-link">Upload file</span>
+                          <span className="uk-link">   {Image?.name || 'Upload file'}</span>
                         </div>
                       </div>
                     </div>

@@ -1,10 +1,11 @@
 import React, { useState } from "react";
 import { Link } from "react-router-dom";
-import { Add, Home, ListCheckedMirror, Logout, Mobile, Phone } from "@carbon/icons-react";
+import { Add, AddAlt, AssetView, Home, ListCheckedMirror, Logout, Mobile, Phone } from "@carbon/icons-react";
 import siderbarLogo from "../../../assets/images/favicon.svg";
 import LogoutModal from "../../Modal/LogoutModal";
 import { useAuth } from "../../../Context/AuthProvider";
 import UIkit from "uikit";
+
 
 
 
@@ -42,6 +43,16 @@ const Sidebar = () => {
                 uk-tooltip="title: Agents; pos: right"
               >
                 <ListCheckedMirror/>
+              </Link>
+        </li>
+
+        <li>
+              <Link
+                className="character-btn"
+                to="/Assign-survey"
+                uk-tooltip="title: Assign Survey; pos: right"
+              >
+                <AddAlt/>
               </Link>
         </li>
 

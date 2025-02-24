@@ -13,6 +13,13 @@ import AddUser from "../pages/AddUser/AddUser";
 import AgentList from "../pages/AgentList/AgentList";
 import AgentProfile from "../pages/AgentProfile/AgentProfile";
 import CreateSurvey from "../pages/CreateSurvey/CreateSurvey";
+import CompanySurvey from "../pages/CompanySurvey/CompanySurvey";
+import AgentsTableList from "../pages/AgentsTableList/AgentsTableList";
+import AssignSurvey from "../pages/AssignSurvey/AssignSurvey";
+// import Showcase from "../pages/Reusables/Showcase";
+
+
+
 
 export const publicRoutes = [
   {
@@ -85,6 +92,13 @@ export const protectedRoutesWithSidebarLayout = [
     headerBtn: true,
   },
   {
+    path: "/All-Agents-List",
+    component: <AgentsTableList />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
     path: "/agent-profile/:id",
     component: <AgentProfile />,
     footer: <Footer extraPadding="70px" />,
@@ -97,5 +111,18 @@ export const protectedRoutesWithSidebarLayout = [
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,
+  },
+  {
+    path: "/Assign-survey",
+    component: <AssignSurvey />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/company-survey/:survey_id",
+    component: <CompanySurvey />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
   },
 ];

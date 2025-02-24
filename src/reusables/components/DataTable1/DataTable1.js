@@ -50,7 +50,7 @@ const DataTable1 = ({
                 <td>{val.name || '-'}</td>
                 <td>{val.city || '-'}</td>
                 <td>{val.location || '-'}</td>
-                <td>{new Date(val.created_at).toLocaleTimeString('en-US', { 
+                <td>{new Date(val.call_time).toLocaleTimeString('en-US', { 
                   hour12: false,
                   hour: '2-digit',
                   minute: '2-digit',
@@ -62,13 +62,21 @@ const DataTable1 = ({
                   </span>
                 </td>
                 <td>{val.duration || '-'}</td>
+
+                {/* if failed then  button wont show  */}
+                {/* {if completed the only view mode then } */}
                 <td>
-                  <button
-                    className="start-call-btn"
-                    onClick={() => navigate(`/survey-calls/${val.id}`)}
-                  >
-                    view Call
-                  </button>
+                  {val.status !== 'failed' ? (
+                    <button
+                      className="start-call-btn"
+                      onClick={() => navigate(val.status === 'completed' ? `/survey-calls/view/${val.id}` : `/survey-calls/${val.id}`)}
+                    >
+                      view Call
+                    </button>
+                  ) : (
+                   '-'
+                  )}
+                  
                 </td>
               </tr>
             ))
@@ -83,7 +91,7 @@ const DataTable1 = ({
       </table>
 
       {data?.length > 0 && (
-        <div>
+        <div className=''>
           <div className="paginationcard uk-card uk-card-default uk-margin-remove-top">
             <ReactPaginate
               previousLabel={"←"}

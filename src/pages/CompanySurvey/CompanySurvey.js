@@ -1,16 +1,17 @@
-import React, { useEffect, useMemo, useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import React, { useEffect, useState } from "react";
 import { apiGet, apiPost } from "../../Utils/apiServices";
-import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
-import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
-import angryImg from "../../assets/images/icons/angry-color.svg";
-import happyImg from "../../assets/images/icons/happy-color.svg";
-import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 import Spinner from "../../reusables/Spinner";
+import { Calendar, ChevronDown, ChevronLeft, Download } from "@carbon/icons-react";
 
+import DataTable1 from "../../reusables/components/DataTable1/DataTable1";
+  import { useNavigate, useParams } from "react-router-dom";
+  import DataTable2 from "../../reusables/components/DataTable2/DataTable2";
 
+const CompanySurvey = () => {
 
-const AuditSurvey = () => {
+  const params = useParams();
+  const {survey_id} = params;
+
   let PageSize = 10;
   const [currentPage, setCurrentPage] = useState(1);
   const [currentPage2, setCurrentPage2] = useState(1);
@@ -41,7 +42,6 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:15:30",
       product_you_purchase: "Lifebuoy Soap",
-      product_experience: angryImg,
       message: "The product quality is very good and I'm satisfied with it.",
     },
     {
@@ -53,7 +53,6 @@ const AuditSurvey = () => {
       status: "completed",
       duration: "00:12:45",
       product_you_purchase: "Surf Excel",
-      product_experience: happyImg,
       message: "Works well but price is a bit high.",
     },
   ];
@@ -79,9 +78,10 @@ const AuditSurvey = () => {
     let params = {
       per_page: 10,
       // limit: PageSize,
-      type: selectedtab
+      type: selectedtab,
+      survey_id: survey_id
     };
-    apiGet(`/agent/dashboard`, onSuccess, onFailure, undefined, params);
+    apiGet(`/get-calls`, onSuccess, onFailure, undefined, params);
   };
 
   useEffect(() => {
@@ -139,7 +139,7 @@ const AuditSurvey = () => {
           <div uk-grid="" className="uk-grid uk-margin-top uk-flex-middle">
             <div className="uk-width-1-2">
               <div className="campaignHeading">
-                <p>AUDIT SURVEY CALLS</p>
+                {/* <p>{data?.calls.data[0].survey.name}</p> */}
               </div>
             </div>
             <div className="uk-width-1-2 btnSection">
@@ -182,7 +182,7 @@ const AuditSurvey = () => {
                   </ul>
                 </div>
               </div>
-            </div>
+            </div>  
           </div>
 
           <div className="analyticsContainer formCentralContainer">
@@ -228,4 +228,4 @@ const AuditSurvey = () => {
   );
 };
 
-export default AuditSurvey;
+export default CompanySurvey;

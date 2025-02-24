@@ -14,8 +14,21 @@ import {
   publicRoutes,
 } from "./Routes/Route";
 import NotFound from "./pages/404/NotFound";
+import { SetupInterceptor } from "./Utils/apiServices";
+
+
 
 function App() {
+
+
+  // Interceptors On 
+
+  useEffect(() => {
+    SetupInterceptor();
+  }, []);
+
+
+
   return (
     <BrowserRouter>
       <AuthProvider>
