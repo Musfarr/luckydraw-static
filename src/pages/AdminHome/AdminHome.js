@@ -11,6 +11,9 @@ import { useAuth } from "../../Context/AuthProvider";
 import { apiGet } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
+import SiteOverviewChart from "../../components/newcomponents/graphcards/SiteOverviewChart";
+import LeadsOverviewChart from "../../components/newcomponents/circlechart/LeadsOverviewChart";
+
 
 
 const AdminHome = () => {
@@ -46,7 +49,7 @@ const AdminHome = () => {
       ) : (
         <div className="broadcastContentWrp">
           <div className="overviewContent">
-            <div className="uk-container uk-container-large">
+            <div className="uk-container uk-container-xlarge">
               <div className="uk-grid uk-flex-middle" uk-grid="">
                 <div className="uk-width-1-1 uk-margin-remove-top">
                   <div
@@ -55,21 +58,21 @@ const AdminHome = () => {
                   >
                     <div className="uk-grid uk-flex-middle" uk-grid="">
                       <div className="uk-width-1-2 uk-margin-remove">
-                        <h2 className="uk-margin-remove">Hi , {auth?.user?.name}</h2>
+                        <h2 className="uk-margin-remove">Dalda | {auth?.user?.name}</h2>
                         <p className="uk-margin-remove">
-                          Unilever | Super Admin
+                          Activations | Call Center | Social Media 
                         </p>
                       </div>
+                      
 
                       <div className="uk-width-1-1 uk-margin-remove">
                         <div className="overviewMainContent">
-                          <div className="mainBox">
-                            <div className="boxHeading">
-                              <span>Total Calls Summary</span>
-                            </div>
-                            <div className="boxContent">
-                              <div className="uk-grid" uk-grid="">
-                                <div className="uk-width-1-4 uk-first-column">
+                          <div className="uk-margin">
+                            <div className="">
+                              <div className="uk-grid uk-grid-small" uk-grid="">
+
+
+                                {/* <div className="uk-width-1-4 uk-first-column">
                                   <div className="txtwrp">
                                     <Phone
                                       style={{
@@ -120,52 +123,38 @@ const AdminHome = () => {
                                     <h2>{data?.success_rate}%</h2>
                                     <span>Success Rate</span>
                                   </div>
-                                </div>
+                                </div> */}
+
+                                <SiteOverviewChart/>
+
+
+
                               </div>
                             </div>
                           </div>
 
-                          <div className="uk-grid uk-grid-small" uk-grid="" >
-                            <div className="uk-width-1-3">
-                              <div className="mainBox">
-                                <div className="boxHeading">
-                                  <span>Total Calls Summary</span>
-                                </div>
-                                <div className="boxContent">
-                                <PieChart 
-                                    graphData={Object.values(data?.cities || {})}
-                                    backgroundColor={colors}
-                                    borderColor={[colors[0]]}
-                                    graphlabels={Object.keys(data?.cities || {})}
-                                  />
-                                  {/* <div className="chartDataWrapper">
-                                    {Object.entries(data?.cities || {}).map(([city, value], index) => (
-                                      <ul key={city}>
-                                        <li>
-                                          <p>
-                                            <span className={`${index === 0 ? 'orangeDot' : 'lightGreenDot'}`}></span>
-                                            {city}
-                                          </p>
-                                        </li>
-                                        <li>
-                                          <p className="uk-text-bold">{value}</p>
-                                        </li>
-                                      </ul>
-                                    ))}
-                                  </div> */}
+                            <div className="uk-grid uk-grid-small" uk-grid="" uk-height-match="target: > h-match " >
+                              <div className="uk-width-1-3 h-match" >
+
+
+
+                                <div className="mainBox">
+                                  <div className="boxHeading">
+                                    <div className="fw-bold mb-2 text-dark text-truncate-1-line">Top Platforms</div>
+                                  </div>
+                                  <LeadsOverviewChart chartHeight={180} />
                                 </div>
                               </div>
-                            </div>
-                            <div className="uk-width-2-3">
-                              <div
-                                className="uk-grid uk-grid-small"
-                                uk-grid=""
-                                uk-height-match="target: > div > div"
-                              >
-                                <div className="uk-width-1-2">
+                              <div className="uk-width-2-3 h-match">
+                                <div
+                                  className="uk-grid uk-grid-small"
+                                  uk-grid=""
+                                  uk-height-match="target: > div > div"
+                                >
+                                  {/* <div className="uk-width-1-1">
                                   <div className="cardbox">
                                     <div className="cardHeading ">
-                                      <span>User Creation</span>
+                                    <div className="fw-bold mb-2 text-dark text-truncate-1-line">User Creation</div>
                                       <button
                                         type="button"
                                         className="view-all-link"
@@ -200,74 +189,59 @@ const AdminHome = () => {
                                       </div>
                                     </div>
                                   </div>
-                                </div>
-                                <div className="uk-width-1-2">
-                                  <div className="mainBox uk-margin-remove-bottom">
-                                    <div className="boxHeading">
-                                      <span>Top 5 Performing Call Agent</span>
-                                    </div>
-                                    <div className="boxCntent">
-                                      <div className="simpleTable">
-                                        <table>
-                                          <thead>
-                                            <tr>
-                                              <th style={{ textAlign: "left" }}>
-                                                Sales Agent
-                                              </th>
-                                              <th>Success Rating</th>
-                                            </tr>
-                                          </thead>
-                                          <tbody>
-                                            {data?.topAgents.map((agent) => (
-                                              <tr key={agent.user_id}>
-                                                <td className="agentName">{agent.name}</td>
-                                                <td>{agent.success_rate}%</td>
+                                </div> */}
+                                  <div className="uk-width-1-1">
+                                    <div className="mainBox uk-margin-remove-bottom">
+                                      <div className="boxHeading">
+                                        <span>Top 5 Performing Call Agent</span>
+                                      </div>
+                                      <div className="boxCntent">
+                                        <div className="simpleTable">
+                                          <table>
+                                            <thead>
+                                              <tr>
+                                                <th style={{ textAlign: "left" }}>
+                                                  Sales Agent
+                                                </th>
+                                                <th>Success Rating</th>
                                               </tr>
-                                            ))}
-                                          </tbody>
-                                        </table>
-                                      </div>
-                                    </div>
-                                  </div>
-                                </div>
-                                <div className="uk-width-1-1">
-                                  <div className="mainBox">
-                                    <div className="boxHeading">
-                                      <span>Real Time Monitoring</span>
-                                    </div>
-                                    <div className="boxContent">
-                                      <div className="uk-grid" uk-grid="">
-                                        <div className="uk-width-1-4 uk-first-column">
-                                          <div className="txtwrp">
-                                            <h2>{data?.realtimeData?.active_calls}</h2>
-                                            <span className="status completed">Active Calls</span>
-                                          </div>
-                                        </div>
-                                        <div className="uk-width-1-4">
-                                          <div className="txtwrp">
-                                            <h2>{data?.realtimeData?.pending_calls}</h2>
-                                            <span className="status pending">Pending Calls</span>
-                                          </div>
-                                        </div>
-                                        <div className="uk-width-1-4">
-                                          <div className="txtwrp">
-                                            <h2>{data?.realtimeData?.active_agents} % </h2>
-                                            <span className="status completed">Active Agent</span>
-                                          </div>
-                                        </div>
-                                        <div className="uk-width-1-4">
-                                          <div className="txtwrp">
-                                            <h2>{data?.realtimeData?.inactive_agents} %</h2>
-                                            <span className="status danger">Inactive Agent</span>
-                                          </div>
+                                            </thead>
+                                            <tbody>
+                                              {data?.topAgents.map((agent) => (
+                                                <tr key={agent.user_id}>
+                                                  <td className="agentName">{agent.name}</td>
+                                                  <td>{agent.success_rate}%</td>
+                                                </tr>
+                                              ))}
+                                            </tbody>
+                                          </table>
                                         </div>
                                       </div>
                                     </div>
                                   </div>
+
                                 </div>
                               </div>
                             </div>
-                          </div>
+
+
+
+
+
+                          {/* <div>
+                            <LeadsOverviewChart chartHeight={290} />
+                          </div> */}
+
+
+
+
+
+
+
+
+
+
+
 
                           <div className="userTableWrp">
 

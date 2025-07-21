@@ -8,6 +8,8 @@ import { AuthProvider } from "./Context/AuthProvider";
 import PrivateRoute from "./Routes/PrivateRoute";
 import OpenRoutes from "./Routes/OpenRoutes";
 import SidebarLayout from "./components/common/Sidebar/SidebarLayout";
+import "bootstrap/dist/css/bootstrap.min.css";
+import "bootstrap/dist/js/bootstrap.bundle.min.js";
 import {
   protectedRoutesWithSidebarLayout,
   protectedRoutesWithoutSidebarLayout,

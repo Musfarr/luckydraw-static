@@ -1,5 +1,4 @@
 import React from "react";
-import { currentYear } from "../../../Utils/DateFunctions";
 
 const Footer = ({ color, extraPadding }) => {
   const name = process.env.REACT_APP_PORTAL_NAME
@@ -12,7 +11,7 @@ const Footer = ({ color, extraPadding }) => {
         <div uk-grid="" className="uk-grid">
           <div className="uk-width-1-2">
             <div className="txtwrp">
-              <span style={{ color: '#000' }} >© {currentYear()}{' '} {name}. All rights reserved.</span>
+              <span style={{ color: '#000' }} >© {new Date().getFullYear()}{' '} {name}. All rights reserved.</span>
             </div>
           </div>
           <div className="uk-width-1-2">

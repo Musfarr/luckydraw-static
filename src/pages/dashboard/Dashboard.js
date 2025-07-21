@@ -81,6 +81,9 @@ const Dashboard = () => {
                   <div className="uk-grid uk-flex-middle" uk-grid="">
                     <div className="uk-width-1-2 uk-margin-remove">
                       <h2 className="uk-margin-remove">Hi , User</h2>
+
+
+                      
                       <p className="uk-margin-remove">Agent</p>
                     </div>
 

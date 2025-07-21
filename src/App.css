@@ -5,8 +5,8 @@
 /* color variables */
 
 :root {
-  --primaryColor: #1F36C7;
-  --primaryHoverColor: #264983;
+  --primaryColor: #4A5A6A;
+  --primaryHoverColor: red;
   --secondaryColor: #868686;
   --secondaryHoverColor: #b9b9b9;
 }
@@ -772,7 +772,7 @@ header .logowrp img {
 
 /* =================================side nav=========================================== */
 
-.sideNav {
+/* .sideNav {
   background: #000000;
   border-right: 1px solid rgba(0, 0, 0, 0.11);
   position: fixed;
@@ -802,13 +802,112 @@ header .logowrp img {
 }
 
 .sideNav .navwrp ul li button {
-  /* padding: 0; */
   border: none;
   cursor: pointer;
   position: relative;
   border-radius: 50%;
   background-color: transparent;
+} */
+
+
+
+/* new Sidenav ////////////// */
+
+.sideNav {
+  background: white;
+  border-right: 1px solid rgba(0, 0, 0, 0.11);
+  position: fixed;
+  z-index: 999;
+  width: 240px;
+  height: calc(100vh - 18px);
+  padding-top: 18px;
+  box-shadow: 2px 13px 54px #695F9714;
 }
+
+.sideNav .logowrp {
+  margin: 20px 0 80px 0;
+  text-align: center;
+}
+
+.sideNav .logo {
+  margin: 0px 0px 30px 15px;
+}
+
+.sideNav .navwrp ul {
+  padding: 0px;
+  text-align: center;
+  /* margin-left: 25px; */
+  list-style: none;
+
+}
+
+.sideNav .navwrp ul li {
+  list-style: none;
+  margin: 0px 0px 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;  
+}
+
+.sideNav .navwrp ul li a.character-btn {
+    display: flex;
+    align-items: center;
+    font-size: 14px;
+    color: #6a6a6a;
+    background: transparent;
+    padding: 8px 15px 8px 15px;
+    border-radius: 32px;
+    transition: all 0.18s cubic-bezier(.4,0,.2,1);
+    width: 170px;
+    text-decoration: solid;
+}
+.sideNav .navwrp ul li a.character-btn svg {
+  width: 22px;
+  height: 22px;
+  margin-right: 8px;
+  flex-shrink: 0;
+  color: #6a6a6a;
+  transition: color 0.18s;
+  fill: #534d4d;
+}
+.sideNav .navwrp ul li a.character-btn span {
+  font-weight: 400;
+  color: inherit;
+  margin-left: 4px;
+  letter-spacing: 0.01em;
+}
+.sideNav .navwrp ul li a.character-btn:hover,
+.sideNav .navwrp ul li a.character-btn.active {
+  background: var(--primaryColor);
+  transition: all 0.18s cubic-bezier(.4,0,.2,1);
+  transform: scale(1.1);
+  color: #fff;
+  fill: #fff;
+}
+.sideNav .navwrp ul li a.character-btn:hover svg,
+.sideNav .navwrp ul li a.character-btn.active svg {
+  color: #fff !important;
+  fill: #fff !important;
+}
+.sideNav .navwrp ul li a.character-btn:hover span,
+.sideNav .navwrp ul li a.character-btn.active span {
+  color: #fff !important;
+}
+
+
+
+
+/* new Sidenav end //////////////// */
+
+
+
+
+
+
+
+
+
+
 
 .navDropDown {
   padding: 10px 0 !important;
@@ -5592,7 +5691,7 @@ span.filtername {
 
 .overviewContent {
   padding: 120px 0 120px;
-  background-color: #f0f0f0;
+  background-color: #f3f4f6;
   min-height: calc(100vh - 231px);
 }
 
@@ -9620,7 +9719,7 @@ input.triggerInput:focus {
 
 /* ==================================loreal stats======================================= */
 .padding60 {
-  padding-left: 60px !important;
+  padding-left: 240px !important;
 }
 
 /* chat processing modal  */

@@ -1,10 +1,10 @@
 
-:root{
+/* :root{
   --primaryColor: #1F36C7;
   --primaryHoverColor: #264983;
   --secondaryColor: #868686;
   --secondaryHoverColor: #b9b9b9;
-}
+} */
 
 .formInput h2 {
     font-size: 18px;
@@ -148,3 +148,151 @@
 .break-me {
   cursor: default;
 }
+
+.hstack {
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  align-self: stretch;
+}
+
+.vstack {
+  display: flex;
+  flex: 1 1 auto;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+
+/* --- Customers Table Custom Styles --- */
+.table.customers-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  background: #fff;
+  border-radius: 0;
+  overflow: hidden;
+  box-shadow: none;
+}
+.table.customers-table thead th {
+  background: transparent;
+  color: #333;
+  font-weight: 600;
+  padding: 16px 12px;
+  border-bottom: 1px solid #ddd;
+  font-size: 14px;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+.table.customers-table tbody td {
+  padding: 14px 12px;
+  border-bottom: 1px solid #eee;
+  font-size: 14px;
+  vertical-align: middle;
+  color: #444;
+}
+.table.customers-table tbody tr:last-child td {
+  border-bottom: none;
+}
+.table.customers-table tbody tr:hover {
+  background: rgba(31, 54, 199, 0.03);
+  transition: background 0.2s;
+}
+.avatar-image img {
+  width: 38px;
+  height: 38px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: none;
+  box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+.avatar-image.avatar-sm img {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  border: none;
+}
+.hstack.gap-2 {
+  gap: 8px;
+}
+.d-flex.align-items-center.gap-3 {
+  gap: 12px;
+}
+.card-header h4 {
+  font-size: 18px;
+  font-weight: 600;
+  color: #222;
+  margin: 0;
+}
+.table.customers-table a {
+  color: #1F36C7;
+  text-decoration: none;
+  font-weight: 500;
+}
+.table.customers-table a:hover {
+  text-decoration: underline;
+}
+@media (max-width: 700px) {
+  .table.customers-table thead {
+    display: none;
+  }
+  .table.customers-table tbody td {
+    display: block;
+    width: 100%;
+    box-sizing: border-box;
+    padding: 10px 8px;
+    border-bottom: none;
+  }
+  .table.customers-table tbody tr {
+    margin-bottom: 12px;
+    display: block;
+    border-bottom: 1px solid #eee;
+  }
+}
+/* --- End Customers Table Styles --- */
+
+/* --- Leads Statistics Cards --- */
+.leads-statistics-grid {
+  display: grid;
+  grid-template-columns: repeat(6, 1fr);
+  gap: 15px;
+  margin-top: 20px;
+}
+
+.leads-report-card .card {
+  height: 100%;
+  border-radius: 4px;
+  background: #fff;
+  padding: 15px;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.05);
+  transition: all 0.2s ease;
+}
+
+.leads-report-card .card:hover {
+  box-shadow: 0 3px 8px rgba(0,0,0,0.08);
+}
+
+.leads-report-card h3 {
+  font-size: 24px;
+  margin: 0;
+  font-weight: 600;
+}
+
+@media (max-width: 1200px) {
+  .leads-statistics-grid {
+    grid-template-columns: repeat(3, 1fr);
+  }
+}
+
+@media (max-width: 768px) {
+  .leads-statistics-grid {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
+
+@media (max-width: 480px) {
+  .leads-statistics-grid {
+    grid-template-columns: 1fr;
+  }
+}
+/* --- End Leads Statistics Cards --- */

@@ -9,6 +9,9 @@ import Units from "../pages/Units/Units";
 import SurveyCall from "../pages/SurveyCall/SurveyCall";
 import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
 import AdminHome from "../pages/AdminHome/AdminHome";
+import SocialMedia from "../pages/SocialMedia";
+import CallCenter from "../pages/CallCenter";
+import Activations from "../pages/Activations/Activations";
 import AddUser from "../pages/AddUser/AddUser";
 import AgentList from "../pages/AgentList/AgentList";
 import AgentProfile from "../pages/AgentProfile/AgentProfile";
@@ -38,6 +41,24 @@ export const protectedRoutesWithoutSidebarLayout = [
   },
 ];
 export const protectedRoutesWithSidebarLayout = [
+  {
+    path: "/call-center",
+    component: <CallCenter />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+  },
+  {
+    path: "/social-media",
+    component: <SocialMedia />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+  },
+  {
+    path: "/activations",
+    component: <Activations />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+  },
   {
     path: "/dashboard",
     component: <Dashboard />,
