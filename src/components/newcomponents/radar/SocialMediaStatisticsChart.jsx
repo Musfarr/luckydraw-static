@@ -8,6 +8,9 @@ const SocialMediaStatisticsChart = () => {
     return (
         <div className="">
             <div className={`card`}>
+                <div className="card-header">
+                    <h3>Social Media Statistics</h3>
+                </div>
                 <div className="card-body">
                     <ReactApexChart
                         options={chartOptions}

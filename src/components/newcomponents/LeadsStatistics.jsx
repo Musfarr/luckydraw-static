@@ -2,22 +2,22 @@ import { ArrowDown, ArrowUp } from '@carbon/icons-react'
 import React from 'react'
 
 const data = [
-    { title: "Total Inquiry", average_value: "32", average_value_count: "K", curret_value: "+20.36", trend: "up" },
-    { title: "Performance", average_value: "45.68", average_value_count: "%", curret_value: "-10.46", trend: "down" },
-    { title: "Escalations", average_value: "985", average_value_count: "", curret_value: "+25.48", trend: "up" },
-    { title: "SLA Compliant", average_value: "895", average_value_count: "", curret_value: "+15.39", trend: "up" },
+    { title: "Total Activations", average_value: "32", average_value_count: "K", curret_value: "+20.36", trend: "up" },
+    { title: "ongoing Sessions", average_value: "45.68", average_value_count: "%", curret_value: "-10.46", trend: "down" },
     { title: "Avg. Time (H)", average_value: "03.45", average_value_count: "", curret_value: "-12.86", trend: "down" },
-    { title: "Avg. Fullfilment", average_value: "65.95", average_value_count: "%", curret_value: "+20.35", trend: "up" },
+    { title: "Avg. Time (H)", average_value: "03.45", average_value_count: "", curret_value: "-12.86", trend: "down" },
+    { title: "Avg. Time (H)", average_value: "03.45", average_value_count: "", curret_value: "-12.86", trend: "down" },
+    { title: "Conversion Rate", average_value: "65.95", average_value_count: "%", curret_value: "+20.35", trend: "up" },
 ]
 
 const LeadsStatistics = () => {
     return (
-        <div className="leads-statistics-grid">
+        <div className="uk-grid uk-grid-medium" uk-grid="">
             {
                 data.map(({ average_value, average_value_count, curret_value, title, trend }, index) => {
                     return (
-                        <div key={index} className="leads-report-card" style={{borderRadius:"10px"}}>
-                            <div className="card stretch stretch-full">
+                        <div key={index} className="uk-width-1-2 uk-width-1-3@s uk-width-1-4@m uk-width-1-6@l uk-width-1-6@xl" >
+                            <div className="card stretch stretch-full" style={{borderRadius:"10px"}}>
                                 <div className="card-body">
                                     <div className="fs-12 fw-medium text-muted mb-3">{title}</div>
                                     <div className="hstack justify-content-between lh-base">

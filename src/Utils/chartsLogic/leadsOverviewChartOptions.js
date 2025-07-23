@@ -3,8 +3,8 @@ export const leadsOverviewChartOptions = {
         enabled: !1
     },
     series: [20, 15, 10, 18],
-    labels: ["Facebook", "Instagram", "Twitter", "other",],
-    colors: ["#3454d1", "#FACC15", "#EA4D4D", "#1e88e5",],
+    labels: ["Facebook", "Instagram", "WhatsApp", "Twitter", "other",],
+    colors: ["#4BAA55", "#7ED957", "#35873e", "#B7E7B7", "#B7E5B4"],
     stroke: {
         width: 0, lineCap: "round"
     },

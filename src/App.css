@@ -5,8 +5,8 @@
 /* color variables */
 
 :root {
-  --primaryColor: #4A5A6A;
-  --primaryHoverColor: red;
+  --primaryColor: #35873e;
+  --primaryHoverColor: #4A5A6A;
   --secondaryColor: #868686;
   --secondaryHoverColor: #b9b9b9;
 }
@@ -331,23 +331,16 @@ div pre {
 /* ================================= login page =================================== */
 .loginWrp .imgwrp {
   height: 100vh;
-  /* background: var(--primaryColor); */
+  background: linear-gradient(90deg, rgba(0, 0, 0, 1) 5%, rgb(36 33 33) 100%);;
   display: flex;
   align-items: center;
   justify-content: center;
 }
 
 .loginWrp .imgwrp img {
-  height: 100%;
-  width: 100%;
-  object-fit: cover;
-}
-
-.loginWrp .formwrp {
-  height: 100%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  /* height: 100%; */
+  /* width: 40%; */
+  /* object-fit: cover; */
 }
 
 .loginWrp .formwrp {
@@ -357,14 +350,45 @@ div pre {
   justify-content: center;
 }
 
+.loginWrp .formwrp form {
+  background: #ffffff;
+  padding: 40px 50px;
+  border-radius: 16px;
+  box-shadow: 0 8px 30px rgba(0,0,0,0.08), 0 1px 3px rgba(0,0,0,0.02);
+  border: 1px solid rgba(0,0,0,0.05);
+  min-width: 380px;
+  position: relative;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.loginWrp .formwrp form:hover {
+  /* transform: translateY(-5px); */
+  box-shadow: 0 15px 35px rgba(0,0,0,0.1), 0 3px 10px rgba(0,0,0,0.05);
+}
+
+.loginWrp .formwrp form::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 4px;
+  background: linear-gradient(90deg, #4BAA55 0%, #6edc8c 100%);
+  border-radius: 16px 16px 0 0;
+}
+
 .loginWrp .formwrp .loginHeading {
   margin-bottom: 30px;
 }
 
 .loginWrp .formwrp .loginHeading h2 {
   margin-bottom: 0;
-  font-size: 34px;
-  color: #212121;
+  font-size: 36px;
+  color: #4BAA55;
+  font-family: 'SF Pro Medium', Arial, sans-serif !important;
+  letter-spacing: 1.5px;
+  font-weight: 700;
+  text-shadow: 0 2px 8px rgba(75,170,85,0.04);
 }
 
 .loginWrp .formwrp .errors {
@@ -378,27 +402,52 @@ div pre {
   position: relative;
 }
 
-.loginWrp .formwrp .inputField input {
+.loginWrp .formwrp .inputField input, .inputField select {
   min-width: 300px;
   padding: 12px 16px;
-  font-size: 17px;
-  border: 1px solid #e4e4e4;
+  font-size: 15px;
+  border: 1.5px solid #E4E4E4;
   background: #fff;
-  border-radius: 4px;
+  border-radius: 8px;
+  font-family: 'SF Pro Regular', 'SF Pro bold italic', Arial, sans-serif;
+  font-weight: 400 !important;
+  color: #222;
+  box-shadow: 0 1px 4px rgba(0,0,0,0.03);
+  transition: border 0.2s, box-shadow 0.2s;
+}
+.inputField select {
+  width: 100%;
 }
 
-
-
-.loginWrp .formwrp .inputField .viewIcon {
-  position: absolute;
-  right: 10px;
-  top: 13px;
-  width: 22px;
-  cursor: pointer;
-}
-
-.loginWrp .formwrp .inputField input:focus-visible {
+.loginWrp .formwrp .inputField input:hover, .loginWrp .formwrp .inputField input:focus {
+  border: 1.5px solid var(--primaryHoverColor);
+  box-shadow: 0 2px 8px rgba(75,170,85,0.07);
+  background: #f8fff7;
   outline: none;
+}
+
+.loginWrp .formwrp .inputField input::placeholder {
+  color: #A0A0A0;
+  font-family: 'SF Pro Thin', 'SF Pro Regular', Arial, sans-serif;
+  font-size: 15px;
+  opacity: 1;
+  font-style: normal;
+}
+
+input::placeholder {
+  font-style: normal !important;
+}
+input::-webkit-input-placeholder {
+  font-style: normal !important;
+}
+input::-moz-placeholder {
+  font-style: normal !important;
+}
+input:-ms-input-placeholder {
+  font-style: normal !important;
+}
+input::-ms-input-placeholder {
+  font-style: normal !important;
 }
 
 .loginWrp .formwrp .txtwrp p {
@@ -816,6 +865,7 @@ header .logowrp img {
 .sideNav {
   background: white;
   border-right: 1px solid rgba(0, 0, 0, 0.11);
+  /* background: linear-gradient(90deg, rgba(0, 0, 0, 1) 5%, rgb(36 33 33) 100%); */
   position: fixed;
   z-index: 999;
   width: 240px;
@@ -5692,7 +5742,7 @@ span.filtername {
 .overviewContent {
   padding: 120px 0 120px;
   background-color: #f3f4f6;
-  min-height: calc(100vh - 231px);
+  min-height: calc(100vh );
 }
 
 .btnSection {

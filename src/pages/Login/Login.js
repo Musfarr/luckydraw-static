@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 // import mainLogo from "../../assets/images/mainLogo.svg";
-import mainLogo from "../../assets/images/loginimage.png";
+// import mainLogo from "/assets/images/sidebarlogo.svg";
 import { View, ViewOff } from "@carbon/icons-react";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -108,12 +108,13 @@ const Login = () => {
     <>
       <div className="loginWrp">
         <div uk-grid="" className="uk-grid">
-          <div className="uk-width-1-2">
-            <div className="imgwrp">
-              <img src={mainLogo} alt="" />
+          <div className="uk-width-expand">
+            <div className="imgwrp uk-flex uk-flex-center uk-flex-middle" >
+              <img src={`/assets/images/convexlogowhite.png`} alt="" />
             </div>
           </div>
-          <div className="uk-width-1-2">
+
+          <div className="uk-width-1-3">
             <div className="formwrp">
               <form onSubmit={handleLogin}>
                 <div className="loginHeading">
@@ -177,19 +178,24 @@ const Login = () => {
                   </div>
                   <div className="uk-width-1-1">
                     <div className="fbInstaBtn">
-                      <button type="submit" className="login">
-                        {loading ? (
+                    <div className="loginBtn">
+                    <button type="submit" className="login">
+                      {loading ? (
                           <div uk-spinner="" className="loader"></div>
                         ) : (
                           "Log in"
                         )}
                       </button>
+                      </div>
                     </div>
                   </div>
                 </div>
               </form>
             </div>
           </div>
+
+
+
         </div>
       </div>
     </>

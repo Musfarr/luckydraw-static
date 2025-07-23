@@ -9,12 +9,17 @@ const InquiryTrackingChart = () => {
             <div className="card ">
                 {/* <CardHeader title={"Inquiry Tracking"} /> */}
 
+                <div className='card-header'>
+                    <h3>Inquiry Tracking</h3>
+                </div>
+
+
                 <div className="card-body custom-card-action">
                     <ReactApexChart
                         type='bar'
                         options={chartOption}
                         series={chartOption?.series}
-                        height={350}
+                        height={450}
                     />
                 </div>
             </div>

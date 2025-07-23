@@ -214,7 +214,7 @@ const Sidebar = () => {
     <>
       <nav className="sideNav">
         <div className="logowrp">
-          <img src={sidelogo} width={180} alt="" />
+          <img src={'/assets/images/sidebarlogo.svg'} width={180} alt="" />
         </div>
 
         <div className="navwrp">

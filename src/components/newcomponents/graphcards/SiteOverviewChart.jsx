@@ -3,33 +3,36 @@ import ReactApexChart from 'react-apexcharts'
 import { siteOverviewData } from '../../../Utils/fackData/siteOverviewData'
 import { siteOverviewChartOption } from '../../../Utils/chartsLogic/siteOverviewChartOption'
 
+const greenShades = ["#4BAA55", "#7ED957", "#35873e", "#B7E5B4"];
+
 const SiteOverviewChart = () => {
   return (
     <>
       {
-        siteOverviewData.map(({ average_user, id, prev_user, title, todays_user, colors }) => {
+        siteOverviewData.map(({ average_user, id, prev_user, title, todays_user }, idx) => {
           const series = {
             name: title,
             data: [25, 60, 20, 90, 45, 100, 45, 100, 55]
           }
 
-          const chartOption = siteOverviewChartOption(colors, series)
+          // Assign a unique green shade to each chart
+          const chartOption = siteOverviewChartOption([greenShades[idx % greenShades.length]], series)
 
           return (
             <div key={id} className="col-xxl-3 col-md-6">
-              <div className="card stretch stretch-full" style={{borderRadius: "8px"}}>
+              <div className="card" style={{borderRadius: "8px"}}>
                 <div className="card-body p-0">
                   <div className="d-flex justify-content-between p-4 mb-4">
                     <div>
                       <div className="fw-bold mb-2 text-dark text-truncate-1-line">{title} (Avg)</div>
-                      <div className="fs-11 text-muted">VS {prev_user}% (Prev)</div>
+                      <div className="text-muted">VS {prev_user}% (Prev)</div>
                     </div>
                     <div className="text-end">
-                      <div className="fs-24 fw-bold mb-2 text-dark"><span className="counter">{average_user}</span>%</div>
+                      <div className="fw-bold mb-2 text-dark"><span className="counter">{average_user}</span>%</div>
                       {todays_user < prev_user ?
-                        <div className="fs-11 text-danger">(- {todays_user}%)</div>
+                        <div className="text-danger">(- {todays_user}%)</div>
                         :
-                        <div className="fs-11 text-success">(+ {todays_user}%)</div>
+                        <div className="text-success">(+ {todays_user}%)</div>
                       }
                     </div>
                   </div>
@@ -43,8 +46,7 @@ const SiteOverviewChart = () => {
               </div>
             </div>
           )
-        }
-        )
+        })
       }
     </>
   )

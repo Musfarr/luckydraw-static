@@ -23,8 +23,20 @@ export const siteOverviewChartOption = (colors, series) => {
                 stops: [0, 100, 100, 100]
             }
         },
+        xaxis: {
+        labels: { show: false },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        tooltip: { enabled: false },
+        },
         yaxis: {
-            min: 0
+        labels: { show: false },
+        axisBorder: { show: false },
+        axisTicks: { show: false },
+        },
+        grid: {
+        show: false,
+        padding: { left: 0, right: 0, top: 0, bottom: 0 },
         },
         colors
     }

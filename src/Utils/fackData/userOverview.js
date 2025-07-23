@@ -11,6 +11,11 @@ export const leadsUserOverview = [
     },
     {
         id: 3,
+        title: "WhatsApp",
+        number: "10"
+    },
+    {
+        id: 3,
         title: "Twitter",
         number: "10"
     },

@@ -32,18 +32,14 @@ const SocialMedia = () => {
                           <div className="uk-margin">
                               <div className="uk-grid uk-grid-small" uk-grid="" uk-height-match="target: > div > div" >
                               <div className="uk-width-1-2">
-                                  <div className="mainBox">
-                                    <div className="boxHeading">
-                                      <div className="fw-bold mb-2 text-dark text-truncate-1-line">Total Engagement</div>
-                                    </div>
+                                  <div className="manBox">
+                                    
                                     <InquiryTrackingChart/>
                                   </div>
                                 </div>
                               <div className="uk-width-1-2">
-                                  <div className="mainBox">
-                                    <div className="boxHeading">
-                                      <div className="fw-bold mb-2 text-dark text-truncate-1-line">Total Engagement</div>
-                                    </div>
+                                  <div className="mainBx">
+                                    
                                     <SocialMediaStatisticsChart/>
                                   </div>
                                 </div>

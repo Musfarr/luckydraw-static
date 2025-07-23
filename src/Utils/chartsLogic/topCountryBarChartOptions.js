@@ -3,7 +3,7 @@ export const topCountryBarChartOptions = () => {
         chart: { type: "bar", height: 400, fontFamily: "inherit", toolbar: { show: !1 } },
         legend: { show: !1 },
         series: [{ name: "Visitors", data: [87, 82, 68, 49, 41] }],
-        colors: ["#3454d1", "#ffa21d", "#ea4d4d", "#25b865", "#283c50"],
+        colors: ["#4BAA55", "#7ED957", "#35873e", "#B7E5B4", "#283c50"],
         grid: { strokeDashArray: 4, position: "back", xaxis: { lines: { show: !0 } }, yaxis: { lines: { show: !1 } } },
         plotOptions: {
             bar: {
@@ -20,7 +20,7 @@ export const topCountryBarChartOptions = () => {
         labels: { show: !1 },
         dataLabels: { enabled: !1 },
         stroke: { show: !1 },
-        xaxis: { categories: ["USA", "India", "UK", "France", "Canada"], axisTicks: { show: !0 }, axisBorder: { show: !1 } },
+        xaxis: { categories: ["Karachi", "Lahore", "Islamabad" , "Faisalabad", "Rawalpindi"], axisTicks: { show: !0 }, axisBorder: { show: !1 } },
         yaxis: { labels: { show: !0 }, axisTicks: { show: !1 }, axisBorder: { show: !1 } },
         tooltip: {
             y: {

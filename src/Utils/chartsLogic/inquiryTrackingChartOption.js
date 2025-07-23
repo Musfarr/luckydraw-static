@@ -37,7 +37,7 @@ export const inquiryTrackingChartOption = () => {
         dataLabels: {
             enabled: !1
         },
-        colors: ["#3454D1", "#e5e7eb"],
+        colors: ["#35873e", "#e5e7eb"],
         series: [{
             name: "New",
             data: [20, 30, 40, 50, 46, 42, 38, 34, 30, 28, 26, 25]

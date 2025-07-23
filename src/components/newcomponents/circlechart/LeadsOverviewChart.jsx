@@ -14,7 +14,9 @@ const LeadsOverviewChart = ({ chartHeight, isFooterShow }) => {
     return (
         <div className="">
             <div className="card stretch stretch-full leads-overview">
-                {/* <CardHeader title={"Leads Overview"} refresh={handleRefresh} remove={handleDelete} expanded={handleExpand} /> */}
+                <div className="card-header">
+                    <h3>Leads Overview</h3>
+                </div>
 
                 <div className="card-body custom-card-action">
                     <ReactApexChart

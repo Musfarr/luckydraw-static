@@ -6,7 +6,7 @@ const Footer = ({ color, extraPadding }) => {
     <div className="uk-position-relative">
       <div
         className="footerwrp"
-        style={{ backgroundColor: color, paddingLeft: extraPadding }}
+        style={{ backgroundColor: color, paddingLeft: '280px' }}
       >
         <div uk-grid="" className="uk-grid">
           <div className="uk-width-1-2">
