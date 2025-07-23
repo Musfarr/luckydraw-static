@@ -8,7 +8,6 @@ const ScheduleTwo = ({ title, data }) => {
 
     
     return (
-        <div className="">
             <div className={`card `}>
                 <div className="card-header">
                     <h5 className="card-title">{title}</h5>
@@ -37,7 +36,6 @@ const ScheduleTwo = ({ title, data }) => {
                     </ul>
                 </div>
             </div>
-        </div>
     )
 }
 

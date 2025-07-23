@@ -14,7 +14,7 @@ const InquiryTrackingChart = () => {
                 </div>
 
 
-                <div className="card-body custom-card-action">
+                <div className=" card-body custom-card-action">
                     <ReactApexChart
                         type='bar'
                         options={chartOption}

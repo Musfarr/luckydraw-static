@@ -12,13 +12,12 @@ import { leadsOverviewChartOptions } from '../../../Utils/chartsLogic/leadsOverv
 const LeadsOverviewChart = ({ chartHeight, isFooterShow }) => {
 
     return (
-        <div className="">
-            <div className="card stretch stretch-full leads-overview">
+            <div className="card leads-overview">
                 <div className="card-header">
                     <h3>Leads Overview</h3>
                 </div>
 
-                <div className="card-body custom-card-action">
+                <div className=" p card-body custom-card-action">
                     <ReactApexChart
                         options={leadsOverviewChartOptions}
                         series={leadsOverviewChartOptions.series}
@@ -41,7 +40,6 @@ const LeadsOverviewChart = ({ chartHeight, isFooterShow }) => {
                 {/* {isFooterShow && <Link to="#" className="card-footer fs-11 fw-bold text-uppercase text-center">Update: 50 Min Ago</Link>} */}
                 {/* <CardLoader refreshKey={refreshKey} /> */}
             </div>
-        </div>
     )
 }
 

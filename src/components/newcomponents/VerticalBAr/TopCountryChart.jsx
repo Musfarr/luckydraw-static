@@ -36,9 +36,7 @@ const TopCountryChart = () => {
                                     {/* <div className="me-3" >
                                         <img src={flag} alt='img' className='w-full rounded-0' style={{ height: "15px", width: "20px" }} />
                                     </div> */}
-                                    <a href="#">
-                                        <span>{country}</span>
-                                    </a>
+                                    <span>{country}</span>
                                 </div>
                                 <div className=" fw-medium  text-muted">{clicks} Clicks</div>
                             </div>

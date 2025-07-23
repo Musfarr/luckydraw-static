@@ -2,7 +2,7 @@ export const leadsStatusData = [
     {
         id: 1,
         name: "Archie Tones",
-        img: "https://randomuser.me/api/portraits/women/1.jpg",
+        img: "https://via.placeholder.com/40x40/cccccc/ffffff?text=+",
         date: "15 June, 2023",
         status: "Deal Won",
         value: "15.56K",
