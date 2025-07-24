@@ -9,8 +9,8 @@ const InquiryTrackingChart = () => {
             <div className="card ">
                 {/* <CardHeader title={"Inquiry Tracking"} /> */}
 
-                <div className='card-header'>
-                    <h3>Inquiry Tracking</h3>
+                <div className="card-header">
+                    <h5 className="card-title">Inquiry Tracking</h5>
                 </div>
 
 

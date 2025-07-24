@@ -36,7 +36,7 @@ const CallCenterTable = ({ data }) => {
   return (
     <div className="mainBox">
       <div className="boxHeading">
-        <span>Call Center Campaign Data</span>
+        <h5 className="card-title">Call Center Campaign Data</h5>
       </div>
       <div className="boxCntent">
         <div className="table-responsive">

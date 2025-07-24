@@ -304,6 +304,7 @@
   margin-bottom: 16px;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
   transition: all 0.3s ease;
+  background-color: #fff;
 }
 
 .stat-card:hover {
@@ -312,27 +313,27 @@
 }
 
 .stat-card-primary {
-  background-color: #f0f7ff;
+  /* background-color: #f0f7ff; */
   border-left: 4px solid #1e88e5;
 }
 
 .stat-card-success {
-  background-color: #f0fff4;
+  /* background-color: #f0fff4; */
   border-left: 4px solid #28a745;
 }
 
 .stat-card-danger {
-  background-color: #fff5f5;
+  /* background-color: #fff5f5; */
   border-left: 4px solid #dc3545;
 }
 
 .stat-card-warning {
-  background-color: #fffbf0;
+  /* background-color: #fffbf0; */
   border-left: 4px solid #ffc107;
 }
 
 .stat-card-info {
-  background-color: #f0fcff;
+  /* background-color: #f0fcff; */
   border-left: 4px solid #17a2b8;
 }
 

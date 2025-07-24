@@ -20,7 +20,7 @@ const Customers = ({ title }) => {
         <div className="">
             <div className={`card stretch stretch-full widget-tasks-content`}>
                 <div className="card-header">
-                    <h4>{title}</h4>
+                    <h5 className="card-title">{title}</h5>
                 </div>
                 <div className="card-body custom-card-action p-0">
                     <div className="table-responsive">

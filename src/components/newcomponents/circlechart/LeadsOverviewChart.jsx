@@ -14,8 +14,8 @@ const LeadsOverviewChart = ({ chartHeight, isFooterShow }) => {
     return (
             <div className="card leads-overview">
                 <div className="card-header">
-                    <h3>Leads Overview</h3>
-                </div>
+                                    <h5 className="card-title mb-0">Leads Overview</h5>
+                                  </div>
 
                 <div className=" p card-body custom-card-action">
                     <ReactApexChart

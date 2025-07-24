@@ -6,7 +6,7 @@ export const visitorChartOption = () => {
         ],
         chart: { height: 350, type: "area", toolbar: { show: !1 } },
         stroke: { curve: "smooth", width: 2 },
-        colors: ["#3454D1", "#FFA21D"],
+        colors: ["#4BAA55", "#999999e8"],
         dataLabels: { enabled: !1 },
         xaxis: {
             categories: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"],

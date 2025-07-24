@@ -9,7 +9,7 @@ const SocialMediaStatisticsChart = () => {
         <div className="">
             <div className={`card`}>
                 <div className="card-header">
-                    <h3>Social Media Statistics</h3>
+                    <h5 className="card-title">Social Media Statistics</h5>
                 </div>
                 <div className="card-body">
                     <ReactApexChart

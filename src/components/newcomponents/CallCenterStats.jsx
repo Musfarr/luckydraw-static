@@ -89,7 +89,7 @@ const CallCenterStats = ({ data }) => {
         <div key={index} className="uk-width-1-5@m uk-width-1-2@s">
           <div className={`stat-card stat-card-${card.color}`}>
             <div className="stat-card-content">
-              <h3 className="stat-card-title">{card.title}</h3>
+              <h3 className="stat-card-title fs-6">{card.title}</h3>
               <p className="stat-card-value">{card.value}</p>
               <div className="stat-card-trend">
                 <span className={`trend-${card.trend}`}>

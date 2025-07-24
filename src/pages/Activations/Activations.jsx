@@ -177,7 +177,7 @@ const handleToggle = (idx) => {
                   {/* Top Anchors Table - with more details */}
                   <div className="card mt-4">
                     <div className="card-header">
-                      <h5 className="card-title mb-0">Top Anchors</h5>
+                      <h5 className="card-title mb-0">Anchors List</h5>
                     </div>
                     <div className="cardbody">
                       <div className="table-responsive">
@@ -196,8 +196,8 @@ const handleToggle = (idx) => {
                             </tr>
                           </thead>
                           <tbody className="text-center">
-                            {AnchorData.map(({ AreaName, AnchorName, AnchorPhone, AnchorRole, AnchorCity, NumberOfInvitations, NumberOfAttendees, HbcSold, HtcSold, RecordingURL }, idx) => (
-                              <tr key={AnchorName + idx}>
+                            {AnchorData.map((item, idx) => (
+                              <tr key={item.AnchorName + idx}>
                                 <td className="">
                                   <div className="d-flex justify-content-center" style={{ gap: 16 }}>
                                     <img
@@ -207,22 +207,22 @@ const handleToggle = (idx) => {
                                       style={{ width: 48, height: 48, objectFit: 'cover' }}
                                     />
                                     <div className="text-start">
-                                      <div className="fw-bold fs-6" style={{ color: '#19325a' }}>{AnchorName}</div>
-                                      <div className="text-muted fs-7">{AnchorPhone}</div>
+                                      <div className="fw-bold fs-6" style={{ color: '#19325a' }}>{item.AnchorName}</div>
+                                      <div className="text-muted fs-7">{item.AnchorPhone}</div>
                                     </div>
                                   </div>
                                 </td>
-                                <td><span className="fs-6">{AnchorCity}</span></td>
-                                <td><span className="fs-6">{AreaName}</span></td>
+                                <td><span className="fs-6">{item.AnchorCity}</span></td>
+                                <td><span className="fs-6">{item.AreaName}</span></td>
                                 <td>
                                   <span className={`badge bg-soft-success text-success px-3 py-2 fs-6`} style={{ fontWeight: 500 }}>
-                                    {AnchorRole}
+                                    {item.AnchorRole}
                                   </span>
                                 </td>
-                                <td>{NumberOfInvitations}</td>
-                                <td>{NumberOfAttendees}</td>
-                                <td>{HbcSold}</td>
-                                <td>{HtcSold}</td>
+                                <td>{item.NumberOfInvitations}</td>
+                                <td>{item.NumberOfAttendees}</td>
+                                <td>{item.HbcSold}</td>
+                                <td>{item.HtcSold}</td>
                                 <td   > 
                                   <div className="d-flex justify-content-center">
                                     <input
@@ -249,7 +249,7 @@ const handleToggle = (idx) => {
                                     {playingIdx === idx && (
                                       <audio
                                       
-                                        src={RecordingURL}
+                                        src={item.RecordingURL}
                                         autoPlay
                                         controls
                                         style={{ display: 'none', width: 120, marginLeft: 8, verticalAlign: 'middle' }}
