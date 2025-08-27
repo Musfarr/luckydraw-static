@@ -40,8 +40,8 @@ const CallCenterTable = ({ data }) => {
       </div>
       <div className="boxCntent">
         <div className="table-responsive">
-          <table className="table table-hover">
-            <thead>
+          <table className="table table-hover centered-table">
+            <thead className="text-center">
               <tr>
                 <th>ID</th>
                 <th>Phone Number</th>
@@ -51,7 +51,7 @@ const CallCenterTable = ({ data }) => {
                 <th>Retry</th>
               </tr>
             </thead>
-            <tbody>
+            <tbody className="text-center">
               {data && data.map((item) => (
                 <tr key={item.id}>
                   <td>{item.id}</td>
@@ -65,6 +65,11 @@ const CallCenterTable = ({ data }) => {
             </tbody>
           </table>
         </div>
+        <style>{`
+          .centered-table th, .centered-table td {
+            text-align: center !important;
+          }
+        `}</style>
       </div>
     </div>
   );

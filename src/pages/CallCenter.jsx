@@ -163,7 +163,7 @@ const CallCenter = () => {
                             <h5 className="card-title">Weekly Call Time Spent</h5>
                           </div>
 
-                          <div className="card-body custom-ard-action p-0">
+                          <div className="card-body custom-ard-action p-0" style={{overflowX: "auto"}}>
                             <ReactApexChart
                               type='bar'
                               options={chartOptions}

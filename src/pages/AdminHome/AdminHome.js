@@ -226,7 +226,7 @@ const AdminHome = () => {
                                               <td className="d-flex justify-content-center align-items-center">
                                                 <div className="d-flex align-items-center" style={{ gap: 16 }}>
                                                   <img
-                                                    src={'https://randomuser.me/api/portraits/women/4.jpg'}
+                                                    src={'https://randomuser.me/api/portraits/women/2.jpg'}
                                                     alt="img"
                                                     className="img-fluid rounded-circle border"
                                                     style={{ width: 48, height: 48, objectFit: 'cover' }}
