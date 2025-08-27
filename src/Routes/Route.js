@@ -9,6 +9,7 @@ import Units from "../pages/Units/Units";
 import SurveyCall from "../pages/SurveyCall/SurveyCall";
 import AuditSurvey from "../pages/AuditSurvey/AuditSurvey";
 import AdminHome from "../pages/AdminHome/AdminHome";
+import Home from "../pages/Home/Home";
 import SocialMedia from "../pages/SocialMedia";
 import CallCenter from "../pages/CallCenter";
 import Activations from "../pages/Activations/Activations";
@@ -94,6 +95,13 @@ export const protectedRoutesWithSidebarLayout = [
   {
     path: "/admin-home",
     component: <AdminHome />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/home",
+    component: <Home />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,

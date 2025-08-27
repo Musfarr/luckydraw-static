@@ -10,7 +10,7 @@ export const siteOverviewData = [
 
     {
         id: 3,
-        title: "Total Invitations",
+        title: "Total Customers",
         average_user: 86.37,
         todays_user: 34.25,
         prev_user: 36.47,

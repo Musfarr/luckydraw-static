@@ -428,3 +428,105 @@
 	min-width: 65px;
 	min-height: 65px;
 }
+
+/* ================= Tier Tabs and Tables ================= */
+/* Tabs base */
+.tier-tabs {
+  margin-top: 10px;
+  border-bottom: 1px solid #e5e7eb;
+}
+.tier-tabs > li > a {
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+
+/* Tab label colors */
+.tier-tabs a.gold { color: #b8860b; }
+.tier-tabs a.silver { color: #6b7280; }
+.tier-tabs a.bronze { color: #a16207; }
+
+/* Active tab underline by tier */
+.tier-tabs > li.uk-active > a.gold { border-color: #ffd700; }
+.tier-tabs > li.uk-active > a.silver { border-color: #c0c0c0; }
+.tier-tabs > li.uk-active > a.bronze { border-color: #cd7f32; }
+
+/* Tier summary card backgrounds (match table headers) */
+.tier-card { color: #000; }
+.tier-card.tier-gold { background: #FFD700; color: #000; }
+.tier-card.tier-silver { background: #C0C0C0; color: #000; }
+.tier-card.tier-bronze { background: #CD7F32; color: #fff; }
+
+/* Table header backgrounds */
+.tier-header.tier-gold th { background: #FFD700; color: #000; }
+.tier-header.tier-silver th { background: #C0C0C0; color: #000; }
+.tier-header.tier-bronze th { background: #CD7F32; color: #fff; }
+
+/* Table row hover by tier (subtle) */
+.tier-table.tier-gold tbody tr:hover { background: rgba(255, 215, 0, 0.08); }
+.tier-table.tier-silver tbody tr:hover { background: rgba(192, 192, 192, 0.12); }
+.tier-table.tier-bronze tbody tr:hover { background: rgba(205, 127, 50, 0.10); }
+
+/* Amount column emphasis */
+.tier-table td:nth-child(5),
+.tier-table th:nth-child(5) { text-align: right; }
+
+/* Responsive tweaks */
+@media (max-width: 768px) {
+  .tier-tabs > li > a { font-size: 13px; }
+}
+/* ================= End Tier Tabs and Tables ============== */
+
+/* ================= Tier Tables Enhancements ============== */
+/* Base table */
+.tier-table {
+  width: 100%;
+  border-collapse: separate;
+  border-spacing: 0;
+  font-size: 14px;
+}
+
+/* Sticky headers inside the scroll container */
+.tier-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 3;
+}
+
+/* Zebra stripes */
+.tier-table tbody tr:nth-child(odd) {
+  background: #fafafa;
+}
+
+/* Sortable headers */
+.tier-table th.sortable {
+  cursor: pointer;
+  user-select: none;
+  position: relative;
+  padding-right: 18px; /* space for indicator */
+}
+.tier-table th.sortable::after {
+  content: ' ';
+  position: absolute;
+  right: 8px;
+  top: 50%;
+  transform: translateY(-50%);
+  border: 5px solid transparent;
+  border-top-color: rgba(0,0,0,0.25);
+}
+.tier-table th.sortable.sorted-asc::after {
+  border: 5px solid transparent;
+  border-bottom-color: rgba(0,0,0,0.6);
+  top: calc(50% - 2px);
+}
+.tier-table th.sortable.sorted-desc::after {
+  border: 5px solid transparent;
+  border-top-color: rgba(0,0,0,0.6);
+  top: calc(50% + 2px);
+}
+
+/* Transactions emphasis */
+.tier-table td.emphasis {
+  font-weight: 600;
+  color: #111;
+}
+/* ================= End Enhancements ===================== */

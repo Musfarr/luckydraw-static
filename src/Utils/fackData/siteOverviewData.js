@@ -1,7 +1,7 @@
 export const siteOverviewData = [
     {
         id: 1,
-        title: "Total Sales",
+        title: "Total Revenue",
         average_user: 78.65,
         todays_user: 22.85,
         prev_user: 20.49,
@@ -10,7 +10,7 @@ export const siteOverviewData = [
 
     {
         id: 3,
-        title: "Total Invitations",
+        title: "Total Customers",
         average_user: 86.37,
         todays_user: 34.25,
         prev_user: 36.47,
@@ -18,7 +18,7 @@ export const siteOverviewData = [
     },
     {
         id: 4,
-        title: "Total Attendees",
+        title: "Retention Rate",
         average_user: 67.53,
         todays_user: 42.72,
         prev_user: 43.67,

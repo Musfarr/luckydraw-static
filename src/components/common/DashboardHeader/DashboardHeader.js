@@ -31,11 +31,11 @@ const DashboardHeader = () => {
       <div className="uk-flex uk-flex-middle uk-flex-right" style={{gap: '16px'}}>
       
       
-      {auth.user.user_type === 'admin' && (
+      {/* {auth.user.user_type === 'admin' && (
       <div className="headerBtn">
         <Link to="/create-survey"><Add />Create Survey</Link>
       </div>
-      )}
+      )} */}
 
 
       

@@ -230,7 +230,7 @@ const Sidebar = () => {
             {/* {role === 'super_admin' && renderSuperAdminLinks()} */}
 
             {/* Admin Links */}
-            {role === 'admin' && AdminRoutes()}  
+            {/* {role === 'admin' && AdminRoutes()}   */}
 
 
             {/* Company Links */}

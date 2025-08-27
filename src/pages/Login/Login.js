@@ -14,7 +14,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
   if(auth?.token && auth?.user?.user_type){
-   const route = auth.user.user_type === "admin" ? "/admin-home" : "/dashboard";
+   const route = auth.user.user_type === "admin" ? "/home" : "/dashboard";
        navigate(route);
   }
   
