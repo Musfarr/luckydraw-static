@@ -39,7 +39,7 @@ const DashboardHeader = () => {
 
 
       
-        <div className="statusDropdown">
+        {/* <div className="statusDropdown">
           <div class="uk-inline">
             <button class="statusDropdownBtn" type="button">
               <span className="online"></span>Online <ChevronDown />
@@ -56,7 +56,7 @@ const DashboardHeader = () => {
               </ul>
             </div>
           </div>
-        </div>
+        </div> */}
         <div className="onlineImg">
           <div className="userInfo ">
             <div className="uk-inline">

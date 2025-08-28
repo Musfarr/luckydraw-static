@@ -267,136 +267,49 @@ const Home = () => {
     });
   };
 
-  const AnchorData = [{
-    "AnchorName": "Ghazal",
-    "AnchorPhone": "03111234569",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  },
-  {
-    "AnchorName": "Ghazal",
-    "AnchorPhone": "03412501550",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  },
-  {
-    "AnchorName": "Neelam",
-    "AnchorPhone": "03142253304",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  },
-  {
-    "AnchorName": "Saima Riffat",
-    "AnchorPhone": "03100082083",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  },
-  {
-    "AnchorName": "Sarim",
-    "AnchorPhone": "03132624487",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  },
-  {
-    "AnchorName": "Sobia",
-    "AnchorPhone": "03150117475",
-    "AnchorRole": "Muhalla Anchor",
-    "AnchorCity": "Karachi",
-    "AreaName": "Lines Area",
-    "ProductName": "Harpic",
-    "ProgramDate": "2025-06-04",
-    "ProgramNumber": "Program 1",
-    "NumberOfInvitations": 24,
-    "NumberOfAttendees": 14,
-    "NumberOfSales": 11,
-    "HbcSold": 0,
-    "HtcSold": 11,
-    "location": "Lines Area",
-    "SessionStart": "2025-06-04 11:44:16",
-    "SessionEnd": "2025-06-04 12:09:59",
-    "RecordingURL": "https://pomeinsights.com/api/auth/audio/recordings/T2025-06-0411-44-16-P40136-U384.mp3"
-  }];
+  
 
   return (
     <div className="boradcastWrp">
       {isLoading ? (
         <Spinner />
       ) : !dataUploaded ? (
-        <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '80vh' }}>
+        <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
           <div className="uk-card uk-card-default uk-card-body uk-text-center">
             <h3>Please Upload CSV Data</h3>
             <p>You need to upload a CSV file to view the dashboard</p>
-            <button 
-              className="uk-button uk-button-primary" 
-              onClick={promptFileUpload}
-            >
-              Upload CSV
-            </button>
+            <button onClick={promptFileUpload} className=" mx-auto container-btn-file">
+  <svg
+    fill="#fff"
+    xmlns="http://www.w3.org/2000/svg"
+    width="20"
+    height="20"
+    viewBox="0 0 50 50"
+  >
+    <path
+      d="M28.8125 .03125L.8125 5.34375C.339844 
+    5.433594 0 5.863281 0 6.34375L0 43.65625C0 
+    44.136719 .339844 44.566406 .8125 44.65625L28.8125 
+    49.96875C28.875 49.980469 28.9375 50 29 50C29.230469 
+    50 29.445313 49.929688 29.625 49.78125C29.855469 49.589844 
+    30 49.296875 30 49L30 1C30 .703125 29.855469 .410156 29.625 
+    .21875C29.394531 .0273438 29.105469 -.0234375 28.8125 .03125ZM32 
+    6L32 13L34 13L34 15L32 15L32 20L34 20L34 22L32 22L32 27L34 27L34 
+    29L32 29L32 35L34 35L34 37L32 37L32 44L47 44C48.101563 44 49 
+    43.101563 49 42L49 8C49 6.898438 48.101563 6 47 6ZM36 13L44 
+    13L44 15L36 15ZM6.6875 15.6875L11.8125 15.6875L14.5 21.28125C14.710938 
+    21.722656 14.898438 22.265625 15.0625 22.875L15.09375 22.875C15.199219 
+    22.511719 15.402344 21.941406 15.6875 21.21875L18.65625 15.6875L23.34375 
+    15.6875L17.75 24.9375L23.5 34.375L18.53125 34.375L15.28125 
+    28.28125C15.160156 28.054688 15.035156 27.636719 14.90625 
+    27.03125L14.875 27.03125C14.8125 27.316406 14.664063 27.761719 
+    14.4375 28.34375L11.1875 34.375L6.1875 34.375L12.15625 25.03125ZM36 
+    20L44 20L44 22L36 22ZM36 27L44 27L44 29L36 29ZM36 35L44 35L44 37L36 37Z"
+    ></path>
+  </svg>
+  Upload File
+  {/* <input class="file" name="text" type="file" /> */}
+</button>
           </div>
         </div>
       ) : (
@@ -413,15 +326,41 @@ const Home = () => {
                         <div className="uk-width-1-2 uk-margin-remove">
                           <h2 className="uk-margin-remove">{auth?.user?.name}</h2>
                           <p className="uk-margin-remove">
-                            Customer Stats | 
+                            Customer Stats 
                           </p>
                         </div>
-                        <div className="uk-width-1-2 uk-margin-remove uk-text-right">
-                          <button 
-                            className="uk-button button-success" 
-                            onClick={promptFileUpload}
-                          >
-                            Change Csv
+                        <div className="uk-width-1-2 d-flex justify-content-end uk-margin-remove uk-text-right">
+                        <button onClick={promptFileUpload} className=" container-btn-file">
+                            <svg
+                              fill="#fff"
+                              xmlns="http://www.w3.org/2000/svg"
+                              width="20"
+                              height="20"
+                              viewBox="0 0 40 40"
+                            >
+                              <path
+                                d="M28.8125 .03125L.8125 5.34375C.339844 
+                              5.433594 0 5.863281 0 6.34375L0 43.65625C0 
+                              44.136719 .339844 44.566406 .8125 44.65625L28.8125 
+                              49.96875C28.875 49.980469 28.9375 50 29 50C29.230469 
+                              50 29.445313 49.929688 29.625 49.78125C29.855469 49.589844 
+                              30 49.296875 30 49L30 1C30 .703125 29.855469 .410156 29.625 
+                              .21875C29.394531 .0273438 29.105469 -.0234375 28.8125 .03125ZM32 
+                              6L32 13L34 13L34 15L32 15L32 20L34 20L34 22L32 22L32 27L34 27L34 
+                              29L32 29L32 35L34 35L34 37L32 37L32 44L47 44C48.101563 44 49 
+                              43.101563 49 42L49 8C49 6.898438 48.101563 6 47 6ZM36 13L44 
+                              13L44 15L36 15ZM6.6875 15.6875L11.8125 15.6875L14.5 21.28125C14.710938 
+                              21.722656 14.898438 22.265625 15.0625 22.875L15.09375 22.875C15.199219 
+                              22.511719 15.402344 21.941406 15.6875 21.21875L18.65625 15.6875L23.34375 
+                              15.6875L17.75 24.9375L23.5 34.375L18.53125 34.375L15.28125 
+                              28.28125C15.160156 28.054688 15.035156 27.636719 14.90625 
+                              27.03125L14.875 27.03125C14.8125 27.316406 14.664063 27.761719 
+                              14.4375 28.34375L11.1875 34.375L6.1875 34.375L12.15625 25.03125ZM36 
+                              20L44 20L44 22L36 22ZM36 27L44 27L44 29L36 29ZM36 35L44 35L44 37L36 37Z"
+                              ></path>
+                            </svg>
+                            Change File
+                            {/* <input class="file" name="text" type="file" /> */}
                           </button>
                         </div>
 
@@ -460,8 +399,8 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="uk-grid uk-grid-small" uk-grid="" uk-height-match="target: >div> div " >
-                              <div className= " card card-body uk-width-1-1">
+                            <div className="uk-grid uk-grid-small"  uk-grid="" uk-height-match="target: >div> div " >
+                              <div className= " uk-card uk-card-default uk-card-body uk-width-1-1" style={{marginLeft: '15px'}}>
                                 {/* Summary counts toolbar (search removed) */}
                                 <div className="uk-flex  uk-flex-middle uk-margin-small-bottom uk-grid-small" uk-grid="">
                                   <div className="uk-width-auto uk-text-meta">
@@ -484,7 +423,7 @@ const Home = () => {
                                           <tr>
                                             <th className={`sortable ${sortConfig.gold.key==='customerName' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerName')}>Customer Name</th>
                                             <th className={`sortable ${sortConfig.gold.key==='region' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='district' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','district')}>District</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='district' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','district')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.gold.key==='customerCode' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerCode')}>Customer Code</th>
                                             <th className={`sortable ${sortConfig.gold.key==='totalGrossAmount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','totalGrossAmount')}>Total Gross Amount</th>
                                             <th className={`sortable ${sortConfig.gold.key==='transactions' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','transactions')}>Transactions</th>
@@ -519,7 +458,7 @@ const Home = () => {
                                           <tr>
                                             <th className={`sortable ${sortConfig.silver.key==='customerName' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerName')}>Customer Name</th>
                                             <th className={`sortable ${sortConfig.silver.key==='region' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='district' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','district')}>District</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='district' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','district')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.silver.key==='customerCode' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerCode')}>Customer Code</th>
                                             <th className={`sortable ${sortConfig.silver.key==='totalGrossAmount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','totalGrossAmount')}>Total Gross Amount</th>
                                             <th className={`sortable ${sortConfig.silver.key==='transactions' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','transactions')}>Transactions</th>
@@ -554,7 +493,7 @@ const Home = () => {
                                           <tr>
                                             <th className={`sortable ${sortConfig.bronze.key==='customerName' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','customerName')}>Customer Name</th>
                                             <th className={`sortable ${sortConfig.bronze.key==='region' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.bronze.key==='district' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','district')}>District</th>
+                                            <th className={`sortable ${sortConfig.bronze.key==='district' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','district')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.bronze.key==='customerCode' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','customerCode')}>Customer Code</th>
                                             <th className={`sortable ${sortConfig.bronze.key==='totalGrossAmount' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','totalGrossAmount')}>Total Gross Amount</th>
                                             <th className={`sortable ${sortConfig.bronze.key==='transactions' ? 'sorted-'+sortConfig.bronze.dir : ''}`} onClick={() => handleSort('bronze','transactions')}>Transactions</th>

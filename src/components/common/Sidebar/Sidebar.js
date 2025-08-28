@@ -26,6 +26,8 @@ const Sidebar = () => {
       confirmButtonText: 'Yes, logout!'
     }).then((result) => {
       if (result.isConfirmed) {
+        localStorage.clear();
+        window.location.href ="/"
 
 
         // apiPost(`/Call_Center_Apis/api/logout`,

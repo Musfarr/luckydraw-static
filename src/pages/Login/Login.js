@@ -66,7 +66,7 @@ const Login = () => {
 
           // Use React Router navigation instead of window.location
           setTimeout(() => {
-            const route = userData.user_type === "admin" ? "/admin-home" : "/dashboard";
+            const route = userData.user_type === "admin" ? "/home" : "/dashboard";
             window.location.href = route;
           }, 1000);
 
