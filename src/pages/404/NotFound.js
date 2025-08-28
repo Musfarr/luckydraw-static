@@ -10,7 +10,7 @@ const NotFound = () => {
           <img src={notFoundImg} alt="" />
         </div>
         <div className="btnwrp">
-          <Link onClick={()=>window.location.href = '/'}>Back to home</Link>
+          <Link onClick={()=>window.location.href = '/home'}>Back to home</Link>
         </div>
       </div>
     </>
