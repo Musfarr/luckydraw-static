@@ -579,4 +579,18 @@
 .container-btn-file:hover::before {
   width: 100%;
 }
+.viewIcon {
+  position: absolute;
+  right: 16px;
+  top: 50%;
+  transform: translateY(-50%);
+  cursor: pointer;
+  color: #888;
+}
+
+.inputField input[type="password"],
+.inputField input[type="text"] {
+  padding-right: 40px; /* Make space for the icon */
+}
+
 /* ================= End Enhancements ===================== */
