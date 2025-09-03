@@ -18,6 +18,10 @@ const LuckyDraw = () => {
   const [winner, setWinner] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [drawHistory, setDrawHistory] = useState([]);
+  const [geoData, setGeoData] = useState([]);
+  const [selectedZone, setSelectedZone] = useState('');
+  const [selectedRegion, setSelectedRegion] = useState('');
+  const [selectedArea, setSelectedArea] = useState('');
 
   // Giveaway configuration by tier
   const giveawayConfig = {
@@ -46,10 +50,64 @@ const LuckyDraw = () => {
     if (globalDistributorData.dataUploaded) {
       setDataUploaded(true);
       console.log('Global distributor data available:', globalDistributorData);
+      
+      // Prompt for geo data if not already uploaded
+      if (geoData.length === 0) {
+        setTimeout(() => {
+          promptGeoDataUpload();
+        }, 500);
+      }
     }
-  }, [globalDistributorData]);
+  }, [globalDistributorData, geoData.length]);
 
-  // Function to prompt user to upload distributor CSV file
+  // Function to prompt user to upload geo CSV file
+  const promptGeoDataUpload = () => {
+    Swal.fire({
+      title: 'Upload Geographic Data',
+      text: 'Please upload the distributor geographic information CSV to enable location-based filtering',
+      icon: 'info',
+      html: `
+        <div class="custom-file-upload">
+          <input type="file" id="geo-csv" accept=".csv" style="display: none;" />
+          <label for="geo-csv" class="uk-button uk-button-primary">
+            Choose Geographic CSV File
+          </label>
+          <span id="geo-file-name" style="margin-left: 10px;">No file selected</span>
+        </div>
+      `,
+      allowOutsideClick: true,
+      // showCancelButton: true,
+      confirmButtonText: 'Upload',
+      // cancelButtonText: 'Skip for now',
+      didOpen: () => {
+        const fileInput = document.getElementById('geo-csv');
+        const fileNameSpan = document.getElementById('geo-file-name');
+        
+        fileInput.addEventListener('change', (e) => {
+          if (e.target.files.length > 0) {
+            fileNameSpan.textContent = e.target.files[0].name;
+          } else {
+            fileNameSpan.textContent = 'No file selected';
+          }
+        });
+      },
+      preConfirm: () => {
+        const fileInput = document.getElementById('geo-csv');
+        if (!fileInput.files.length) {
+          Swal.showValidationMessage('Please select a file');
+          return false;
+        }
+        return fileInput.files[0];
+      }
+    }).then((result) => {
+      if (result.isConfirmed && result.value) {
+        const file = result.value;
+        convertDistributorCsvToJson(file);
+      }
+    });
+  };
+
+  // Function to prompt user to upload distributor CSV file (fallback)
   const promptDistributorUpload = () => {
     Swal.fire({
       title: 'Upload Distributor CSV File',
@@ -95,25 +153,29 @@ const LuckyDraw = () => {
     });
   };
 
-  // Function to convert distributor CSV to JSON
+  // Function to convert distributor CSV to JSON (for geo data)
   const convertDistributorCsvToJson = (file) => {
     Papa.parse(file, {
       header: true,
       skipEmptyLines: true,
       complete: (results) => {
-        setDistributorData(results.data);
+        const processedGeoData = results.data.filter(row => {
+          return Object.values(row).some(value => value && value.toString().trim() !== '');
+        });
+        
+        setGeoData(processedGeoData);
         setDataUploaded(true);
-        console.log('Distributor data loaded:', results.data);
+        console.log('Geo data loaded:', processedGeoData);
         
         Swal.fire({
           title: 'Success!',
-          text: `Successfully loaded ${file.name} (${results.data.length} rows)`,
+          text: `Successfully loaded ${file.name} (${processedGeoData.length} rows)`,
           icon: 'success',
           confirmButtonText: 'OK'
         });
       },
       error: (error) => {
-        console.error('Error parsing distributor CSV:', error);
+        console.error('Error parsing geo CSV:', error);
         Swal.fire({
           title: 'Error',
           text: 'Failed to parse CSV file: ' + error.message,
@@ -124,40 +186,94 @@ const LuckyDraw = () => {
     });
   };
 
+  // Get unique values for dropdowns
+  const getUniqueZones = () => {
+    const zones = geoData.map(item => item.ZoneDesc || item.Zone).filter(Boolean);
+    return [...new Set(zones)].sort();
+  };
+
+  const getUniqueRegions = () => {
+    let regions = geoData.map(item => item.Region).filter(Boolean);
+    if (selectedZone) {
+      regions = geoData
+        .filter(item => (item.ZoneDesc || item.Zone) === selectedZone)
+        .map(item => item.Region)
+        .filter(Boolean);
+    }
+    return [...new Set(regions)].sort();
+  };
+
+  const getUniqueAreas = () => {
+    let areas = geoData.map(item => item.Area).filter(Boolean);
+    if (selectedRegion) {
+      areas = geoData
+        .filter(item => item.Region === selectedRegion)
+        .map(item => item.Area)
+        .filter(Boolean);
+    }
+    return [...new Set(areas)].sort();
+  };
+
   // Filter participants based on selected criteria
   const filterParticipants = () => {
+    let participants = [];
+    
     // Use global distributor data if available
     if (globalDistributorData.dataUploaded && globalDistributorData[selectedTier]) {
-      return globalDistributorData[selectedTier].map((distributor, index) => ({
-        id: index + 1,
-        name: distributor.distributorName,
-        region: distributor.region,
-        area: distributor.region, // Using region as area for now
-        distributorCode: distributor.distributorCode,
-        totalGrossAmount: distributor.totalGrossAmount,
-        customerCount: distributor.customerCount
-      }));
+      participants = globalDistributorData[selectedTier].map((distributor, index) => {
+        // Find matching geo data using distributor code
+        const geoInfo = geoData.find(geo => 
+          (geo['Distributor Code'] || geo.distributorCode) === distributor.distributorCode
+        );
+        
+        return {
+          id: index + 1,
+          name: distributor.distributorName,
+          region: geoInfo?.Region || distributor.region || 'Unknown',
+          area: geoInfo?.Area || 'Unknown',
+          zone: geoInfo?.ZoneDesc || geoInfo?.Zone || 'Unknown',
+          distributorCode: distributor.distributorCode,
+          totalGrossAmount: distributor.totalGrossAmount,
+          customerCount: distributor.customerCount
+        };
+      });
+    } else {
+      // Fallback to sample data if global data not available
+      const sampleData = {
+        platinum: [
+          { id: 1, name: "Ahmed Ali", region: "KARACHI", area: "KMD", zone: "South", distributorCode: "D001" },
+          { id: 2, name: "Fatima Malik", region: "LAHORE", area: "LHR DHA", zone: "Central", distributorCode: "D002" }
+        ],
+        gold: [
+          { id: 3, name: "Sara Khan", region: "ISLAMABAD", area: "ISB", zone: "North", distributorCode: "D003" },
+          { id: 4, name: "Omar Rashid", region: "KARACHI", area: "Baldia", zone: "South", distributorCode: "D004" },
+          { id: 5, name: "Zara Hussain", region: "LAHORE", area: "LHR JOHAR TOWN", zone: "Central", distributorCode: "D005" }
+        ],
+        silver: [
+          { id: 6, name: "Hassan Sheikh", region: "FAISALABAD", area: "JHANG", zone: "North", distributorCode: "D006" },
+          { id: 7, name: "Aisha Tariq", region: "MULTAN", area: "MULTAN CITY", zone: "Central", distributorCode: "D007" },
+          { id: 8, name: "Bilal Ahmed", region: "PESHAWAR", area: "PESHAWAR", zone: "North", distributorCode: "D008" }
+        ]
+      };
+      participants = sampleData[selectedTier] || [];
     }
     
-    // Fallback to sample data if global data not available
-    const sampleData = {
-      platinum: [
-        { id: 1, name: "Ahmed Ali", region: "Karachi", area: "North", distributorCode: "D001" },
-        { id: 2, name: "Fatima Malik", region: "Lahore", area: "South", distributorCode: "D002" }
-      ],
-      gold: [
-        { id: 3, name: "Sara Khan", region: "Islamabad", area: "East", distributorCode: "D003" },
-        { id: 4, name: "Omar Rashid", region: "Karachi", area: "West", distributorCode: "D004" },
-        { id: 5, name: "Zara Hussain", region: "Lahore", area: "Central", distributorCode: "D005" }
-      ],
-      silver: [
-        { id: 6, name: "Hassan Sheikh", region: "Faisalabad", area: "North", distributorCode: "D006" },
-        { id: 7, name: "Aisha Tariq", region: "Multan", area: "South", distributorCode: "D007" },
-        { id: 8, name: "Bilal Ahmed", region: "Peshawar", area: "East", distributorCode: "D008" }
-      ]
-    };
+    // Apply filters
+    let filteredParticipants = participants;
     
-    return sampleData[selectedTier] || [];
+    if (selectedZone) {
+      filteredParticipants = filteredParticipants.filter(p => p.zone === selectedZone);
+    }
+    
+    if (selectedRegion) {
+      filteredParticipants = filteredParticipants.filter(p => p.region === selectedRegion);
+    }
+    
+    if (selectedArea) {
+      filteredParticipants = filteredParticipants.filter(p => p.area === selectedArea);
+    }
+    
+    return filteredParticipants;
   };
 
   const startLuckyDraw = () => {
@@ -266,12 +382,41 @@ const LuckyDraw = () => {
     setEligibleParticipants([]);
   };
 
+  const handleZoneChange = (zone) => {
+    setSelectedZone(zone);
+    setSelectedRegion(''); // Reset region when zone changes
+    setSelectedArea(''); // Reset area when zone changes
+    setWinner(null);
+    setEligibleParticipants([]);
+  };
+
+  const handleRegionChange = (region) => {
+    setSelectedRegion(region);
+    setSelectedArea(''); // Reset area when region changes
+    setWinner(null);
+    setEligibleParticipants([]);
+  };
+
+  const handleAreaChange = (area) => {
+    setSelectedArea(area);
+    setWinner(null);
+    setEligibleParticipants([]);
+  };
+
+  const clearFilters = () => {
+    setSelectedZone('');
+    setSelectedRegion('');
+    setSelectedArea('');
+    setWinner(null);
+    setEligibleParticipants([]);
+  };
+
   if (isLoading) {
     return <Spinner />;
   }
 
   return (
-    <div className="lucky-draw-container">
+    <div className="lucky-draw-container" style={{marginBottom: '80px'}}>
       <div className="uk-container uk-container-xlarge">
         
         {!dataUploaded && !globalDistributorData.dataUploaded ? (
@@ -280,7 +425,7 @@ const LuckyDraw = () => {
             <div className="uk-card uk-card-default uk-card-body uk-text-center">
               <h3>Upload Distributor Data</h3>
               <p>Please upload distributor data from the Home page first, or upload a CSV file here</p>
-              <button onClick={promptDistributorUpload} className=" mx-auto container-btn-file">
+              <button onClick={promptGeoDataUpload} className=" mx-auto container-btn-file">
                 <svg
                   fill="#fff"
                   xmlns="http://www.w3.org/2000/svg"
@@ -357,8 +502,115 @@ const LuckyDraw = () => {
                     </div>
                   </div>
                 )}
+
+                {/* Geographic Filters */}
+                {selectedGiveaway && (geoData.length > 0 || globalDistributorData.dataUploaded) && (
+                  <div className="filter-section">
+                    <h4>Filter Participants by Location:</h4>
+                    <div className="uk-grid uk-grid-small uk-margin-small-top" uk-grid="">
+                      
+                      {/* Zone Filter */}
+                      <div className="uk-width-1-3@m">
+                        <label className="uk-form-label">Zone:</label>
+                        <select 
+                          className="uk-select" 
+                          value={selectedZone} 
+                          onChange={(e) => handleZoneChange(e.target.value)}
+                        >
+                          <option value="">All Zones</option>
+                          {getUniqueZones().map(zone => (
+                            <option key={zone} value={zone}>{zone}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Region Filter */}
+                      <div className="uk-width-1-3@m">
+                        <label className="uk-form-label">Region:</label>
+                        <select 
+                          className="uk-select" 
+                          value={selectedRegion} 
+                          onChange={(e) => handleRegionChange(e.target.value)}
+                        >
+                          <option value="">All Regions</option>
+                          {getUniqueRegions().map(region => (
+                            <option key={region} value={region}>{region}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Area Filter */}
+                      <div className="uk-width-1-3@m">
+                        <label className="uk-form-label">Area:</label>
+                        <select 
+                          className="uk-select" 
+                          value={selectedArea} 
+                          onChange={(e) => handleAreaChange(e.target.value)}
+                        >
+                          <option value="">All Areas</option>
+                          {getUniqueAreas().map(area => (
+                            <option key={area} value={area}>{area}</option>
+                          ))}
+                        </select>
+                      </div>
+
+                      {/* Filter Summary and Clear Button */}
+                      <div className="uk-width-1-1 uk-margin-small-top">
+                        <div className="uk-flex uk-flex-between uk-flex-middle">
+                          <div className="filter-summary">
+                            <span className="uk-text-small uk-text-muted">
+                              Eligible Participants: <strong>{filterParticipants().length}</strong>
+                              {selectedZone && <span className="filter-tag">Zone: {selectedZone}</span>}
+                              {selectedRegion && <span className="filter-tag">Region: {selectedRegion}</span>}
+                              {selectedArea && <span className="filter-tag">Area: {selectedArea}</span>}
+                            </span>
+                          </div>
+                          {(selectedZone || selectedRegion || selectedArea) && (
+                            <button 
+                              className="uk-button uk-button-secondary uk-button-small"
+                              onClick={clearFilters}
+                            >
+                              Clear Filters
+                            </button>
+                          )}
+                        </div>
+                      </div>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
+
+
+            {/* Eligible Participants */}
+            {selectedGiveaway && (
+              <div className="uk-width-1-1@m">
+                <div className="uk-card uk-card-default uk-card-body participants-card">
+                  <h3 className="uk-card-title">Eligible Participants</h3>
+                  <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name}</p>
+                  
+                  <div className="participants-list">
+                    {filterParticipants().map((participant) => (
+                      <div key={participant.id} className="participant-item">
+                        <div className="participant-info">
+                          <h5>{participant.name}</h5>
+                          <p><strong>Zone:</strong> {participant.zone}</p>
+                          <p><strong>Region:</strong> {participant.region}</p>
+                          <p><strong>Area:</strong> {participant.area}</p>
+                          <small>Code: {participant.distributorCode}</small>
+                        </div>
+                        <span className={`tier-badge tier-${selectedTier}`}>
+                          {selectedTier.toUpperCase()}
+                        </span>
+                      </div>
+                    ))}
+                    {filterParticipants().length === 0 && (
+                      <p className="uk-text-center uk-text-muted">No eligible participants found</p>
+                    )}
+                  </div>
+                </div>
+              </div>
+            )}
 
             {/* Draw Section */}
             {selectedGiveaway && (
@@ -388,7 +640,7 @@ const LuckyDraw = () => {
                         <div className="ready-content">
                           <div className="ready-icon">{giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.icon}</div>
                           <p>Ready to Draw</p>
-                          <small>{filterParticipants().length} eligible participants</small>
+                          {/* <small>{filterParticipants().length} eligible participants</small> */}
                         </div>
                       )}
                     </div>
@@ -416,33 +668,7 @@ const LuckyDraw = () => {
               </div>
             )}
 
-            {/* Eligible Participants */}
-            {selectedGiveaway && (
-              <div className="uk-width-1-1@m">
-                <div className="uk-card uk-card-default uk-card-body participants-card">
-                  <h3 className="uk-card-title">Eligible Participants</h3>
-                  <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name}</p>
-                  
-                  <div className="participants-list">
-                    {filterParticipants().map((participant) => (
-                      <div key={participant.id} className="participant-item">
-                        <div className="participant-info">
-                          <h5>{participant.name}</h5>
-                          <p>{participant.region} - {participant.area}</p>
-                          <small>Code: {participant.distributorCode}</small>
-                        </div>
-                        <span className={`tier-badge tier-${selectedTier}`}>
-                          {selectedTier.toUpperCase()}
-                        </span>
-                      </div>
-                    ))}
-                    {filterParticipants().length === 0 && (
-                      <p className="uk-text-center uk-text-muted">No eligible participants found</p>
-                    )}
-                  </div>
-                </div>
-              </div>
-            )}
+            
 
             {/* Draw History */}
             <div className="uk-width-1-1">
