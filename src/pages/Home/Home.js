@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import PieChart from "../../components/Graph/PieChart";
 import { useAuth } from "../../Context/AuthProvider";
+import { useDistributorData } from "../../Context/DistributorDataProvider";
 import { apiGet } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
@@ -16,6 +17,7 @@ import Papa from 'papaparse';
 const Home = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
+  const { distributorData, updateDistributorData } = useDistributorData();
   const [data, setData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [csvData, setCsvData] = useState(null);
@@ -169,12 +171,13 @@ const Home = () => {
     const gold = [];
     const silver = [];
     
+    // Categorize based on thresholds in Crore PKR (1 Crore = 10,000,000 PKR)
     consolidatedDistributors.forEach(distributor => {
-      if (distributor.totalGrossAmount > 20000000) {
+      if (distributor.totalGrossAmount > 20000000) { // > 2 Crore PKR
         platinum.push(distributor);
-      } else if (distributor.totalGrossAmount > 15000000) {
+      } else if (distributor.totalGrossAmount > 15000000 && distributor.totalGrossAmount <= 20000000) { // 1.5 to 2 Crore PKR
         gold.push(distributor);
-      } else if (distributor.totalGrossAmount > 10000000) {
+      } else if (distributor.totalGrossAmount >= 10000000 && distributor.totalGrossAmount <= 15000000) { // 1 to 1.5 Crore PKR
         silver.push(distributor);
       }
     });
@@ -185,11 +188,20 @@ const Home = () => {
     silver.sort((a, b) => b.totalGrossAmount - a.totalGrossAmount);
     
     // Set data for the tables
-    setData({
+    const tierData = {
       platinum,
       gold,
       silver,
       allDistributors: consolidatedDistributors
+    };
+    
+    setData(tierData);
+    
+    // Update global context with distributor data
+    updateDistributorData({
+      ...tierData,
+      csvData: data,
+      dataUploaded: true
     });
     
     console.log('Categorized distributors:', { platinum, gold, silver });
@@ -271,6 +283,12 @@ const Home = () => {
         
         setCsvData(processedData);
         setDataUploaded(true);
+        
+        // Update context with CSV data
+        updateDistributorData({
+          csvData: processedData,
+          dataUploaded: true
+        });
 
         // Process data in chunks for better performance
         setTimeout(() => {
@@ -449,9 +467,9 @@ const Home = () => {
                                         <div className="tier-icon">💎</div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">PLATINUM</h4>
-                                          <p className="tier-count">({data?.platinum?.length || 0} customers)</p>
+                                          <p className="tier-count">({data?.platinum?.length || 0} distributors)</p>
                                           <div className="tier-stats">
-                                            <span className="tier-value">{data?.platinum?.reduce((sum, customer) => sum + customer.totalGrossAmount, 0).toLocaleString()} PKR</span>
+                                            <span className="tier-value">Greater than 2 Crore PKR</span>
                                           </div>
                                         </div>
                                       </div>
@@ -460,9 +478,9 @@ const Home = () => {
                                         <div className="tier-icon">🥇</div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">GOLD</h4>
-                                          <p className="tier-count">({data?.gold?.length || 0} customers)</p>
+                                          <p className="tier-count">({data?.gold?.length || 0} distributors)</p>
                                           <div className="tier-stats">
-                                            <span className="tier-value">{data?.gold?.reduce((sum, customer) => sum + customer.totalGrossAmount, 0).toLocaleString()} PKR</span>
+                                            <span className="tier-value">1.5 to 2 Crore PKR</span>
                                           </div>
                                         </div>
                                       </div>
@@ -471,9 +489,9 @@ const Home = () => {
                                         <div className="tier-icon">🥈</div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">SILVER</h4>
-                                          <p className="tier-count">({data?.silver?.length || 0} customers)</p>
+                                          <p className="tier-count">({data?.silver?.length || 0} distributors)</p>
                                           <div className="tier-stats">
-                                            <span className="tier-value">{data?.silver?.reduce((sum, customer) => sum + customer.totalGrossAmount, 0).toLocaleString()} PKR</span>
+                                            <span className="tier-value">1 to 1.5 Crore PKR</span>
                                           </div>
                                         </div>
                                       </div>
@@ -493,9 +511,9 @@ const Home = () => {
                                 </div>
 
                                 <ul className="uk-tab tier-tabs" uk-tab="connect: #tier-switcher">
-                                  <li className="uk-active"><a href="#" className="platinum">Platinum Tier ({'>'}15,000 PKR)</a></li>
-                                  <li><a href="#" className="gold">Gold Tier ({'>'}10,000 PKR)</a></li>
-                                  <li><a href="#" className="silver">Silver Tier ({'>'}5,000 PKR)</a></li>
+                                  <li className="uk-active"><a href="#" className="platinum">Platinum Tier (> 2 Crore PKR)</a></li>
+                                  <li><a href="#" className="gold">Gold Tier (1.5 - 2 Crore PKR)</a></li>
+                                  <li><a href="#" className="silver">Silver Tier (1 - 1.5 Crore PKR)</a></li>
                                 </ul>
 
                                 <ul id="tier-switcher" className="uk-switcher uk-margin">

@@ -5,6 +5,7 @@ import "./assets/css/newstyle.css";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { AuthProvider } from "./Context/AuthProvider";
+import { DistributorDataProvider } from "./Context/DistributorDataProvider";
 import PrivateRoute from "./Routes/PrivateRoute";
 import OpenRoutes from "./Routes/OpenRoutes";
 import SidebarLayout from "./components/common/Sidebar/SidebarLayout";
@@ -34,7 +35,8 @@ function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
-        <ToastContainer />
+        <DistributorDataProvider>
+          <ToastContainer />
         {/* =========================================Open Routes================================================ */}
 
         <Routes>
@@ -99,6 +101,7 @@ function App() {
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>
+        </DistributorDataProvider>
       </AuthProvider>
     </BrowserRouter>
   );
