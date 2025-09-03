@@ -20,6 +20,7 @@ import CreateSurvey from "../pages/CreateSurvey/CreateSurvey";
 import CompanySurvey from "../pages/CompanySurvey/CompanySurvey";
 import AgentsTableList from "../pages/AgentsTableList/AgentsTableList";
 import AssignSurvey from "../pages/AssignSurvey/AssignSurvey";
+import LuckyDraw from "../pages/LuckyDraw/LuckyDraw";
 // import Showcase from "../pages/Reusables/Showcase";
 
 
@@ -102,6 +103,13 @@ export const protectedRoutesWithSidebarLayout = [
   {
     path: "/home",
     component: <Home />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/luckydraw",
+    component: <LuckyDraw />,
     footer: <Footer extraPadding="70px" />,
     padding: true,
     headerBtn: true,

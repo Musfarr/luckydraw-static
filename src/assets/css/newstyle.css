@@ -48,18 +48,137 @@
 
 /* Loading Spinner */
 .loading-spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid #f3f3f3;
+    border-top: 2px solid #143155;
+    border-radius: 50%;
     animation: spin 1s linear infinite;
-    width: 16px;
-    height: 16px;
 }
 
 @keyframes spin {
-    from {
-        transform: rotate(0deg);
-    }
-    to {
-        transform: rotate(360deg);
-    }
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+/* Home Page Tier Cards */
+.tier-buttons-home {
+  display: flex;
+  gap: 20px;
+  margin: 20px 0;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+
+.tier-card-home {
+  padding: 25px;
+  border: 2px solid transparent;
+  border-radius: 20px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  min-width: 280px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.tier-card-home.tier-platinum {
+  background: linear-gradient(135deg, #e5e7eb, #f9fafb);
+  color: #1f2937;
+  border-color: #d1d5db;
+}
+
+.tier-card-home.tier-platinum:hover {
+  background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
+  border-color: #6366f1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.tier-card-home.tier-gold {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.tier-card-home.tier-gold:hover {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
+.tier-card-home.tier-silver {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+.tier-card-home.tier-silver:hover {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(156, 163, 175, 0.4);
+}
+
+.tier-icon {
+  font-size: 3rem;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
+}
+
+.tier-content {
+  flex: 1;
+}
+
+.tier-name {
+  font-size: 1.4rem;
+  font-weight: 800;
+  margin: 0 0 8px 0;
+  letter-spacing: 1px;
+}
+
+.tier-count {
+  font-size: 1rem;
+  opacity: 0.8;
+  margin: 0 0 12px 0;
+  font-weight: 500;
+}
+
+.tier-stats {
+  margin-top: 8px;
+}
+
+.tier-value {
+  font-size: 1.2rem;
+  font-weight: 700;
+  display: block;
+}
+
+/* Responsive Design for Home Tier Cards */
+@media (max-width: 768px) {
+  .tier-buttons-home {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tier-card-home {
+    min-width: 250px;
+    max-width: 100%;
+  }
+  
+  .tier-icon {
+    font-size: 2.5rem;
+  }
+  
+  .tier-name {
+    font-size: 1.2rem;
+  }
+  
+  .tier-value {
+    font-size: 1.1rem;
+  }
 }
 
 /* Campaign Export Button */

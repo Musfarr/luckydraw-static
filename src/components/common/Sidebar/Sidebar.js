@@ -202,7 +202,7 @@ const Sidebar = () => {
       case 'super_admin':
         return '/superadminhome';
       case 'admin':
-        return '/admin-home';
+        return '/home';
       case 'company':
         return '/dashboard';
       default:
@@ -225,6 +225,13 @@ const Sidebar = () => {
               <NavLink className="character-btn" to={getHomeRoute()}>
                 <TableOfContents />
                 <span >Dashboard</span>
+              </NavLink>
+            </li>
+
+            <li>
+              <NavLink className="character-btn" to="/luckydraw">
+                <TableOfContents />
+                <span >Lucky Draw </span>
               </NavLink>
             </li>
 

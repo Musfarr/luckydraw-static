@@ -1,0 +1,664 @@
+.lucky-draw-container {
+  padding: 20px;
+  /* background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); */
+  min-height: 100vh;
+}
+
+.page-header {
+  text-align: center;
+  margin-bottom: 40px;
+  padding: 30px;
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.page-title {
+  font-size: 3rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 15px;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.page-subtitle {
+  font-size: 1.2rem;
+  color: #64748b;
+  margin: 0;
+  font-weight: 500;
+}
+
+/* Upload Prompt Styling */
+.upload-prompt {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  padding: 50px;
+  box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+.upload-prompt h2 {
+  font-size: 2.5rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+}
+
+.upload-prompt p {
+  font-size: 1.1rem;
+  color: #64748b;
+  margin-bottom: 15px;
+}
+
+.upload-prompt .uk-text-muted {
+  font-size: 0.9rem;
+  color: #9ca3af;
+  margin-bottom: 30px;
+}
+
+/* Tier Selection Card */
+.tier-selection-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  margin-bottom: 30px;
+}
+
+.tier-selection-card .uk-card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 25px;
+}
+
+.tier-buttons {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 30px;
+  flex-wrap: wrap;
+}
+
+.tier-btn {
+  padding: 15px 25px;
+  border: 2px solid transparent;
+  border-radius: 15px;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  cursor: pointer;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  min-width: 140px;
+}
+
+.tier-btn.tier-platinum {
+  background: linear-gradient(135deg, #e5e7eb, #f9fafb);
+  color: #1f2937;
+  border-color: #d1d5db;
+}
+
+.tier-btn.tier-platinum.active {
+  background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
+  border-color: #6366f1;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+}
+
+.tier-btn.tier-gold {
+  background: linear-gradient(135deg, #fef3c7, #fde68a);
+  color: #92400e;
+  border-color: #f59e0b;
+}
+
+.tier-btn.tier-gold.active {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(245, 158, 11, 0.4);
+}
+
+.tier-btn.tier-silver {
+  background: linear-gradient(135deg, #f3f4f6, #e5e7eb);
+  color: #374151;
+  border-color: #9ca3af;
+}
+
+.tier-btn.tier-silver.active {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  color: white;
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(156, 163, 175, 0.4);
+}
+
+.tier-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.tier-count {
+  font-size: 0.8rem;
+  opacity: 0.8;
+  margin-top: 5px;
+}
+
+.giveaway-selection {
+  margin-top: 30px;
+}
+
+.giveaway-selection h4 {
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.giveaway-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+}
+
+.giveaway-card {
+  padding: 20px;
+  background: #f8fafc;
+  border: 2px solid #e2e8f0;
+  border-radius: 15px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  text-align: center;
+}
+
+.giveaway-card:hover {
+  background: #f1f5f9;
+  border-color: #3b82f6;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(59, 130, 246, 0.15);
+}
+
+.giveaway-card.selected {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-color: #3b82f6;
+  transform: translateY(-3px);
+  box-shadow: 0 10px 30px rgba(59, 130, 246, 0.25);
+}
+
+.giveaway-icon {
+  font-size: 2.5rem;
+  margin-bottom: 10px;
+}
+
+.giveaway-card h5 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: #1e293b;
+  margin: 10px 0 5px 0;
+}
+
+.giveaway-card p {
+  font-size: 0.9rem;
+  color: #64748b;
+  margin: 0;
+}
+
+/* Draw Card */
+.draw-card {
+  background: rgba(255, 255, 255, 0.95);
+  color: #1e293b;
+  border: none;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+}
+
+.draw-card .uk-card-title {
+  color: #1e293b;
+  font-size: 1.8rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 30px;
+}
+
+/* Draw Wheel */
+.draw-wheel-container {
+  display: flex;
+  justify-content: center;
+  margin: 40px 0;
+}
+
+.draw-wheel {
+  width: 250px;
+  height: 250px;
+  border-radius: 50%;
+  background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700, #fbbf24);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2);
+  border: 8px solid #fff;
+  transition: transform 0.3s ease;
+  position: relative;
+  overflow: hidden;
+}
+
+.draw-wheel::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+  animation: shimmer 2s infinite;
+}
+
+@keyframes shimmer {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+.draw-wheel.spinning {
+  animation: spin 3s cubic-bezier(0.17, 0.67, 0.12, 0.99);
+}
+
+.draw-wheel.spinning::before {
+  animation: shimmer 0.5s infinite;
+}
+
+@keyframes spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(1440deg); }
+}
+
+.spinning-content, .winner-content, .ready-content {
+  text-align: center;
+  z-index: 2;
+  position: relative;
+}
+
+.spinner-icon, .winner-icon, .ready-icon {
+  font-size: 4rem;
+  margin-bottom: 15px;
+  display: block;
+  filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.3));
+}
+
+.spinning-content p {
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.winner-content h4 {
+  margin: 15px 0 8px 0;
+  font-size: 1.4rem;
+  font-weight: 700;
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.winner-content p {
+  margin: 8px 0;
+  font-size: 1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.ready-content p {
+  margin: 15px 0 8px 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  color: #1e293b;
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+}
+
+.ready-content small {
+  color: #64748b;
+  font-size: 1rem;
+  font-weight: 500;
+}
+
+/* Draw Controls */
+.draw-controls {
+  text-align: center;
+  margin-top: 40px;
+}
+
+.draw-btn {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: none;
+  padding: 18px 50px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  border-radius: 50px;
+  transition: all 0.3s ease;
+  color: white;
+  box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.draw-btn:hover {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: translateY(-3px);
+  box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+}
+
+.draw-btn:disabled {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+.reset-btn {
+  margin-left: 20px;
+  padding: 12px 30px;
+  border-radius: 25px;
+  background: linear-gradient(135deg, #ef4444, #dc2626);
+  color: white;
+  font-weight: 600;
+  box-shadow: 0 6px 20px rgba(239, 68, 68, 0.3);
+}
+
+.reset-btn:hover {
+  background: linear-gradient(135deg, #dc2626, #b91c1c);
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(239, 68, 68, 0.4);
+}
+
+/* Participants Card */
+.participants-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  max-height: 600px;
+}
+
+.participants-card .uk-card-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #1e293b;
+  margin-bottom: 20px;
+}
+
+.participants-list {
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 10px;
+}
+
+.participants-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.participants-list::-webkit-scrollbar-track {
+  background: #f1f5f9;
+  border-radius: 10px;
+}
+
+.participants-list::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  border-radius: 10px;
+}
+
+.participant-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 15px;
+  margin-bottom: 12px;
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  border-radius: 15px;
+  border-left: 4px solid #e2e8f0;
+  transition: all 0.3s ease;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.participant-item:hover {
+  background: linear-gradient(135deg, #dbeafe, #bfdbfe);
+  border-left-color: #3b82f6;
+  transform: translateX(5px);
+  box-shadow: 0 4px 15px rgba(59, 130, 246, 0.2);
+}
+
+.participant-info h5 {
+  margin: 0 0 6px 0;
+  font-size: 1.1rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.participant-info p {
+  margin: 0 0 4px 0;
+  font-size: 0.9rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.participant-info small {
+  font-size: 0.8rem;
+  color: #9ca3af;
+  font-weight: 400;
+}
+
+/* Tier Badges */
+.tier-badge {
+  padding: 8px 16px;
+  border-radius: 25px;
+  font-size: 0.8rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.tier-badge.tier-platinum {
+  background: linear-gradient(135deg, #c7d2fe, #e0e7ff);
+  color: #3730a3;
+  border: 1px solid #6366f1;
+}
+
+.tier-badge.tier-gold {
+  background: linear-gradient(135deg, #fbbf24, #f59e0b);
+  color: white;
+  border: 1px solid #d97706;
+}
+
+.tier-badge.tier-silver {
+  background: linear-gradient(135deg, #9ca3af, #6b7280);
+  color: white;
+  border: 1px solid #4b5563;
+}
+
+/* History Card */
+.history-card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+  backdrop-filter: blur(10px);
+  margin-top: 30px;
+}
+
+.history-card .uk-card-title {
+  font-size: 1.8rem;
+  font-weight: 700;
+  color: #1e293b;
+}
+
+.history-card .uk-table {
+  margin-top: 25px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+}
+
+.history-card .uk-table th {
+  background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+  font-weight: 700;
+  color: #1e293b;
+  padding: 15px;
+  font-size: 0.9rem;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.history-card .uk-table td {
+  vertical-align: middle;
+  padding: 15px;
+  font-weight: 500;
+  color: #374151;
+}
+
+.history-card .uk-table tbody tr:hover {
+  background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+}
+
+/* Winner Popup Styles */
+.winner-announcement {
+  text-align: center;
+  padding: 30px;
+}
+
+.winner-announcement .giveaway-icon {
+  font-size: 4rem;
+  margin-bottom: 20px;
+  filter: drop-shadow(0 4px 8px rgba(0, 0, 0, 0.2));
+}
+
+.winner-announcement h3 {
+  font-size: 2.2rem;
+  font-weight: 800;
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  margin-bottom: 20px;
+}
+
+.winner-announcement p {
+  margin: 12px 0;
+  font-size: 1.1rem;
+  color: #64748b;
+  font-weight: 500;
+}
+
+.winner-announcement strong {
+  color: #1e293b;
+  font-weight: 700;
+}
+
+/* Custom File Upload Styling */
+.custom-file-upload {
+  display: inline-block;
+  margin: 20px 0;
+}
+
+.custom-file-upload label {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: white;
+  padding: 2px 22px;
+  border-radius: 50px;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 8px 25px rgba(102, 126, 234, 0.3);
+}
+
+.custom-file-upload label:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 12px 35px rgba(102, 126, 234, 0.4);
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .lucky-draw-container {
+    padding: 15px;
+  }
+  
+  .page-header {
+    padding: 20px;
+    margin-bottom: 30px;
+  }
+  
+  .page-title {
+    font-size: 2.2rem;
+  }
+  
+  .upload-prompt {
+    padding: 30px 20px;
+  }
+  
+  .upload-prompt h2 {
+    font-size: 2rem;
+  }
+  
+  .tier-buttons {
+    flex-direction: column;
+    align-items: center;
+  }
+  
+  .tier-btn {
+    min-width: 200px;
+  }
+  
+  .giveaway-grid {
+    grid-template-columns: 1fr;
+  }
+  
+  .draw-wheel {
+    width: 200px;
+    height: 200px;
+  }
+  
+  .spinner-icon, .winner-icon, .ready-icon {
+    font-size: 3rem;
+  }
+  
+  .draw-btn {
+    padding: 15px 40px;
+    font-size: 1rem;
+  }
+  
+  .reset-btn {
+    margin-left: 0;
+    margin-top: 15px;
+  }
+  
+  .participants-list {
+    max-height: 300px;
+  }
+}
+
+@media (max-width: 480px) {
+  .page-title {
+    font-size: 1.8rem;
+  }
+  
+  .upload-prompt h2 {
+    font-size: 1.6rem;
+  }
+  
+  .draw-wheel {
+    width: 180px;
+    height: 180px;
+  }
+  
+  .draw-btn {
+    padding: 12px 30px;
+    font-size: 0.9rem;
+  }
+}
