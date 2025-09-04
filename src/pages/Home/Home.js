@@ -120,65 +120,65 @@ const Home = () => {
 
 
   const transformData = (data) => {
-    // Step 1: Consolidate gross amounts by distributor
-    const distributorMap = {};
+    // Step 1: Consolidate gross amounts by customer
+    const customerMap = {};
     
     data.forEach(item => {
-      const distributorName = item.DIST_NAME || item.DistrictName || item.district || 'Unknown Distributor';
-      const grossAmount = parseFloat(item.GROSS_AMT || item.GrossAmount || item.Amount || '0');
+      const customerCode = item.CUST_CD || item.CustomerCode || item.customerId || 'Unknown Code';
       const customerName = item.CUST_NAME || item.CustomerName || item.AnchorName || 'Unknown Customer';
+      const grossAmount = parseFloat(item.GROSS_AMT || item.GrossAmount || item.Amount || '0');
+      const distributorName = item.DIST_NAME || item.DistrictName || item.district || 'Unknown Distributor';
       
-      if (!distributorMap[distributorName]) {
-        distributorMap[distributorName] = {
-          distributorName,
+      // Use customer code as unique identifier (more reliable than name)
+      const customerKey = `${customerCode}_${customerName}`;
+      
+      if (!customerMap[customerKey]) {
+        customerMap[customerKey] = {
+          customerCode,
+          customerName,
           totalGrossAmount: 0,
-          customerCount: 0,
-          customers: new Set(),
+          transactionCount: 0,
           transactions: [],
-          // Keep other details from first occurrence
+          // Keep distributor and region info from first occurrence
+          distributorName: distributorName,
           region: item.REGION || item.Region || '',
           distributorCode: item.DIST_CD || item.DistributorCode || ''
         };
       }
       
       // Add to total gross amount
-      distributorMap[distributorName].totalGrossAmount += grossAmount;
-      
-      // Track unique customers
-      distributorMap[distributorName].customers.add(customerName);
+      customerMap[customerKey].totalGrossAmount += grossAmount;
+      customerMap[customerKey].transactionCount += 1;
       
       // Store transaction details
-      distributorMap[distributorName].transactions.push({
-        customerName: customerName,
+      customerMap[customerKey].transactions.push({
         sku: item.SKU || '',
         skuDesc: item.SKU_DESC || '',
         format: item.Format || '',
         grossAmount: grossAmount,
         deliveryDate: item.DELIVERY_DT || '',
-        invoiceNo: item.INV_NO || ''
+        invoiceNo: item.INV_NO || '',
+        week: item.WEEK || '',
+        productCategory: item.PRDCAT_CD || ''
       });
     });
     
-    // Convert map to array and calculate customer counts
-    const consolidatedDistributors = Object.values(distributorMap).map(distributor => ({
-      ...distributor,
-      customerCount: distributor.customers.size,
-      customers: Array.from(distributor.customers) // Convert Set to Array for display
-    }));
+    // Convert map to array
+    const consolidatedCustomers = Object.values(customerMap);
     
-    // Step 2: Categorize distributors into platinum, gold, and silver tiers
+    // Step 2: Categorize customers into platinum, gold, and silver tiers
     const platinum = [];
     const gold = [];
     const silver = [];
     
     // Categorize based on thresholds in Crore PKR (1 Crore = 10,000,000 PKR)
-    consolidatedDistributors.forEach(distributor => {
-      if (distributor.totalGrossAmount > 20000000) { // > 2 Crore PKR
-        platinum.push(distributor);
-      } else if (distributor.totalGrossAmount > 15000000 && distributor.totalGrossAmount <= 20000000) { // 1.5 to 2 Crore PKR
-        gold.push(distributor);
-      } else if (distributor.totalGrossAmount >= 10000000 && distributor.totalGrossAmount <= 15000000) { // 1 to 1.5 Crore PKR
-        silver.push(distributor);
+    consolidatedCustomers.forEach(customer => {
+      if (customer.totalGrossAmount > 200000) { // > 2 Crore PKR
+        platinum.push(customer);
+      } else if (customer.totalGrossAmount > 150000 && customer.totalGrossAmount <= 200000) { // 1.5 to 2 Crore PKR
+        gold.push(customer);
+      } else if (customer.totalGrossAmount >= 100000 && customer.totalGrossAmount <= 150000) { // 1 to 1.5 Crore PKR
+        silver.push(customer);
       }
     });
     
@@ -192,19 +192,19 @@ const Home = () => {
       platinum,
       gold,
       silver,
-      allDistributors: consolidatedDistributors
+      allCustomers: consolidatedCustomers
     };
     
     setData(tierData);
     
-    // Update global context with distributor data
+    // Update global context with customer data
     updateDistributorData({
       ...tierData,
       csvData: data,
       dataUploaded: true
     });
     
-    console.log('Categorized distributors:', { platinum, gold, silver });
+    console.log('Categorized customers:', { platinum, gold, silver });
   };
 
   // Helpers: sorting per tier
@@ -219,9 +219,15 @@ const Home = () => {
       if (key === 'transactions') {
         va = (a.transactions || []).length;
         vb = (b.transactions || []).length;
-      } else if (key === 'customerCount') {
-        va = a.customerCount || 0;
-        vb = b.customerCount || 0;
+      } else if (key === 'transactionCount') {
+        va = a.transactionCount || 0;
+        vb = b.transactionCount || 0;
+      } else if (key === 'customerName') {
+        va = a.customerName;
+        vb = b.customerName;
+      } else if (key === 'customerCode') {
+        va = a.customerCode;
+        vb = b.customerCode;
       } else if (key === 'distributorName') {
         va = a.distributorName;
         vb = b.distributorName;
@@ -523,28 +529,28 @@ const Home = () => {
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-platinum">
                                         <thead className="tier-header tier-platinum">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.platinum.key==='distributorName' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','distributorName')}>Distributor Name</th>
+                                            <th className={`sortable ${sortConfig.platinum.key==='customerName' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','customerName')}>Customer Name</th>
+                                            <th className={`sortable ${sortConfig.platinum.key==='customerCode' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','customerCode')}>Customer Code</th>
+                                            <th className={`sortable ${sortConfig.platinum.key==='distributorName' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','distributorName')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.platinum.key==='region' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='distributorCode' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','distributorCode')}>Distributor Code</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='customerCount' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','customerCount')}>Customer Count</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='totalGrossAmount' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','totalGrossAmount')}>Total Gross Amount</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='transactions' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','transactions')}>Transactions</th>
+                                            <th className={`sortable ${sortConfig.platinum.key==='totalGrossAmount' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable ${sortConfig.platinum.key==='transactionCount' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','transactionCount')}>Transactions</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('platinum').map((distributor, index) => (
+                                          {getRows('platinum').map((customer, index) => (
                                             <tr key={index}>
-                                              <td>{distributor.distributorName}</td>
-                                              <td>{distributor.region}</td>
-                                              <td>{distributor.distributorCode}</td>
-                                              <td>{distributor.customerCount}</td>
-                                              <td>{distributor.totalGrossAmount.toLocaleString()} PKR</td>
-                                              <td className={distributor.transactions.length > 1 ? 'emphasis' : ''}>{distributor.transactions.length}</td>
+                                              <td>{customer.customerName}</td>
+                                              <td>{customer.customerCode}</td>
+                                              <td>{customer.distributorName}</td>
+                                              <td>{customer.region}</td>
+                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                              <td className={customer.transactionCount > 1 ? 'emphasis' : ''}>{customer.transactionCount}</td>
                                             </tr>
                                           ))}
                                           {(!data?.platinum || data.platinum.length === 0) && (
                                             <tr>
-                                              <td colSpan="6" className="uk-text-center">No platinum tier distributors found</td>
+                                              <td colSpan="6" className="uk-text-center">No platinum tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -558,28 +564,28 @@ const Home = () => {
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-gold">
                                         <thead className="tier-header tier-gold">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.gold.key==='distributorName' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','distributorName')}>Distributor Name</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='customerName' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerName')}>Customer Name</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='customerCode' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerCode')}>Customer Code</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='distributorName' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','distributorName')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.gold.key==='region' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='distributorCode' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','distributorCode')}>Distributor Code</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='customerCount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerCount')}>Customer Count</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='totalGrossAmount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','totalGrossAmount')}>Total Gross Amount</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='transactions' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','transactions')}>Transactions</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='totalGrossAmount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable ${sortConfig.gold.key==='transactionCount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','transactionCount')}>Transactions</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('gold').map((distributor, index) => (
+                                          {getRows('gold').map((customer, index) => (
                                             <tr key={index}>
-                                              <td>{distributor.distributorName}</td>
-                                              <td>{distributor.region}</td>
-                                              <td>{distributor.distributorCode}</td>
-                                              <td>{distributor.customerCount}</td>
-                                              <td>{distributor.totalGrossAmount.toLocaleString()} PKR</td>
-                                              <td className={distributor.transactions.length > 1 ? 'emphasis' : ''}>{distributor.transactions.length}</td>
+                                              <td>{customer.customerName}</td>
+                                              <td>{customer.customerCode}</td>
+                                              <td>{customer.distributorName}</td>
+                                              <td>{customer.region}</td>
+                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                              <td className={customer.transactionCount > 1 ? 'emphasis' : ''}>{customer.transactionCount}</td>
                                             </tr>
                                           ))}
                                           {(!data?.gold || data.gold.length === 0) && (
                                             <tr>
-                                              <td colSpan="6" className="uk-text-center">No gold tier distributors found</td>
+                                              <td colSpan="6" className="uk-text-center">No gold tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -593,28 +599,28 @@ const Home = () => {
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-silver">
                                         <thead className="tier-header tier-silver">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.silver.key==='distributorName' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','distributorName')}>Distributor Name</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='customerName' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerName')}>Customer Name</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='customerCode' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerCode')}>Customer Code</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='distributorName' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','distributorName')}>Distributor</th>
                                             <th className={`sortable ${sortConfig.silver.key==='region' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='distributorCode' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','distributorCode')}>Distributor Code</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='customerCount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerCount')}>Customer Count</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='totalGrossAmount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','totalGrossAmount')}>Total Gross Amount</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='transactions' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','transactions')}>Transactions</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='totalGrossAmount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable ${sortConfig.silver.key==='transactionCount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','transactionCount')}>Transactions</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('silver').map((distributor, index) => (
+                                          {getRows('silver').map((customer, index) => (
                                             <tr key={index}>
-                                              <td>{distributor.distributorName}</td>
-                                              <td>{distributor.region}</td>
-                                              <td>{distributor.distributorCode}</td>
-                                              <td>{distributor.customerCount}</td>
-                                              <td>{distributor.totalGrossAmount.toLocaleString()} PKR</td>
-                                              <td className={distributor.transactions.length > 1 ? 'emphasis' : ''}>{distributor.transactions.length}</td>
+                                              <td>{customer.customerName}</td>
+                                              <td>{customer.customerCode}</td>
+                                              <td>{customer.distributorName}</td>
+                                              <td>{customer.region}</td>
+                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                              <td className={customer.transactionCount > 1 ? 'emphasis' : ''}>{customer.transactionCount}</td>
                                             </tr>
                                           ))}
                                           {(!data?.silver || data.silver.length === 0) && (
                                             <tr>
-                                              <td colSpan="6" className="uk-text-center">No silver tier distributors found</td>
+                                              <td colSpan="6" className="uk-text-center">No silver tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
