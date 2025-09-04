@@ -609,7 +609,10 @@
   width: 100%;
   border-collapse: separate;
   border-spacing: 0;
-  font-size: 14px;
+  border-radius: 15px;
+  overflow: hidden;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+  margin-top: 20px;
 }
 
 /* Sticky headers inside the scroll container */
