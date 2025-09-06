@@ -1,18 +1,13 @@
 import React, { useState, useEffect } from "react";
-import PieChart from "../../components/Graph/PieChart";
 import { useAuth } from "../../Context/AuthProvider";
 import { useDistributorData } from "../../Context/DistributorDataProvider";
-import { apiGet } from "../../Utils/apiServices";
+import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
-import SiteOverviewChart from "../../components/newcomponents/graphcards/SiteOverviewChart";
-import LeadsOverviewChart from "../../components/newcomponents/circlechart/LeadsOverviewChart";
-import BarChart from "../../components/newcomponents/barchart/InquiryTrackingChart";
-import LeadsStatusTwo from "../../components/newcomponents/LeadsStatusTwo";
-import ScheduleTwo from "../../components/newcomponents/ScheduleTwo";
-import { leadsStatusData } from '../../Utils/fackData/leadsStatusData';
 import Swal from 'sweetalert2';
 import Papa from 'papaparse';
+import { useQuery } from "@tanstack/react-query";
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -28,6 +23,13 @@ const Home = () => {
     gold: { key: "totalGrossAmount", dir: "desc" },
     silver: { key: "totalGrossAmount", dir: "desc" },
   });
+
+  const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError} = useQuery({
+    queryKey: ['dashboardData'],
+    queryFn: () => apiGetasync('http://localhost:8000/api/customer-dashboard-data')
+  })
+
+  console.log(dashboardData , 'dashboardData');
   
   // const fetchDashboard = () => {
   //   setIsLoading(true);

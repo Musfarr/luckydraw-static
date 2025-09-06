@@ -105,6 +105,31 @@ export async function apiGet(endPoint, onSuccess, onFailure, custom ,params) {
     });
 }
 
+
+/**
+ * Async API GET function optimized for React Query
+ * @param {string|Object} endpoint - API endpoint URL or options object
+ * @returns {Promise} - Promise that resolves to the response data
+ */
+export async function apiGetasync(endpoint) {
+  try {
+    // Handle both string and object parameters
+    const url = typeof endpoint === 'string' ? endpoint : endpoint.endPoint;
+    
+    const response = await axios.get(url);
+    return response.data;
+  } catch (error) {
+    // Handle authentication errors
+    if (error?.response?.status === 401) {
+      localStorage.clear();
+      window.location.href = "/";
+    }
+    
+    // Throw the error for React Query to handle
+    throw error;
+  }
+}
+
 export async function apiPost(endPoint, onSuccess, onFailure, body, custom) {
   let token = await jwt();
   axios
