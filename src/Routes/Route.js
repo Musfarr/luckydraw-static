@@ -41,6 +41,20 @@ export const protectedRoutesWithoutSidebarLayout = [
     path: "*",
     component: <NotFound />,
   },
+  {
+    path: "/home",
+    component: <Home />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
+  {
+    path: "/luckydraw",
+    component: <LuckyDraw />,
+    footer: <Footer extraPadding="70px" />,
+    padding: true,
+    headerBtn: true,
+  },
 ];
 export const protectedRoutesWithSidebarLayout = [
   // {
@@ -100,20 +114,7 @@ export const protectedRoutesWithSidebarLayout = [
   //   padding: true,
   //   headerBtn: true,
   // },
-  {
-    path: "/home",
-    component: <Home />,
-    footer: <Footer extraPadding="70px" />,
-    padding: true,
-    headerBtn: true,
-  },
-  {
-    path: "/luckydraw",
-    component: <LuckyDraw />,
-    footer: <Footer extraPadding="70px" />,
-    padding: true,
-    headerBtn: true,
-  },
+  
   // {
   //   path: "/add-user",
   //   component: <AddUser />,

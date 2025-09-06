@@ -5741,7 +5741,9 @@ span.filtername {
 
 .overviewContent {
   padding: 120px 0 120px;
-  background-color: #f3f4f6;
+  /* background: linear-gradient(174deg,rgb(92, 240, 154) 37%, rgba(247, 247, 242, 1) 100%); */
+  background-image: url('/src/assets/images/greenbg.png');
+  background-size: cover;
   min-height: calc(100vh );
 }
 

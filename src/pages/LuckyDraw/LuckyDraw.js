@@ -5,6 +5,9 @@ import Spinner from "../../reusables/Spinner";
 import Swal from 'sweetalert2';
 import Papa from 'papaparse';
 import "./LuckyDraw.css";
+import yaris from "../../assets/images/yaris.png";
+import gold_1_tola from "../../assets/images/goldbar.png";
+import coin from "../../assets/images/coin.png";
 
 const LuckyDraw = () => {
   const { auth } = useAuth();
@@ -38,6 +41,8 @@ const LuckyDraw = () => {
       { id: 'refrigerator', name: 'Refrigerator', icon: '❄️', description: 'Double door refrigerator' }
     ]
   };
+  
+  console.log(distributorData , 'distributorData from Gloabal ')
 
   useEffect(() => {
     // Load draw history from localStorage
@@ -218,41 +223,43 @@ const LuckyDraw = () => {
   const filterParticipants = () => {
     let participants = [];
     
-    // Use global distributor data if available
+    // Use global customer data if available
     if (globalDistributorData.dataUploaded && globalDistributorData[selectedTier]) {
-      participants = globalDistributorData[selectedTier].map((distributor, index) => {
+      participants = globalDistributorData[selectedTier].map((customer, index) => {
         // Find matching geo data using distributor code
         const geoInfo = geoData.find(geo => 
-          (geo['Distributor Code'] || geo.distributorCode) === distributor.distributorCode
+          (geo['Distributor Code'] || geo.distributorCode) === customer.distributorCode
         );
         
         return {
           id: index + 1,
-          name: distributor.distributorName,
-          region: geoInfo?.Region || distributor.region || 'Unknown',
-          area: geoInfo?.Area || 'Unknown',
+          name: customer.customerName, // Use customer name instead of distributor name
+          customerCode: customer.customerCode,
+          region: geoInfo?.Region || customer.region || 'Unknown',
+          area: geoInfo?.Area || 'Unknown', 
           zone: geoInfo?.ZoneDesc || geoInfo?.Zone || 'Unknown',
-          distributorCode: distributor.distributorCode,
-          totalGrossAmount: distributor.totalGrossAmount,
-          customerCount: distributor.customerCount
+          distributorCode: customer.distributorCode,
+          distributorName: customer.distributorName,
+          totalGrossAmount: customer.totalGrossAmount,
+          transactionCount: customer.transactionCount
         };
       });
     } else {
-      // Fallback to sample data if global data not available
+      // Fallback to sample customer data if global data not available
       const sampleData = {
         platinum: [
-          { id: 1, name: "Ahmed Ali", region: "KARACHI", area: "KMD", zone: "South", distributorCode: "D001" },
-          { id: 2, name: "Fatima Malik", region: "LAHORE", area: "LHR DHA", zone: "Central", distributorCode: "D002" }
+          { id: 1, name: "Ahmed Ali", customerCode: "C001", region: "KARACHI", area: "KMD", zone: "South", distributorCode: "D001", distributorName: "ABC Traders" },
+          { id: 2, name: "Fatima Malik", customerCode: "C002", region: "LAHORE", area: "LHR DHA", zone: "Central", distributorCode: "D002", distributorName: "XYZ Distributors" }
         ],
         gold: [
-          { id: 3, name: "Sara Khan", region: "ISLAMABAD", area: "ISB", zone: "North", distributorCode: "D003" },
-          { id: 4, name: "Omar Rashid", region: "KARACHI", area: "Baldia", zone: "South", distributorCode: "D004" },
-          { id: 5, name: "Zara Hussain", region: "LAHORE", area: "LHR JOHAR TOWN", zone: "Central", distributorCode: "D005" }
+          { id: 3, name: "Sara Khan", customerCode: "C003", region: "ISLAMABAD", area: "ISB", zone: "North", distributorCode: "D003", distributorName: "PQR Trading" },
+          { id: 4, name: "Omar Rashid", customerCode: "C004", region: "KARACHI", area: "Baldia", zone: "South", distributorCode: "D004", distributorName: "LMN Suppliers" },
+          { id: 5, name: "Zara Hussain", customerCode: "C005", region: "LAHORE", area: "LHR JOHAR TOWN", zone: "Central", distributorCode: "D005", distributorName: "DEF Enterprises" }
         ],
         silver: [
-          { id: 6, name: "Hassan Sheikh", region: "FAISALABAD", area: "JHANG", zone: "North", distributorCode: "D006" },
-          { id: 7, name: "Aisha Tariq", region: "MULTAN", area: "MULTAN CITY", zone: "Central", distributorCode: "D007" },
-          { id: 8, name: "Bilal Ahmed", region: "PESHAWAR", area: "PESHAWAR", zone: "North", distributorCode: "D008" }
+          { id: 6, name: "Hassan Sheikh", customerCode: "C006", region: "FAISALABAD", area: "JHANG", zone: "North", distributorCode: "D006", distributorName: "GHI Traders" },
+          { id: 7, name: "Aisha Tariq", customerCode: "C007", region: "MULTAN", area: "MULTAN CITY", zone: "Central", distributorCode: "D007", distributorName: "JKL Distributors" },
+          { id: 8, name: "Bilal Ahmed", customerCode: "C008", region: "PESHAWAR", area: "PESHAWAR", zone: "North", distributorCode: "D008", distributorName: "MNO Trading" }
         ]
       };
       participants = sampleData[selectedTier] || [];
@@ -468,7 +475,7 @@ const LuckyDraw = () => {
 
             {/* Tier Selection */}
             <div className="uk-width-1-1 ">
-              <div className="uk-card uk-card-default uk-card-body tier-selection-card">
+              <div className="uk-card uk-card-default uk-card-body tier-selection-card" style={{backgroundImage: 'url(/src/assets/images/green bg.png)'}}>
                 <h3 className="uk-card-title">Select Tier & Giveaway</h3>
                 
                 <div className="tier-buttons">
@@ -494,7 +501,19 @@ const LuckyDraw = () => {
                           className={`giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''}`}
                           onClick={() => handleGiveawayChange(giveaway.id)}
                         >
-                          <div className="giveaway-icon">{giveaway.icon}</div>
+                          <div className="giveaway-icon"><img style={{width: '40%'}} 
+                          
+                          
+                          src={ giveaway.id === 'car' ? yaris :
+                             giveaway.id === 'gold_1_tola' ? gold_1_tola :
+                             giveaway.id === 'gold_5_grams' ? coin :
+                             '/src/assets/images/gift.png'}
+                          
+                          
+                          
+                          
+                          
+                          alt={giveaway.name} /></div>
                           <h5>{giveaway.name}</h5>
                           <p>{giveaway.description}</p>
                         </div>
@@ -594,10 +613,12 @@ const LuckyDraw = () => {
                       <div key={participant.id} className="participant-item">
                         <div className="participant-info">
                           <h5>{participant.name}</h5>
+                          <p><strong>Customer Code:</strong> {participant.customerCode}</p>
                           <p><strong>Zone:</strong> {participant.zone}</p>
                           <p><strong>Region:</strong> {participant.region}</p>
                           <p><strong>Area:</strong> {participant.area}</p>
-                          <small>Code: {participant.distributorCode}</small>
+                          <p><strong>Distributor:</strong> {participant.distributorName}</p>
+                          <small>Purchase Amount: {participant.totalGrossAmount?.toLocaleString()} PKR</small>
                         </div>
                         <span className={`tier-badge tier-${selectedTier}`}>
                           {selectedTier.toUpperCase()}
