@@ -1,213 +1,36 @@
 import React, { useState, useEffect } from "react";
-import { useAuth } from "../../Context/AuthProvider";
 import { useDistributorData } from "../../Context/DistributorDataProvider";
 import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
-import Swal from 'sweetalert2';
-import Papa from 'papaparse';
 import { useQuery } from "@tanstack/react-query";
+import lifeboylogo from "../../assets/images/lifeboylogo.jpg";
+import campaignlogo from "../../assets/images/campaignlogo.png";
+import "../LuckyDraw/LuckyDraw.css";
 
 
 const Home = () => {
   const navigate = useNavigate();
-  const { auth } = useAuth();
   const { distributorData, updateDistributorData } = useDistributorData();
-  const [data, setData] = useState(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [csvData, setCsvData] = useState(null);
-  const [dataUploaded, setDataUploaded] = useState(false);
-  const colors = ["#14B8A6", "#FACC15", "#F59E0B"];
   const [sortConfig, setSortConfig] = useState({
-    platinum: { key: "totalGrossAmount", dir: "desc" },
-    gold: { key: "totalGrossAmount", dir: "desc" },
-    silver: { key: "totalGrossAmount", dir: "desc" },
+    Platinum: { key: "totalGrossAmount", dir: "desc" },
+    Gold: { key: "totalGrossAmount", dir: "desc" },
+    Silver: { key: "totalGrossAmount", dir: "desc" },
   });
 
   const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError} = useQuery({
     queryKey: ['dashboardData'],
     queryFn: () => apiGetasync('http://localhost:8000/api/customer-dashboard-data')
   })
-
-  console.log(dashboardData , 'dashboardData');
   
-  // const fetchDashboard = () => {
-  //   setIsLoading(true);
-  //   const onSuccess = (response) => {
-  //     setData(response.data);
-  //     setIsLoading(false);
-      
-  //     // Check if data is already uploaded
-  //     if (!dataUploaded) {
-  //       // Prompt for file upload before showing dashboard
-  //       promptFileUpload();
-  //     }
-  //   };
-
-  //   const onFailure = (error) => {
-  //     console.error("Failed to fetch dashboard:", error);
-  //     setIsLoading(false);
-      
-  //     // Still prompt for file upload even if dashboard fails
-  //     if (!dataUploaded) {
-  //       promptFileUpload();
-  //     }
-  //   };
-
-  //   apiGet('/admin/dashboard', onSuccess, onFailure);
-  // };
-
-  useEffect(() => {
-    setTimeout(() => {
-      setIsLoading(false);
-      
-    }, 2000);
-  }, []);
-
-
-
-  useEffect(() => {
-    console.log(dataUploaded);
-  }, [dataUploaded]);
+  const data = dashboardData?.data;
+  
   
   // Function to prompt user to upload CSV file
-  const promptFileUpload = () => {
-    Swal.fire({
-      title: 'Upload CSV File',
-      text: 'Please upload your CSV file to view the dashboard',
-      icon: 'info',
-      html: `
-        <div class="custom-file-upload">
-          <input type="file" id="csv-file" accept=".csv" style="display: none;" />
-          <label for="csv-file" class="uk-button uk-button-primary">
-            Choose File
-          </label>
-          <span id="file-name" style="margin-left: 10px;">No file selected</span>
-        </div>
-      `,
-      allowOutsideClick: dataUploaded, // Prevent closing if first upload
-      showCancelButton: dataUploaded, // Only show cancel if data already uploaded
-      confirmButtonText: 'Upload',
-      cancelButtonText: 'Cancel',
-      didOpen: () => {
-        const fileInput = document.getElementById('csv-file');
-        const fileNameSpan = document.getElementById('file-name');
-        
-        fileInput.addEventListener('change', (e) => {
-          if (e.target.files.length > 0) {
-            fileNameSpan.textContent = e.target.files[0].name;
-          } else {
-            fileNameSpan.textContent = 'No file selected';
-          }
-        });
-      },
-      preConfirm: () => {
-        const fileInput = document.getElementById('csv-file');
-        if (!fileInput.files.length) {
-          Swal.showValidationMessage('Please select a file');
-          return false;
-        }
-        return fileInput.files[0];
-      }
-    }).then((result) => {
-      if (result.isConfirmed && result.value) {
-        const file = result.value;
-        convertCsvToJson(file);
-      } else if (!dataUploaded && result.dismiss) {
-        // If first time and dismissed, prompt again
-        promptFileUpload();
-      }
-    });
-  };
 
 
-  const transformData = (data) => {
-    // Step 1: Consolidate gross amounts by customer
-    const customerMap = {};
-    
-    data.forEach(item => {
-      const customerCode = item.CUST_CD || item.CustomerCode || item.customerId || 'Unknown Code';
-      const customerName = item.CUST_NAME || item.CustomerName || item.AnchorName || 'Unknown Customer';
-      const grossAmount = parseFloat(item.GROSS_AMT || item.GrossAmount || item.Amount || '0');
-      const distributorName = item.DIST_NAME || item.DistrictName || item.district || 'Unknown Distributor';
-      
-      // Use customer code as unique identifier (more reliable than name)
-      const customerKey = `${customerCode}_${customerName}`;
-      
-      if (!customerMap[customerKey]) {
-        customerMap[customerKey] = {
-          customerCode,
-          customerName,
-          totalGrossAmount: 0,
-          transactionCount: 0,
-          transactions: [],
-          // Keep distributor and region info from first occurrence
-          distributorName: distributorName,
-          region: item.REGION || item.Region || '',
-          distributorCode: item.DIST_CD || item.DistributorCode || ''
-        };
-      }
-      
-      // Add to total gross amount
-      customerMap[customerKey].totalGrossAmount += grossAmount;
-      customerMap[customerKey].transactionCount += 1;
-      
-      // Store transaction details
-      customerMap[customerKey].transactions.push({
-        sku: item.SKU || '',
-        skuDesc: item.SKU_DESC || '',
-        format: item.Format || '',
-        grossAmount: grossAmount,
-        deliveryDate: item.DELIVERY_DT || '',
-        invoiceNo: item.INV_NO || '',
-        week: item.WEEK || '',
-        productCategory: item.PRDCAT_CD || ''
-      });
-    });
-    
-    // Convert map to array
-    const consolidatedCustomers = Object.values(customerMap);
-    
-    // Step 2: Categorize customers into platinum, gold, and silver tiers
-    const platinum = [];
-    const gold = [];
-    const silver = [];
-    
-    // Categorize based on thresholds in Crore PKR (1 Crore = 10,000,000 PKR)
-    consolidatedCustomers.forEach(customer => {
-      if (customer.totalGrossAmount > 2000000) { // > 20 lacs PKR
-        platinum.push(customer);
-      } else if (customer.totalGrossAmount > 1500000 && customer.totalGrossAmount <= 2000000) { // 15 to 20 lacs PKR
-        gold.push(customer);
-      } else if (customer.totalGrossAmount >= 1000000 && customer.totalGrossAmount <= 1500000) { // 10 to 15 lacs PKR
-        silver.push(customer);
-      }
-    });
-    
-    // Sort each tier by total gross amount (descending)
-    platinum.sort((a, b) => b.totalGrossAmount - a.totalGrossAmount);
-    gold.sort((a, b) => b.totalGrossAmount - a.totalGrossAmount);
-    silver.sort((a, b) => b.totalGrossAmount - a.totalGrossAmount);
-    
-    // Set data for the tables
-    const tierData = {
-      platinum,
-      gold,
-      silver,
-      allCustomers: consolidatedCustomers
-    };
-    
-    setData(tierData);
-    
-    // Update global context with customer data
-    updateDistributorData({
-      ...tierData,
-      csvData: data,
-      dataUploaded: true
-    });
-    
-    console.log('Categorized customers:', { platinum, gold, silver });
-  };
+
+  
 
   // Helpers: sorting per tier
 
@@ -248,7 +71,7 @@ const Home = () => {
   };
 
   const getRows = (tier) => {
-    const base = data?.[tier] || [];
+    const base = data?.[tier]?.data || [];
     return applySort(base, tier);
   };
 
@@ -260,216 +83,59 @@ const Home = () => {
     });
   };
 
-  // Function to convert CSV to JSON using PapaParser
-  const convertCsvToJson = (file) => {
-    // Show loading spinner
-    Swal.fire({
-      title: 'Processing Data...',
-      html: `
-        <div style="text-align: center;">
-          
-          <p style="margin-top: 15px; color: #64748b;">Parsing and transforming your CSV data</p>
-        </div>
-      `,
-      allowOutsideClick: false,
-      showConfirmButton: false,
-      didOpen: () => {
-        Swal.showLoading();
-      }
-    });
-
-    Papa.parse(file, {
-      header: true, // First row as headers
-      skipEmptyLines: true,
-      worker: true, // Use web worker for better performance with large files
-      complete: (results) => {
-        // Remove limit - handle all rows for large datasets
-        const processedData = results.data.filter(row => {
-          // Filter out completely empty rows
-          return Object.values(row).some(value => value && value.toString().trim() !== '');
-        });
-        
-        setCsvData(processedData);
-        setDataUploaded(true);
-        
-        // Update context with CSV data
-        updateDistributorData({
-          csvData: processedData,
-          dataUploaded: true
-        });
-
-        // Process data in chunks for better performance
-        setTimeout(() => {
-          transformData(processedData);
-          console.log(`Converted CSV to JSON (${processedData.length} rows):`, processedData);
-          
-          // Close loading and show success
-          Swal.fire({
-            title: 'Success!',
-            text: `Successfully loaded ${file.name} (${processedData.length} rows)`,
-            icon: 'success',
-            confirmButtonText: 'OK',
-            timer: 2000,
-            timerProgressBar: true
-          });
-        }, 100);
-      },
-      error: (error) => {
-        console.error('Error parsing CSV:', error);
-        Swal.fire({
-          title: 'Error',
-          text: 'Failed to parse CSV file: ' + error.message,
-          icon: 'error',
-          confirmButtonText: 'OK'
-        }).then(() => {
-          // If error and no data uploaded yet, prompt again
-          if (!dataUploaded) {
-            promptFileUpload();
-          }
-        });
-      }
-    });
-  };
+  
 
   
 
   return (
     <div className="boradcastWrp">
-      {isLoading ? (
+      { dashboardLoading ? (
         <Spinner />
-      ) : !dataUploaded ? (
+      ) : dashboardError ? (
         <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
           <div className="uk-card uk-card-default uk-card-body uk-text-center">
-            <h3>Please Upload CSV Data</h3>
-            <p>You need to upload a CSV file to view the dashboard</p>
-            <button onClick={promptFileUpload} className=" mx-auto container-btn-file">
-  <svg
-    fill="#fff"
-    xmlns="http://www.w3.org/2000/svg"
-    width="20"
-    height="20"
-    viewBox="0 0 50 50"
-  >
-    <path
-      d="M28.8125 .03125L.8125 5.34375C.339844 
-    5.433594 0 5.863281 0 6.34375L0 43.65625C0 
-    44.136719 .339844 44.566406 .8125 44.65625L28.8125 
-    49.96875C28.875 49.980469 28.9375 50 29 50C29.230469 
-    50 29.445313 49.929688 29.625 49.78125C29.855469 49.589844 
-    30 49.296875 30 49L30 1C30 .703125 29.855469 .410156 29.625 
-    .21875C29.394531 .0273438 29.105469 -.0234375 28.8125 .03125ZM32 
-    6L32 13L34 13L34 15L32 15L32 20L34 20L34 22L32 22L32 27L34 27L34 
-    29L32 29L32 35L34 35L34 37L32 37L32 44L47 44C48.101563 44 49 
-    43.101563 49 42L49 8C49 6.898438 48.101563 6 47 6ZM36 13L44 
-    13L44 15L36 15ZM6.6875 15.6875L11.8125 15.6875L14.5 21.28125C14.710938 
-    21.722656 14.898438 22.265625 15.0625 22.875L15.09375 22.875C15.199219 
-    22.511719 15.402344 21.941406 15.6875 21.21875L18.65625 15.6875L23.34375 
-    15.6875L17.75 24.9375L23.5 34.375L18.53125 34.375L15.28125 
-    28.28125C15.160156 28.054688 15.035156 27.636719 14.90625 
-    27.03125L14.875 27.03125C14.8125 27.316406 14.664063 27.761719 
-    14.4375 28.34375L11.1875 34.375L6.1875 34.375L12.15625 25.03125ZM36 
-    20L44 20L44 22L36 22ZM36 27L44 27L44 29L36 29ZM36 35L44 35L44 37L36 37Z"
-    ></path>
-  </svg>
-  Upload File
-  {/* <input class="file" name="text" type="file" /> */}
-</button>
+            <h3>Error Loading Dashboard</h3>
+            <p>{dashboardError?.message || 'Failed to load dashboard data'}</p>
+            <button onClick={() => window.location.reload()} className="uk-button uk-button-primary">
+              Retry
+            </button>
           </div>
         </div>
       ) : (
-          <div className="broadcastContentWrp">
-            <div className="overviewContent">
+            <div className="newLayout">
               <div className="uk-container uk-container-xlarge">
-                <div className="uk-grid uk-flex-middle" uk-grid="">
+                <div className="uk-grid uk-flex-middle uk-flex-baseline" uk-grid="">
                   <div className="uk-width-1-1 uk-margin-remove-top">
-                    <div
-                      className="analyticsWhatsappContent"
-                      style={{ marginTop: "16px" }}
-                    >
-                      <div className="uk-grid uk-flex-middle" uk-grid="">
-                        {/* <div className="uk-width-1-2 uk-margin-remove">
-                          <h2 className="uk-margin-remove">{auth?.user?.name}</h2>
-                          <p className="uk-margin-remove">
-                            Customer Stats 
-                          </p>
-                        </div> */}
-                        {/* <div className="uk-width-1-2 uk-flex uk-flex-right uk-margin-remove">
-                          <button onClick={promptFileUpload} className="container-btn-file">
-                            <svg
-                              fill="#fff"
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="20"
-                              height="20"
-                              viewBox="0 0 40 40"
-                            >
-                              <path
-                                d="M28.8125 .03125L.8125 5.34375C.339844 
-                              5.433594 0 5.863281 0 6.34375L0 43.65625C0 
-                              44.136719 .339844 44.566406 .8125 44.65625L28.8125 
-                              49.96875C28.875 49.980469 28.9375 50 29 50C29.230469 
-                              50 29.445313 49.929688 29.625 49.78125C29.855469 49.589844 
-                              30 49.296875 30 49L30 1C30 .703125 29.855469 .410156 29.625 
-                              .21875C29.394531 .0273438 29.105469 -.0234375 28.8125 .03125ZM32 
-                              6L32 13L34 13L34 15L32 15L32 20L34 20L34 22L32 22L32 27L34 27L34 
-                              29L32 29L32 35L34 35L34 37L32 37L32 44L47 44C48.101563 44 49 
-                              43.101563 49 42L49 8C49 6.898438 48.101563 6 47 6ZM36 13L44 
-                              13L44 15L36 15ZM6.6875 15.6875L11.8125 15.6875L14.5 21.28125C14.710938 
-                              21.722656 14.898438 22.265625 15.0625 22.875L15.09375 22.875C15.199219 
-                              22.511719 15.402344 21.941406 15.6875 21.21875L18.65625 15.6875L23.34375 
-                              15.6875L17.75 24.9375L23.5 34.375L18.53125 34.375L15.28125 
-                              28.28125C15.160156 28.054688 15.035156 27.636719 14.90625 
-                              27.03125L14.875 27.03125C14.8125 27.316406 14.664063 27.761719 
-                              14.4375 28.34375L11.1875 34.375L6.1875 34.375L12.15625 25.03125ZM36 
-                              20L44 20L44 22L36 22ZM36 27L44 27L44 29L36 29ZM36 35L44 35L44 37L36 37Z"
-                              ></path>
-                            </svg>
-                            Upload CSV
-                          </button>
-                        </div> */}
+                    <div className="analyticsWhatsappContent analytics-content">
+                      <div className="uk-grid uk-flex-between" style={{ alignItems: "baseline" }} uk-grid="">
 
-                        {/* Lucky Draw Button - Centered */}
-                        {data && (data.platinum?.length > 0 || data.gold?.length > 0 || data.silver?.length > 0) && (
-                          <div className="uk-width-1-1 uk-text-center uk-margin-medium-top">
+
+                        <div className="uk-margin-remove">
+                          <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
+                        </div>
+                        {data && (data.Platinum?.data?.length > 0 || data.Gold?.data?.length > 0 || data.Silver?.data?.length > 0) && (
+                          <div className="uk-text-center">
                             <button 
                               onClick={() => navigate('/luckydraw')} 
-                              className="draw-btn"
-                              style={{
-                                background: 'linear-gradient(135deg, #10b981, #059669)',
-                                border: 'none',
-                                padding: '18px 50px',
-                                fontSize: '1.2rem',
-                                fontWeight: '700',
-                                borderRadius: '50px',
-                                color: 'white',
-                                boxShadow: '0 8px 25px rgba(16, 185, 129, 0.3)',
-                                textTransform: 'uppercase',
-                                letterSpacing: '1px',
-                                transition: 'all 0.3s ease',
-                                cursor: 'pointer'
-                              }}
-                              onMouseEnter={(e) => {
-                                e.target.style.background = 'linear-gradient(135deg, #059669, #047857)';
-                                e.target.style.transform = 'translateY(-3px)';
-                                e.target.style.boxShadow = '0 12px 35px rgba(16, 185, 129, 0.4)';
-                              }}
-                              onMouseLeave={(e) => {
-                                e.target.style.background = 'linear-gradient(135deg, #10b981, #059669)';
-                                e.target.style.transform = 'translateY(0)';
-                                e.target.style.boxShadow = '0 8px 25px rgba(16, 185, 129, 0.3)';
-                              }}
+                              className="draw-button"
                             >
                               🎲 Start Lucky Draw
                             </button>
                           </div>
                         )}
+                        <div className="uk-margin-remove">
+                          <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
+                        </div>
+                        
+                        
 
                         <div className="uk-width-1-1 uk-margin-remove">
-                          <div className="overviewMainContent">
+                          <div className="overviewMainContent " >
                             <div className="uk-margin">
                               <div className="uk-grid uk-grid-small" uk-grid="">
                                 <div className="uk-width-1-1">
                                   <div className="uk-card uk-card-default uk-card-body">
-                                    <h3 className="uk-card-title">Customer Tier Summary</h3>
+                                    {/* <h1 className="uk-card-title">Customer Tier Summary</h1> */}
                                     <div className="tier-buttons-home">
                                       <div className="tier-card-home tier-platinum">
                                         <div className="tier-icon">💎</div>
@@ -477,7 +143,7 @@ const Home = () => {
                                           <h4 className="tier-name">PLATINUM</h4>
                                           {/* <p className="tier-count">({data?.platinum?.length || 0} Customers)</p> */}
                                           <div className="tier-stats">
-                                            <span className="tier-value">({data?.platinum?.length || 0} Customers)</span>
+                                            <span className="tier-value">({data?.Platinum?.count || 0} Customers)</span>
                                           </div>
                                         </div>
                                       </div>
@@ -488,7 +154,7 @@ const Home = () => {
                                           <h4 className="tier-name">GOLD</h4>
                                           {/* <p className="tier-count">({data?.gold?.length || 0} Customers)</p> */}
                                           <div className="tier-stats">
-                                            <span className="tier-value">({data?.gold?.length || 0} Customers)</span>
+                                            <span className="tier-value">({data?.Gold?.count || 0} Customers)</span>
                                           </div>
                                         </div>
                                       </div>
@@ -499,7 +165,7 @@ const Home = () => {
                                           <h4 className="tier-name">SILVER</h4>
                                           {/* <p className="tier-count">({data?.silver?.length || 0} Customers)</p> */}
                                           <div className="tier-stats">
-                                            <span className="tier-value">({data?.silver?.length || 0} Customers)</span>
+                                            <span className="tier-value">({data?.Silver?.count || 0} Customers)</span>
                                           </div>
                                         </div>
                                       </div>
@@ -509,46 +175,57 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="uk-grid uk-grid-small"  uk-grid="" uk-height-match="target: >div> div " >
-                              <div className= " uk-card uk-card-default uk-card-body uk-width-1-1" style={{marginLeft: '15px'}}>
+                            <div className="uk-grid uk-grid-small" uk-grid="" uk-height-match="target: >div> div">
+                              <div className="uk-card uk-card-default uk-card-body uk-width-1-1 main-content-card">
                                 {/* Summary counts toolbar (search removed) */}
-                                <div className="uk-flex  uk-flex-middle uk-margin-small-bottom uk-grid-small" uk-grid="">
+                                {/* <div className="uk-flex uk-flex-middle uk-margin-small-bottom uk-grid-small" uk-grid="">
                                   <div className="uk-width-auto uk-text-meta">
-                                    <span>Platinum: {data?.platinum?.length || 0} | Gold: {data?.gold?.length || 0} | Silver: {data?.silver?.length || 0}</span>
+                                    <span className="summary-badge">Platinum: {data?.Platinum?.count || 0} | Gold: {data?.Gold?.count || 0} | Silver: {data?.Silver?.count || 0}</span>
                                   </div>
-                                </div>
+                                </div> */}
 
                                 <ul className="uk-tab tier-tabs" uk-tab="connect: #tier-switcher">
-                                  <li className="uk-active"><a href="#" className="platinum">Platinum Tier (>20 Lac PKR)</a></li>
-                                  <li><a href="#" className="gold">Gold Tier (15 - 20 Lac PKR)</a></li>
-                                  <li><a href="#" className="silver">Silver Tier (10 - 15 Lac PKR)</a></li>
+                                  <li className="uk-active"><a href="#" className="platinum tier-tab-platinum">💎 Platinum Tier (>20 Lac PKR)</a></li>
+                                  <li><a href="#" className="gold tier-tab-gold">🥇 Gold Tier (15 - 20 Lac PKR)</a></li>
+                                  <li><a href="#" className="silver tier-tab-silver">🥈 Silver Tier (10 - 15 Lac PKR)</a></li>
                                 </ul>
 
                                 <ul id="tier-switcher" className="uk-switcher uk-margin">
                                   {/* Platinum Tier Table */}
                                   <li className="uk-active">
                                     <div className="uk-overflow-auto">
-                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-platinum">
-                                        <thead className="tier-header tier-platinum">
+                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
+                                        <thead className="tier-header-platinum">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.platinum.key==='region' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='customerName' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','customerName')}>Outlet Name</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='customerCode' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','customerCode')}>Outlet Code</th>
-                                            <th className={`sortable ${sortConfig.platinum.key==='totalGrossAmount' ? 'sorted-'+sortConfig.platinum.dir : ''}`} onClick={() => handleSort('platinum','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable  table-header-cell ${sortConfig.Platinum.key==='Region' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','Region')}> Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerName' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerName')}> Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerCode' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerCode')}> Outlet Code</th>
+                                           
+                                            <th className="table-header-cell">💎 Platinum Entries</th>
+                                            <th className="table-header-cell">🥇 Gold Entries</th>
+                                            <th className="table-header-cell">🥈 Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('platinum').map((customer, index) => (
-                                            <tr key={index}>
-                                              <td>{customer.region}</td>
-                                              <td>{customer.customerName}</td>
-                                              <td>{customer.customerCode}</td>
-                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                          {getRows('Platinum').map((customer, index) => (
+                                            <tr key={index} className="table-row table-row-platinum">
+                                              <td className="table-cell">{customer.Region}</td>
+                                              <td className="table-cell">{customer.customerName}</td>
+                                              <td className="table-cell-code">{customer.customerCode}</td>
+                                              <td className="table-cell-entries table-cell-entries-platinum">
+                                                <span className="entry-badge entry-badge-platinum">{customer.entries?.platinumEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-gold">
+                                                <span className="entry-badge entry-badge-gold">{customer.entries?.goldEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-silver">
+                                                <span className="entry-badge entry-badge-silver">{customer.entries?.silverEntries || 0}</span>
+                                              </td>
                                             </tr>
                                           ))}
-                                          {(!data?.platinum || data.platinum.length === 0) && (
+                                          {(!data?.Platinum?.data || data.Platinum.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="4" className="uk-text-center">No platinum tier customers found</td>
+                                              <td colSpan="6" className="uk-text-center empty-state">💎 No platinum tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -559,27 +236,54 @@ const Home = () => {
                                   {/* Gold Tier Table */}
                                   <li>
                                     <div className="uk-overflow-auto">
-                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-gold">
-                                        <thead className="tier-header tier-gold">
+                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
+                                        <thead className="tier-header-gold">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.gold.key==='region' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='customerName' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerName')}>Outlet Name</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='customerCode' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','customerCode')}>Outlet Code</th>
-                                            <th className={`sortable ${sortConfig.gold.key==='totalGrossAmount' ? 'sorted-'+sortConfig.gold.dir : ''}`} onClick={() => handleSort('gold','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='Region' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','Region')}>📍 Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerName' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerName')}>🏪 Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerCode' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerCode')}>🏷️ Outlet Code</th>
+                                            <th className="table-header-cell">💎 Platinum Entries</th>
+                                            <th className="table-header-cell">🥇 Gold Entries</th>
+                                            <th className="table-header-cell">🥈 Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('gold').map((customer, index) => (
-                                            <tr key={index}>
-                                              <td>{customer.region}</td>
-                                              <td>{customer.customerName}</td>
-                                              <td>{customer.customerCode}</td>
-                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                          {getRows('Gold').map((customer, index) => (
+                                            <tr key={index} className="table-row table-row-gold">
+                                              <td style={{
+                                                padding: '1rem',
+                                                fontWeight: '600',
+                                                color: '#2c3e50',
+                                                fontSize: '0.9rem'
+                                              }}>{customer.Region}</td>
+                                              <td style={{
+                                                padding: '1rem',
+                                                fontWeight: '600',
+                                                color: '#2c3e50',
+                                                fontSize: '0.9rem'
+                                              }}>{customer.customerName}</td>
+                                              <td style={{
+                                                padding: '1rem',
+                                                fontWeight: '500',
+                                                color: '#7f8c8d',
+                                                fontSize: '0.9rem',
+                                                fontFamily: 'monospace'
+                                              }}>{customer.customerCode}</td>
+                                             
+                                              <td className="table-cell-entries table-cell-entries-platinum">
+                                                <span className="entry-badge entry-badge-platinum">{customer.entries?.platinumEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-gold">
+                                                <span className="entry-badge entry-badge-gold">{customer.entries?.goldEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-silver">
+                                                <span className="entry-badge entry-badge-silver">{customer.entries?.silverEntries || 0}</span>
+                                              </td>
                                             </tr>
                                           ))}
-                                          {(!data?.gold || data.gold.length === 0) && (
+                                          {(!data?.Gold?.data || data.Gold.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="4" className="uk-text-center">No gold tier customers found</td>
+                                              <td colSpan="7" className="uk-text-center empty-state">🥇 No gold tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -590,27 +294,37 @@ const Home = () => {
                                   {/* Silver Tier Table */}
                                   <li>
                                     <div className="uk-overflow-auto">
-                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table tier-silver">
-                                        <thead className="tier-header tier-silver">
+                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
+                                        <thead className="tier-header-silver">
                                           <tr>
-                                            <th className={`sortable ${sortConfig.silver.key==='region' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','region')}>Region</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='customerName' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerName')}>Outlet Name</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='customerCode' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','customerCode')}>Outlet Code</th>
-                                            <th className={`sortable ${sortConfig.silver.key==='totalGrossAmount' ? 'sorted-'+sortConfig.silver.dir : ''}`} onClick={() => handleSort('silver','totalGrossAmount')}>Total Purchase Amount</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='Region' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','Region')}>📍 Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerName' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerName')}>🏪 Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerCode' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerCode')}>🏷️ Outlet Code</th>
+                                            <th className="table-header-cell">💎 Platinum Entries</th>
+                                            <th className="table-header-cell">🥇 Gold Entries</th>
+                                            <th className="table-header-cell">🥈 Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
-                                          {getRows('silver').map((customer, index) => (
-                                            <tr key={index}>
-                                              <td>{customer.region}</td>
-                                              <td>{customer.customerName}</td>
-                                              <td>{customer.customerCode}</td>
-                                              <td>{customer.totalGrossAmount.toLocaleString()} PKR</td>
+                                          {getRows('Silver').map((customer, index) => (
+                                            <tr key={index} className="table-row table-row-silver">
+                                              <td className="table-cell">{customer.Region}</td>
+                                              <td className="table-cell">{customer.customerName}</td>
+                                              <td className="table-cell-code">{customer.customerCode}</td>
+                                              <td className="table-cell-entries table-cell-entries-platinum">
+                                                <span className="entry-badge entry-badge-platinum">{customer.entries?.platinumEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-gold">
+                                                <span className="entry-badge entry-badge-gold">{customer.entries?.goldEntries || 0}</span>
+                                              </td>
+                                              <td className="table-cell-entries table-cell-entries-silver">
+                                                <span className="entry-badge entry-badge-silver">{customer.entries?.silverEntries || 0}</span>
+                                              </td>
                                             </tr>
                                           ))}
-                                          {(!data?.silver || data.silver.length === 0) && (
+                                          {(!data?.Silver?.data || data.Silver.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="4" className="uk-text-center">No silver tier customers found</td>
+                                              <td colSpan="7" className="uk-text-center empty-state">🥈 No silver tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -637,7 +351,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-          </div>
       )}
     </div>
   );
