@@ -4,7 +4,7 @@ import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import lifeboylogo from "../../assets/images/lifeboylogo.jpg";
+import lifeboylogo from "../../assets/images/lifeboylogo.png";
 import campaignlogo from "../../assets/images/campaignlogo.png";
 import "../LuckyDraw/LuckyDraw.css";
 
@@ -103,13 +103,13 @@ const Home = () => {
         </div>
       ) : (
             <div className="newLayout">
-              <div className="uk-container uk-container-xlarge">
+              <div className="uk-container uk-container-large">
                 <div className="uk-grid uk-flex-middle uk-flex-baseline" uk-grid="">
                   <div className="uk-width-1-1 uk-margin-remove-top">
                     <div className="analyticsWhatsappContent analytics-content">
-                      <div className="uk-grid uk-flex-between" style={{ alignItems: "baseline" }} uk-grid="">
+                      <div className="uk-grid " style={{ alignItems: "baseline" }} uk-grid="">
 
-
+                      <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
                         <div className="uk-margin-remove">
                           <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
                         </div>
@@ -126,15 +126,14 @@ const Home = () => {
                         <div className="uk-margin-remove">
                           <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
                         </div>
-                        
-                        
+                      </div>                        
 
                         <div className="uk-width-1-1 uk-margin-remove">
                           <div className="overviewMainContent " >
                             <div className="uk-margin">
-                              <div className="uk-grid uk-grid-small" uk-grid="">
-                                <div className="uk-width-1-1">
-                                  <div className="uk-card uk-card-default uk-card-body">
+                              <div className="uk-grid " uk-grid="">
+                                <div className="uk-width-1-1 main-content-card">
+                                  <div className=" uk-padding " style={{paddingTop:0}}>
                                     {/* <h1 className="uk-card-title">Customer Tier Summary</h1> */}
                                     <div className="tier-buttons-home">
                                       <div className="tier-card-home tier-platinum">
@@ -175,7 +174,7 @@ const Home = () => {
                               </div>
                             </div>
 
-                            <div className="uk-grid uk-grid-small" uk-grid="" uk-height-match="target: >div> div">
+                            <div className="uk-grid " uk-grid="" uk-height-match="target: >div> div">
                               <div className="uk-card uk-card-default uk-card-body uk-width-1-1 main-content-card">
                                 {/* Summary counts toolbar (search removed) */}
                                 {/* <div className="uk-flex uk-flex-middle uk-margin-small-bottom uk-grid-small" uk-grid="">
@@ -184,7 +183,7 @@ const Home = () => {
                                   </div>
                                 </div> */}
 
-                                <ul className="uk-tab tier-tabs" uk-tab="connect: #tier-switcher">
+                                <ul className="uk-tab tier-tabs uk-flex uk-flex-center uk-flex-middle " uk-tab="connect: #tier-switcher" style={{paddingBottom: '10px'}}>
                                   <li className="uk-active"><a href="#" className="platinum tier-tab-platinum">💎 Platinum Tier (>20 Lac PKR)</a></li>
                                   <li><a href="#" className="gold tier-tab-gold">🥇 Gold Tier (15 - 20 Lac PKR)</a></li>
                                   <li><a href="#" className="silver tier-tab-silver">🥈 Silver Tier (10 - 15 Lac PKR)</a></li>
@@ -192,9 +191,9 @@ const Home = () => {
 
                                 <ul id="tier-switcher" className="uk-switcher uk-margin">
                                   {/* Platinum Tier Table */}
-                                  <li className="uk-active">
-                                    <div className="uk-overflow-auto">
-                                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
+                                  <li className="uk-active uk-padding" >
+                                    <div className="uk-overflow-auto" style={{maxHeight: '400px'}}>
+                                      <table className="  uk-table uk-table-small uk-table-divider uk-table-hover tier-table" >
                                         <thead className="tier-header-platinum">
                                           <tr>
                                             <th className={`sortable  table-header-cell ${sortConfig.Platinum.key==='Region' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','Region')}> Region</th>
@@ -234,8 +233,8 @@ const Home = () => {
                                   </li>
                                   
                                   {/* Gold Tier Table */}
-                                  <li>
-                                    <div className="uk-overflow-auto">
+                                  <li className="uk-padding">
+                                    <div className="uk-overflow-auto" style={{maxHeight: '400px'}}>
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                         <thead className="tier-header-gold">
                                           <tr>
@@ -292,8 +291,8 @@ const Home = () => {
                                   </li>
                                   
                                   {/* Silver Tier Table */}
-                                  <li>
-                                    <div className="uk-overflow-auto">
+                                  <li className="uk-padding">
+                                    <div className="uk-overflow-auto" style={{maxHeight: '400px'}}>
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                         <thead className="tier-header-silver">
                                           <tr>

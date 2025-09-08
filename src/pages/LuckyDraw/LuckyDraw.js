@@ -7,8 +7,24 @@ import Swal from 'sweetalert2';
 import { useQuery } from "@tanstack/react-query";
 import "./LuckyDraw.css";
 import yaris from "../../assets/images/yaris2x.png";
-import gold_1_tola from "../../assets/images/goldbar.png";
-import coin from "../../assets/images/coin.png";
+import gold_1_tola from "../../assets/images/barr.png";
+import coin from "../../assets/images/ss.png";
+import Lottie from 'react-lottie';
+import confetti from "../../assets/Confetti.json";
+import wheel from "../../assets/wheel.json";
+import lifeboylogo from "../../assets/images/lifeboylogo.png";
+import campaignlogo from "../../assets/images/campaignlogo.png";
+
+
+// silver assets
+
+import microwave_oven from "../../assets/images/microwave.png";
+import samsung_a06 from "../../assets/images/samsung.png";
+import iron from "../../assets/images/iron2x.png";
+import food_factory from "../../assets/images/foodfactory.png";
+import juicer from "../../assets/images/juicer.png";
+import washing_machine from "../../assets/images/WASHINGmachine.png";
+import daraz_gift_card from "../../assets/images/CARD.png";
 
 const LuckyDraw = () => {
   const { auth } = useAuth();
@@ -22,6 +38,9 @@ const LuckyDraw = () => {
   const [selectedZone, setSelectedZone] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedArea, setSelectedArea] = useState('');
+  const [showWinnerModal, setShowWinnerModal] = useState(false);
+  const [showWheelModal, setShowWheelModal] = useState(false);
+  const [winnerData, setWinnerData] = useState(null);
 
   // Fetch dashboard data from API
   const { data: dashboardData, isLoading, error } = useQuery({
@@ -31,23 +50,41 @@ const LuckyDraw = () => {
 
   const data = dashboardData?.data;
 
+  const confettiOptions = {
+    loop: true,
+    autoplay: true,
+    animationData: confetti,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
+
+  const wheelOptions = {
+    loop: false,
+    autoplay: true,
+    animationData: wheel,
+    rendererSettings: {
+      preserveAspectRatio: 'xMidYMid slice',
+    },
+  };
+
   // Giveaway configuration by tier
   const giveawayConfig = {
     Platinum: [
-      { id: 'car', name: 'Car Giveaway', icon: '🚗', description: 'Brand new car for platinum customers' }
+      { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone' }
     ],
     Gold: [
-      { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Tola pure gold' },
-      { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '5 grams pure gold' }
+      { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region' },
+      { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area' }
     ],
     Silver: [
-      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: 'Microwave Oven - 2 Per Area' },
-      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: 'Samsung A06 - 3 Per Area' },
-      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: 'Washing Machine - 2 Per Area' },
-      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: 'Food Factory - 2 Per Area' },
-      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: 'Daraz 10K Gift Card - 5 Per Area' },
-      { id: 'iron', name: 'Iron', icon: '👔', description: 'Iron - 5 Per Area' },
-      { id: 'juicer', name: 'Juicer', icon: '🥤', description: 'Juicer - 2 Per Area' }
+      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area' },
+      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area' },
+      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area' },
+      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area' },
+      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area' },
+      { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area' },
+      { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area' }
     ]
   };
   
@@ -109,8 +146,10 @@ const LuckyDraw = () => {
     return areas.sort();
   };
 
+
   // Filter participants based on selected criteria
   const filterParticipants = () => {
+    console.log(data , 'dataasdasdasdasdasd');
     if (!data || !data[selectedTier]) return [];
     
     let participants = data[selectedTier].data || [];
@@ -164,6 +203,7 @@ const LuckyDraw = () => {
       return;
     }
 
+    console.log(participants , 'participants');
     // Create weighted pool based on entries
     const weightedPool = [];
     participants.forEach(participant => {
@@ -173,19 +213,35 @@ const LuckyDraw = () => {
       }
     });
 
+
+    console.log(weightedPool , 'weightedPool');
+
     setEligibleParticipants(participants);
     setIsSpinning(true);
     setWinner(null);
 
-    // Simulate spinning animation
+    // Show wheel modal first
+    const randomIndex = Math.floor(Math.random() * weightedPool.length);
+    const selectedWinner = weightedPool[randomIndex];
+    const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
+    
+    // Prepare winner data
+    const winnerInfo = {
+      winner: selectedWinner,
+      giveaway: giveaway,
+      tier: selectedTier
+    };
+    
+    // Show wheel modal
+    setWinnerData(winnerInfo);
+    setShowWheelModal(true);
+    
+    // After wheel animation, show winner announcement
     setTimeout(() => {
-      const randomIndex = Math.floor(Math.random() * weightedPool.length);
-      const selectedWinner = weightedPool[randomIndex];
-      const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
-      
+      setShowWheelModal(false);
       setWinner({ ...selectedWinner, giveaway });
       setIsSpinning(false);
-
+      
       // Add to history
       const newEntry = {
         id: Date.now(),
@@ -198,28 +254,9 @@ const LuckyDraw = () => {
       const updatedHistory = [newEntry, ...drawHistory];
       setDrawHistory(updatedHistory);
       localStorage.setItem('luckyDrawHistory', JSON.stringify(updatedHistory));
-
-      // Show winner announcement
-      Swal.fire({
-        title: '🎉 Congratulations!',
-        html: `
-          <div class="winner-announcement">
-            <div class="giveaway-icon">${giveaway.icon}</div>
-            <h3>${selectedWinner.customerName}</h3>
-            <p><strong>Won:</strong> ${giveaway.name}</p>
-            <p><strong>Region:</strong> ${selectedWinner.Region}</p>
-            <p><strong>Zone:</strong> ${selectedWinner.ZONE}</p>
-            <p><strong>Area:</strong> ${selectedWinner.AREA}</p>
-            <p><strong>Entries:</strong> ${selectedWinner.drawEntries}</p>
-            <p>Tier: <span class="tier-badge tier-${selectedTier}">${selectedTier.toUpperCase()}</span></p>
-          </div>
-        `,
-        icon: 'success',
-        confirmButtonText: 'Great!',
-        customClass: {
-          popup: 'winner-popup'
-        }
-      });
+      
+      // Show winner modal
+      setShowWinnerModal(true);
     }, 3000);
   };
 
@@ -293,14 +330,16 @@ const LuckyDraw = () => {
   }
 
   return (
-    <div className="lucky-draw-container" style={{marginBottom: '80px'}}>
-      <div className="uk-container uk-container-xlarge">
+    <div className="lucky-draw-container" >
+      <div className="uk-container uk-container-large">
+
+                        
         
         {error ? (
           <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
             <div className="uk-card uk-card-default uk-card-body uk-text-center">
-              <h3>Error Loading Data</h3>
-              <p>{error?.message || 'Failed to load dashboard data'}</p>
+              <h3>Error Loading Data Please Refresh</h3>
+              {/* <p>{error?.message || 'Failed to load dashboard data'}</p> */}
               <button onClick={() => window.location.reload()} className="uk-button uk-button-primary">
                 Retry
               </button>
@@ -317,37 +356,140 @@ const LuckyDraw = () => {
           </div>
         ) : (
           // Main Lucky Draw Interface
-          <div className="uk-grid uk-grid-large " uk-grid="" style={{ marginTop: "86px" }}>
+          <div className="uk-grid uk-grid-lare " uk-grid="" style={{ marginTop: "16px" }}>
             
-            {/* Header */}
+            {/* Wheel Spinning Modal */}
+            {showWheelModal && (
+              <div className="winner-modal-overlay">
+                <div className="winner-modal-content">
+                  <Lottie options={wheelOptions}  width={400} height={400} />
+                </div>
+              </div>
+            )}
+
+            {/* Winner Modal */}
+            {showWinnerModal && winnerData && (
+              <div className="winner-modal-overlay">
+                <div className="winner-modal-content">
+                  <Lottie options={confettiOptions} height={"100%"} width={"100%"} />
+                  <div className="winner-info-overlay">
+                    <div className="winner-announcement">
+                      <div className="giveaway-icon">
+                        <img 
+                          style={{width: '70%', objectFit: 'contain'}} 
+                          src={
+                            winnerData.giveaway.id === 'car' ? yaris :
+                            winnerData.giveaway.id === 'gold_1_tola' ? gold_1_tola :
+                            winnerData.giveaway.id === 'gold_5_grams' ? coin :
+                            winnerData.giveaway.id === 'microwave_oven' ? microwave_oven :
+                            winnerData.giveaway.id === 'samsung_a06' ? samsung_a06 :
+                            winnerData.giveaway.id === 'iron' ? iron :
+                            winnerData.giveaway.id === 'food_factory' ? food_factory :
+                            winnerData.giveaway.id === 'juicer' ? juicer :
+                            winnerData.giveaway.id === 'washing_machine' ? washing_machine :
+                            winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
+                            '/src/assets/images/gift.png'
+                          }
+                          alt={winnerData.giveaway.name} 
+                        />
+                      </div>
+                      <div className="winner-header">
+                        <h2 className="winner-title">🎉 Congratulations!</h2>
+                        <h1 className="winner-name">{winnerData.winner.customerName}</h1>
+                      </div>
+                      
+                      <div className="prize-info">
+                        <div className="prize-won">
+                          <span className="info-label">Won:</span>
+                          <span className="info-value prize-name">{winnerData.giveaway.name}</span>
+                        </div>
+                        
+                        <div className="winner-details">
+                          <div className="detail-row">
+                            <span className="info-label">Region:</span>
+                            <span className="info-value">{winnerData.winner.Region}</span>
+                          </div>
+                          <div className="detail-row">
+                            <span className="info-label">Area:</span>
+                            <span className="info-value">{winnerData.winner.AREA}</span>
+                          </div>
+                          
+                          <div className="detail-row">
+                            <span className="info-label">Zone:</span>
+                            <span className="info-value">{winnerData.winner.ZONE}</span>
+                          </div>
+                          
+                          
+                          <div className="detail-row">
+                            <span className="info-label">Entries:</span>
+                            <span className="info-value entries-count">{winnerData.winner.drawEntries}</span>
+                          </div>
+                          
+                          {/* <div className="detail-row tier-row">
+                            <span className="info-label">Tier:</span>
+                            <span className={`tier-badge-winner tier-${winnerData.tier.toLowerCase()}`}>
+                              {winnerData.tier.toUpperCase()}
+                            </span>
+                          </div> */}
+                        </div>
+                      </div>
+                      <button 
+                        className="winner-close-btn"
+                        onClick={() => setShowWinnerModal(false)}
+                      >
+                        Great! 🎊
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            )}
+
+              <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
+                        <div className="uk-margin-remove">
+                          <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
+                        </div>
+                        <div className="uk-margin-remove">
+                          <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
+                        </div>
+                      </div>      
             
 
             {/* Tier Selection */}
-            <div className="uk-width-1-1 ">
+            <div className="uk-width-1-1 " style={{paddingLeft: '15px'}}>
+              
               <div className="uk-card uk-card-default uk-card-body tier-selection-card" style={{backgroundImage: 'url(/src/assets/images/green bg.png)'}}>
                 <h3 className="uk-card-title">Select Tier & Giveaway</h3>
                 
-                <div className="tier-buttons">
+                <div className="tier-buttons-home">
                   {Object.keys(giveawayConfig).map((tier) => (
-                    <button
+                    <div
                       key={tier}
-                      className={`tier-btn tier-${tier} ${selectedTier === tier ? 'active' : ''}`}
+                      className={`tier-card-home tier-${tier.toLowerCase()} ${selectedTier === tier ? 'active' : ''}`}
                       onClick={() => handleTierChange(tier)}
+                      style={{ cursor: 'pointer' }}
                     >
-                      <span className="tier-name">{tier.toUpperCase()}</span>
-                      <span className="tier-count">({giveawayConfig[tier].length} giveaways)</span>
-                    </button>
+                      <div className="tier-icon">
+                        {tier === 'Platinum' ? '💎' : tier === 'Gold' ? '🥇' : '🥈'}
+                      </div>
+                      <div className="tier-content">
+                        <h4 className="tier-name">{tier.toUpperCase()}</h4>
+                        <div className="tier-stats">
+                          <span className="tier-value">({giveawayConfig[tier].length} giveaways)</span>
+                        </div>
+                      </div>
+                    </div>
                   ))}
                 </div>
 
                 {selectedTier && (
                   <div className="giveaway-selection">
-                    <h4>Select {selectedTier.toUpperCase()} Giveaway:</h4>
+                    {/* <h3 className="uk-card-title">Select {selectedTier.toUpperCase()} Giveaway:</h3> */}
                     <div className="giveaway-grid">
                       {giveawayConfig[selectedTier].map((giveaway) => (
                         <div
                           key={giveaway.id}
-                          className={`giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''}`}
+                          className={ `giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''}`}
                           onClick={() => handleGiveawayChange(giveaway.id)}
                         >
                           <div className="giveaway-icon"><img style={{width: '40%'}} 
@@ -356,6 +498,13 @@ const LuckyDraw = () => {
                           src={ giveaway.id === 'car' ? yaris :
                              giveaway.id === 'gold_1_tola' ? gold_1_tola :
                              giveaway.id === 'gold_5_grams' ? coin :
+                             giveaway.id === 'microwave_oven' ? microwave_oven :
+                             giveaway.id === 'samsung_a06' ? samsung_a06 :
+                             giveaway.id === 'iron' ? iron :
+                             giveaway.id === 'food_factory' ? food_factory :
+                             giveaway.id === 'juicer' ? juicer :
+                             giveaway.id === 'washing_machine' ? washing_machine :
+                             giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
                              '/src/assets/images/gift.png'}
                           
                           
@@ -452,7 +601,7 @@ const LuckyDraw = () => {
 
             {/* Eligible Participants */}
             {selectedGiveaway && (
-              <div className="uk-width-1-1@m">
+              <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body participants-card">
                   <h3 className="uk-card-title">Eligible Participants</h3>
                   <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name}</p>
@@ -463,12 +612,7 @@ const LuckyDraw = () => {
                         <div className="participant-info">
                           <h5>{participant.customerName}</h5>
                           <p><strong>Customer Code:</strong> {participant.customerCode}</p>
-                          <p><strong>Zone:</strong> {participant.ZONE}</p>
-                          <p><strong>Region:</strong> {participant.Region}</p>
-                          <p><strong>Area:</strong> {participant.AREA}</p>
-                          <p><strong>Distributor:</strong> {participant.DistributorName}</p>
                           <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
-                          <small>Purchase Amount: {participant.totalGrossAmount?.toLocaleString()} PKR</small>
                         </div>
                         <span className={`tier-badge tier-${selectedTier}`}>
                           {selectedTier.toUpperCase()}
@@ -485,7 +629,7 @@ const LuckyDraw = () => {
 
             {/* Draw Section */}
             {selectedGiveaway && (
-              <div className="uk-width-1-1@m">
+              <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body draw-card">
                   <h3 className="uk-card-title">
                     {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} Draw
@@ -493,46 +637,43 @@ const LuckyDraw = () => {
                   
                   <div className="draw-wheel-container">
                     <div className={`draw-wheel ${isSpinning ? 'spinning' : ''}`}>
-                      {isSpinning ? (
-                        <div className="spinning-content">
-                          <div className="spinner-icon">🎯</div>
-                          <p>Drawing...</p>
-                        </div>
-                      ) : winner ? (
-                        <div className="winner-content">
-                          <div className="winner-icon">{winner.giveaway?.icon}</div>
-                          <h4>{winner.customerName}</h4>
-                          <p>{winner.Region} - {winner.AREA}</p>
-                          <p>Entries: {winner.drawEntries}</p>
-                          <span className={`tier-badge tier-${selectedTier}`}>
-                            {selectedTier.toUpperCase()}
-                          </span>
-                        </div>
-                      ) : (
-                        <div className="ready-content">
-                          <div className="ready-icon">{giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.icon}</div>
-                          <p>Ready to Draw</p>
-                          {/* <small>{filterParticipants().length} eligible participants</small> */}
-                        </div>
-                      )}
+                      <div className="prize-circle">
+                        <img 
+                          className="prize-circle-image"
+                          src={
+                            selectedGiveaway === 'car' ? yaris :
+                            selectedGiveaway === 'gold_1_tola' ? gold_1_tola :
+                            selectedGiveaway === 'gold_5_grams' ? coin :
+                            selectedGiveaway === 'microwave_oven' ? microwave_oven :
+                            selectedGiveaway === 'samsung_a06' ? samsung_a06 :
+                            selectedGiveaway === 'iron' ? iron :
+                            selectedGiveaway === 'food_factory' ? food_factory :
+                            selectedGiveaway === 'juicer' ? juicer :
+                            selectedGiveaway === 'washing_machine' ? washing_machine :
+                            selectedGiveaway === 'daraz_gift_card' ? daraz_gift_card :
+                            '/src/assets/images/gift.png'
+                          }
+                          alt={giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} 
+                        />
+                      </div>
                     </div>
                   </div>
 
                   <div className="draw-controls">
                     <button 
-                      className="uk-button uk-button-primary uk-button-large draw-btn"
+                      className="draw-action-btn"
                       onClick={startLuckyDraw}
                       disabled={isSpinning}
                     >
-                      {isSpinning ? 'Drawing...' : 'Start Lucky Draw'}
+                      {isSpinning ? 'Drawing...' : 'START LUCKY DRAW'}
                     </button>
                     
                     {winner && (
                       <button 
-                        className="uk-button uk-button-secondary reset-btn"
+                        className="reset-action-btn"
                         onClick={resetDraw}
                       >
-                        Reset Draw
+                        RESET
                       </button>
                     )}
                   </div>
@@ -543,7 +684,7 @@ const LuckyDraw = () => {
             
 
             {/* Draw History */}
-            <div className="uk-width-1-1">
+            <div className="uk-width-1-1" style={{paddingLeft: '15px'}}>
               <div className="uk-card uk-card-default uk-card-body history-card">
                 <div className="uk-flex uk-flex-between uk-flex-middle">
                   <h3 className="uk-card-title">Draw History</h3>
@@ -563,18 +704,18 @@ const LuckyDraw = () => {
                   <div className="uk-overflow-auto">
                     <table className="uk-table uk-table-small uk-table-divider uk-table-hover">
                       <thead>
-                        <tr>
-                          <th>Date & Time</th>
-                          <th>Winner</th>
-                          <th>Giveaway</th>
-                          <th>Tier</th>
-                          <th>Region</th>
-                          <th>Participants</th>
+                        <tr className="uk-text-center">
+                          <th className="uk-text-center">Date & Time</th>
+                          <th className="uk-text-center">Winner</th>
+                          <th className="uk-text-center">Giveaway</th>
+                          <th className="uk-text-center">Tier</th>
+                          <th className="uk-text-center">Region</th>
+                          {/* <th>Participants</th> */}
                         </tr>
                       </thead>
                       <tbody>
                         {drawHistory.map((entry) => (
-                          <tr key={entry.id}>
+                          <tr key={entry.id} className="uk-text-center">
                             <td>{entry.date}</td>
                             <td>{entry.winner.customerName}</td>
                             <td>{entry.giveaway?.icon} {entry.giveaway?.name}</td>
@@ -584,7 +725,7 @@ const LuckyDraw = () => {
                               </span>
                             </td>
                             <td>{entry.winner.Region} - {entry.winner.ZONE}</td>
-                            <td>{entry.totalParticipants}</td>
+                            {/* <td>{entry.totalParticipants}</td> */}
                           </tr>
                         ))}
                       </tbody>
