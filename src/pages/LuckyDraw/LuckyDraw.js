@@ -6,7 +6,7 @@ import Spinner from "../../reusables/Spinner";
 import Swal from 'sweetalert2';
 import { useQuery } from "@tanstack/react-query";
 import "./LuckyDraw.css";
-import yaris from "../../assets/images/yaris.png";
+import yaris from "../../assets/images/yaris2x.png";
 import gold_1_tola from "../../assets/images/goldbar.png";
 import coin from "../../assets/images/coin.png";
 
@@ -41,9 +41,13 @@ const LuckyDraw = () => {
       { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '5 grams pure gold' }
     ],
     Silver: [
-      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: 'Automatic washing machine' },
-      { id: 'lcd_tv', name: 'LCD TV', icon: '📺', description: '32 inch LCD television' },
-      { id: 'refrigerator', name: 'Refrigerator', icon: '❄️', description: 'Double door refrigerator' }
+      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: 'Microwave Oven - 2 Per Area' },
+      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: 'Samsung A06 - 3 Per Area' },
+      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: 'Washing Machine - 2 Per Area' },
+      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: 'Food Factory - 2 Per Area' },
+      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: 'Daraz 10K Gift Card - 5 Per Area' },
+      { id: 'iron', name: 'Iron', icon: '👔', description: 'Iron - 5 Per Area' },
+      { id: 'juicer', name: 'Juicer', icon: '🥤', description: 'Juicer - 2 Per Area' }
     ]
   };
   
