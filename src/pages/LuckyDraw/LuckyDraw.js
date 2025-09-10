@@ -48,7 +48,7 @@ const LuckyDraw = () => {
   // Fetch dashboard data from API
   const { data: dashboardData, isLoading, error } = useQuery({
     queryKey: ['dashboardData'],
-    queryFn: () => apiGetasync('http://localhost:8000/api/customer-dashboard-data')
+    queryFn: () => apiGetasync('https://unilever.convexinteractive.com/api/customer-dashboard-data')
   });
 
   const data = dashboardData?.data;
