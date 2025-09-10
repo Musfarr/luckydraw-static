@@ -11,7 +11,7 @@ import gold_1_tola from "../../assets/images/barr.png";
 import coin from "../../assets/images/ss.png";
 import Lottie from 'react-lottie';
 import confetti from "../../assets/Confetti.json";
-import wheel from "../../assets/wheel.json";
+import wheel from "../../assets/countdown.json";
 import lifeboylogo from "../../assets/images/lifeboylogo.png";
 import campaignlogo from "../../assets/images/campaignlogo.png";
 
@@ -88,7 +88,6 @@ const LuckyDraw = () => {
     ]
   };
   
-  console.log(globalDistributorData , 'distributorData from Global ')
 
   useEffect(() => {
     // Load draw history from localStorage
@@ -257,7 +256,7 @@ const LuckyDraw = () => {
       
       // Show winner modal
       setShowWinnerModal(true);
-    }, 3000);
+    }, 10000);
   };
 
   const resetDraw = () => {
@@ -287,6 +286,20 @@ const LuckyDraw = () => {
     setSelectedTier(tier);
     setSelectedGiveaway('');
     setWinner(null);
+    
+    // Clear disabled fields based on tier
+    if (tier === 'Platinum') {
+      // Platinum: disable Region and Area
+      setSelectedRegion('');
+      setSelectedArea('');
+    } else if (tier === 'Gold') {
+      // Gold: disable Zone
+      setSelectedZone('');
+    } else if (tier === 'Silver') {
+      // Silver: disable Zone and Region
+      setSelectedZone('');
+      setSelectedRegion('');
+    }
     setEligibleParticipants([]);
   };
 
@@ -421,9 +434,14 @@ const LuckyDraw = () => {
                           
                           
                           <div className="detail-row">
+                            <span className="info-label">Customer Code:</span>
+                            <span className="info-value ">{winnerData.winner.customerCode}</span>
+                          </div>
+
+                          {/* <div className="detail-row">
                             <span className="info-label">Entries:</span>
                             <span className="info-value entries-count">{winnerData.winner.drawEntries}</span>
-                          </div>
+                          </div> */}
                           
                           {/* <div className="detail-row tier-row">
                             <span className="info-label">Tier:</span>
@@ -533,6 +551,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedZone} 
                           onChange={(e) => handleZoneChange(e.target.value)}
+                          disabled={selectedTier === 'Gold' || selectedTier === 'Silver'}
                         >
                           <option value="">All Zones</option>
                           {getUniqueZones().map(zone => (
@@ -548,6 +567,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedRegion} 
                           onChange={(e) => handleRegionChange(e.target.value)}
+                          disabled={selectedTier === 'Platinum' || selectedTier === 'Silver'}
                         >
                           <option value="">All Regions</option>
                           {getUniqueRegions().map(region => (
@@ -563,6 +583,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedArea} 
                           onChange={(e) => handleAreaChange(e.target.value)}
+                          disabled={selectedTier === 'Platinum'}
                         >
                           <option value="">All Areas</option>
                           {getUniqueAreas().map(area => (

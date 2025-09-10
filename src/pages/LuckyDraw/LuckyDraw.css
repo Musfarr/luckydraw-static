@@ -528,7 +528,12 @@
 
 @keyframes spin {
   0% { transform: rotate(0deg); }
-  100% { transform: rotate(1440deg); }
+  100% { transform: rotate(360deg); }
+}
+
+@keyframes shimmer {
+  0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+  100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
 }
 
 .spinning-content, .winner-content, .ready-content {
@@ -809,6 +814,87 @@
 .winner-announcement strong {
   color: #1e293b;
   font-weight: 700;
+}
+
+/* Prize Won Section - Enhanced Prominence */
+.prize-won {
+  background: linear-gradient(135deg, #10b981, #059669);
+  border: 3px solid #047857;
+  border-radius: 20px;
+  padding: 25px 30px;
+  margin: 25px 0;
+  box-shadow: 0 15px 40px rgba(16, 185, 129, 0.3);
+  position: relative;
+  overflow: hidden;
+}
+
+.prize-won::before {
+  content: '';
+  position: absolute;
+  top: -50%;
+  left: -50%;
+  width: 200%;
+  height: 200%;
+  background: linear-gradient(45deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+  animation: shimmer 2s infinite;
+}
+
+.prize-won .info-label {
+  display: block;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: rgba(255, 255, 255, 0.9);
+  margin-bottom: 8px;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+}
+
+.prize-won .info-value.prize-name {
+  display: block;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: rgb(0, 0, 0);
+  text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+  line-height: 1.2;
+  position: relative;
+  z-index: 2;
+}
+
+/* Prize Info Container */
+.prize-info {
+  margin: 20px 0;
+}
+
+/* Winner Details Styling */
+.winner-details {
+  background: rgba(248, 250, 252, 0.8);
+  border-radius: 15px;
+  padding: 20px;
+  margin-top: 20px;
+}
+
+.detail-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(226, 232, 240, 0.5);
+}
+
+.detail-row:last-child {
+  border-bottom: none;
+}
+
+.detail-row .info-label {
+  font-weight: 600;
+  color: #64748b;
+  font-size: 0.95rem;
+}
+
+.detail-row .info-value {
+  font-weight: 700;
+  color: #1e293b;
+  font-size: 1rem;
 }
 
 /* Custom File Upload Styling */
