@@ -5,6 +5,7 @@ import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import Swal from 'sweetalert2';
 import { useQuery } from "@tanstack/react-query";
+import { CSVLink } from "react-csv";
 import "./LuckyDraw.css";
 import yaris from "../../assets/images/yaris2x.png";
 import gold_1_tola from "../../assets/images/barr.png";
@@ -35,6 +36,8 @@ const LuckyDraw = () => {
   const [winner, setWinner] = useState(null);
   const [isSpinning, setIsSpinning] = useState(false);
   const [drawHistory, setDrawHistory] = useState([]);
+  const [excludedWinners, setExcludedWinners] = useState([]);
+  const [awardedGiveaways, setAwardedGiveaways] = useState([]);
   const [selectedZone, setSelectedZone] = useState('');
   const [selectedRegion, setSelectedRegion] = useState('');
   const [selectedArea, setSelectedArea] = useState('');
@@ -68,23 +71,23 @@ const LuckyDraw = () => {
     },
   };
 
-  // Giveaway configuration by tier
+  // Giveaway configuration by tier with limits
   const giveawayConfig = {
     Platinum: [
-      { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone' }
+      { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' }
     ],
     Gold: [
-      { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region' },
-      { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area' }
+      { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region', limit: 1, limitType: 'region' },
+      { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area', limit: 1, limitType: 'area' }
     ],
     Silver: [
-      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area' },
-      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area' },
-      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area' },
-      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area' },
-      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area' },
-      { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area' },
-      { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area' }
+      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area', limit: 2, limitType: 'area' },
+      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area', limit: 3, limitType: 'area' },
+      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area', limit: 2, limitType: 'area' },
+      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area', limit: 2, limitType: 'area' },
+      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area', limit: 5, limitType: 'area' },
+      { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area', limit: 5, limitType: 'area' },
+      { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area', limit: 2, limitType: 'area' }
     ]
   };
   
@@ -95,10 +98,22 @@ const LuckyDraw = () => {
     if (savedHistory) {
       setDrawHistory(JSON.parse(savedHistory));
     }
+    
+    // Load excluded winners from localStorage
+    const savedExcludedWinners = localStorage.getItem('excludedWinners');
+    if (savedExcludedWinners) {
+      setExcludedWinners(JSON.parse(savedExcludedWinners));
+    }
+    
+    // Load awarded giveaways from localStorage
+    const savedAwardedGiveaways = localStorage.getItem('awardedGiveaways');
+    if (savedAwardedGiveaways) {
+      setAwardedGiveaways(JSON.parse(savedAwardedGiveaways));
+    }
   }, []);
 
 
-  // Get unique values for dropdowns from API data
+  // Get available zones (excluding those that reached giveaway limits)
   const getUniqueZones = () => {
     if (!data) return [];
     const allCustomers = [
@@ -106,7 +121,24 @@ const LuckyDraw = () => {
       ...(data.Gold?.data || []),
       ...(data.Silver?.data || [])
     ];
-    const zones = [...new Set(allCustomers.map(c => c.ZONE).filter(Boolean))];
+    let zones = [...new Set(allCustomers.map(c => c.ZONE).filter(Boolean))];
+    
+    // Filter out zones that have reached limits for selected giveaway
+    if (selectedGiveaway) {
+      const giveaway = Object.values(giveawayConfig)
+        .flat()
+        .find(g => g.id === selectedGiveaway);
+      
+      if (giveaway && giveaway.limitType === 'zone') {
+        zones = zones.filter(zone => {
+          const awardedCount = awardedGiveaways.filter(award => 
+            award.giveawayId === selectedGiveaway && award.zone === zone
+          ).length;
+          return awardedCount < giveaway.limit;
+        });
+      }
+    }
+    
     return zones.sort();
   };
 
@@ -122,7 +154,24 @@ const LuckyDraw = () => {
       allCustomers = allCustomers.filter(c => c.ZONE === selectedZone);
     }
     
-    const regions = [...new Set(allCustomers.map(c => c.Region).filter(Boolean))];
+    let regions = [...new Set(allCustomers.map(c => c.Region).filter(Boolean))];
+    
+    // Filter out regions that have reached limits for selected giveaway
+    if (selectedGiveaway) {
+      const giveaway = Object.values(giveawayConfig)
+        .flat()
+        .find(g => g.id === selectedGiveaway);
+      
+      if (giveaway && giveaway.limitType === 'region') {
+        regions = regions.filter(region => {
+          const awardedCount = awardedGiveaways.filter(award => 
+            award.giveawayId === selectedGiveaway && award.region === region
+          ).length;
+          return awardedCount < giveaway.limit;
+        });
+      }
+    }
+    
     return regions.sort();
   };
 
@@ -141,19 +190,89 @@ const LuckyDraw = () => {
       allCustomers = allCustomers.filter(c => c.Region === selectedRegion);
     }
     
-    const areas = [...new Set(allCustomers.map(c => c.AREA).filter(Boolean))];
+    let areas = [...new Set(allCustomers.map(c => c.AREA).filter(Boolean))];
+    
+    // Filter out areas that have reached limits for selected giveaway
+    if (selectedGiveaway) {
+      const giveaway = Object.values(giveawayConfig)
+        .flat()
+        .find(g => g.id === selectedGiveaway);
+      
+      if (giveaway && giveaway.limitType === 'area') {
+        areas = areas.filter(area => {
+          const awardedCount = awardedGiveaways.filter(award => 
+            award.giveawayId === selectedGiveaway && award.area === area
+          ).length;
+          return awardedCount < giveaway.limit;
+        });
+      }
+    }
+    
     return areas.sort();
   };
 
 
-  // Filter participants based on selected criteria
+  // Get all customers from all tiers in a unified pool
+  const getAllCustomers = () => {
+    if (!data) return [];
+    return [
+      ...(data.Platinum?.data || []),
+      ...(data.Gold?.data || []),
+      ...(data.Silver?.data || [])
+    ];
+  };
+
+  // Check if customer is excluded based on hierarchical rules
+  const isCustomerExcluded = (customer, targetTier) => {
+    const customerCode = customer.customerCode;
+    const excludedEntry = excludedWinners.find(w => w.customerCode === customerCode);
+    
+    if (!excludedEntry) return false;
+    
+    // Hierarchical exclusion logic
+    const tierHierarchy = { 'Platinum': 3, 'Gold': 2, 'Silver': 1 };
+    const wonTierLevel = tierHierarchy[excludedEntry.wonTier];
+    const targetTierLevel = tierHierarchy[targetTier];
+    
+    // If they won a higher or equal tier, they're excluded from lower/equal tiers
+    return wonTierLevel >= targetTierLevel;
+  };
+
+  // Check if giveaway limit is reached for a specific area
+  const isGiveawayLimitReached = (giveawayId, customer) => {
+    const giveaway = Object.values(giveawayConfig)
+      .flat()
+      .find(g => g.id === giveawayId);
+    
+    if (!giveaway) return false;
+    
+    // Count awarded giveaways for this specific giveaway and area
+    const awardedCount = awardedGiveaways.filter(award => {
+      if (award.giveawayId !== giveawayId) return false;
+      
+      // Check based on limit type
+      if (giveaway.limitType === 'zone') {
+        return award.zone === customer.ZONE;
+      } else if (giveaway.limitType === 'region') {
+        return award.region === customer.Region;
+      } else if (giveaway.limitType === 'area') {
+        return award.area === customer.AREA;
+      }
+      
+      return false;
+    }).length;
+    
+    return awardedCount >= giveaway.limit;
+  };
+
+  // Filter participants based on selected criteria with cross-tier eligibility
   const filterParticipants = () => {
-    console.log(data , 'dataasdasdasdasdasd');
-    if (!data || !data[selectedTier]) return [];
+    if (!data) return [];
     
-    let participants = data[selectedTier].data || [];
+    // Get all customers from unified pool
+    let participants = getAllCustomers();
     
-    // Apply filters
+    // Apply geographic filters
     if (selectedZone) {
       participants = participants.filter(p => p.ZONE === selectedZone);
     }
@@ -166,7 +285,32 @@ const LuckyDraw = () => {
       participants = participants.filter(p => p.AREA === selectedArea);
     }
     
-    // Calculate entries for weighted selection
+    // Filter by tier-specific entries > 0, exclusion status, and giveaway limits
+    participants = participants.filter(p => {
+      // Check if excluded based on hierarchical rules
+      if (isCustomerExcluded(p, selectedTier)) {
+        return false;
+      }
+      
+      // Check if giveaway limit is reached for this customer's area
+      if (selectedGiveaway && isGiveawayLimitReached(selectedGiveaway, p)) {
+        return false;
+      }
+      
+      // Check if they have entries for this tier
+      let entries = 0;
+      if (selectedTier === 'Platinum') {
+        entries = p.entries?.platinumEntries || 0;
+      } else if (selectedTier === 'Gold') {
+        entries = p.entries?.goldEntries || 0;
+      } else if (selectedTier === 'Silver') {
+        entries = p.entries?.silverEntries || 0;
+      }
+      
+      return entries > 0; // Only eligible if they have entries for this tier
+    });
+    
+    // Add drawEntries for weighted selection
     return participants.map(p => {
       let entries = 0;
       if (selectedTier === 'Platinum') {
@@ -240,6 +384,36 @@ const LuckyDraw = () => {
       setShowWheelModal(false);
       setWinner({ ...selectedWinner, giveaway });
       setIsSpinning(false);
+      
+      // Add winner to excluded list
+      const excludedWinner = {
+        customerCode: selectedWinner.customerCode,
+        customerName: selectedWinner.customerName,
+        wonTier: selectedTier,
+        wonGiveaway: giveaway.name,
+        wonDate: new Date().toLocaleString()
+      };
+      
+      const updatedExcludedWinners = [...excludedWinners, excludedWinner];
+      setExcludedWinners(updatedExcludedWinners);
+      localStorage.setItem('excludedWinners', JSON.stringify(updatedExcludedWinners));
+      
+      // Track awarded giveaway for limit enforcement
+      const awardedGiveaway = {
+        giveawayId: selectedGiveaway,
+        giveawayName: giveaway.name,
+        tier: selectedTier,
+        zone: selectedWinner.ZONE,
+        region: selectedWinner.Region,
+        area: selectedWinner.AREA,
+        customerCode: selectedWinner.customerCode,
+        customerName: selectedWinner.customerName,
+        awardedDate: new Date().toLocaleString()
+      };
+      
+      const updatedAwardedGiveaways = [...awardedGiveaways, awardedGiveaway];
+      setAwardedGiveaways(updatedAwardedGiveaways);
+      localStorage.setItem('awardedGiveaways', JSON.stringify(updatedAwardedGiveaways));
       
       // Add to history
       const newEntry = {
@@ -337,6 +511,33 @@ const LuckyDraw = () => {
     setWinner(null);
     setEligibleParticipants([]);
   };
+
+  // Prepare CSV data for export
+  const csvData = drawHistory.map((entry, index) => ({
+    'S.No': index + 1,
+    'Date & Time': entry.date,
+    'Winner Name': entry.winner.customerName,
+    'Customer Code': entry.winner.customerCode,
+    'Giveaway': entry.giveaway?.name,
+    'Tier': entry.tier,
+    'Region': entry.winner.Region,
+    'Zone': entry.winner.ZONE,
+    'Area': entry.winner.AREA,
+    'Total Participants': entry.totalParticipants
+  }));
+
+  const csvHeaders = [
+    { label: 'S.No', key: 'S.No' },
+    { label: 'Date & Time', key: 'Date & Time' },
+    { label: 'Winner Name', key: 'Winner Name' },
+    { label: 'Customer Code', key: 'Customer Code' },
+    { label: 'Giveaway', key: 'Giveaway' },
+    { label: 'Tier', key: 'Tier' },
+    { label: 'Region', key: 'Region' },
+    { label: 'Zone', key: 'Zone' },
+    { label: 'Area', key: 'Area' },
+    { label: 'Total Participants', key: 'Total Participants' }
+  ];
 
   if (isLoading) {
     return <Spinner />;
@@ -710,12 +911,23 @@ const LuckyDraw = () => {
                 <div className="uk-flex uk-flex-between uk-flex-middle">
                   <h3 className="uk-card-title">Draw History</h3>
                   {drawHistory.length > 0 && (
-                    <button 
-                      className="uk-button uk-button-danger uk-button-small"
-                      onClick={clearHistory}
-                    >
-                      Clear History
-                    </button>
+                    <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
+                      <CSVLink
+                        data={csvData}
+                        headers={csvHeaders}
+                        filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`}
+                        className="uk-button uk-button-primary uk-button-small"
+                        style={{textDecoration: 'none', color: 'white'}}
+                      >
+                        📊 Export CSV
+                      </CSVLink>
+                      <button 
+                        className="uk-button uk-button-danger uk-button-small"
+                        onClick={clearHistory}
+                      >
+                        Clear History
+                      </button>
+                    </div>
                   )}
                 </div>
                 
@@ -728,6 +940,7 @@ const LuckyDraw = () => {
                         <tr className="uk-text-center">
                           <th className="uk-text-center">Date & Time</th>
                           <th className="uk-text-center">Winner</th>
+                          <th className="uk-text-center">Customer Code</th>
                           <th className="uk-text-center">Giveaway</th>
                           <th className="uk-text-center">Tier</th>
                           <th className="uk-text-center">Region</th>
@@ -739,6 +952,7 @@ const LuckyDraw = () => {
                           <tr key={entry.id} className="uk-text-center">
                             <td>{entry.date}</td>
                             <td>{entry.winner.customerName}</td>
+                            <td>{entry.winner.customerCode}</td>
                             <td>{entry.giveaway?.icon} {entry.giveaway?.name}</td>
                             <td>
                               <span className={`tier-badge tier-${entry.tier}`}>

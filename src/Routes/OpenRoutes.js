@@ -10,7 +10,7 @@ const OpenRoutes = ({ children }) => {
 
     if (token) {
       // Redirect to the default dashboard route if the user is logged in
-      navigate(`/dashboard`, { replace: true });
+      navigate(`/home`, { replace: true });
     }
   }, [navigate]);
 
