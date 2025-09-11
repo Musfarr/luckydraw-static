@@ -8,6 +8,10 @@ import lifeboylogo from "../../assets/images/lifeboylogo.png";
 import campaignlogo from "../../assets/images/campaignlogo.png";
 import "../LuckyDraw/LuckyDraw.css";
 
+import yaris from "../../assets/images/yaris2x.png";
+import gold_1_tola from "../../assets/images/barr.png";
+import samsung_a06 from "../../assets/images/samsung.png";
+
 
 const Home = () => {
   const navigate = useNavigate();
@@ -137,7 +141,7 @@ const Home = () => {
                                     {/* <h1 className="uk-card-title">Customer Tier Summary</h1> */}
                                     <div className="tier-buttons-home">
                                       <div className="tier-card-home tier-platinum">
-                                        <div className="tier-icon">💎</div>
+                                        <div className="tier-icon"><img style={{width: '100px'}} src={yaris} alt="Yaris" /></div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">PLATINUM</h4>
                                           {/* <p className="tier-count">({data?.platinum?.length || 0} Customers)</p> */}
@@ -148,7 +152,7 @@ const Home = () => {
                                       </div>
                                       
                                       <div className="tier-card-home tier-gold">
-                                        <div className="tier-icon">🥇</div>
+                                        <div className="tier-icon"><img style={{width: '100px'}} src={gold_1_tola} alt="Gold" /></div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">GOLD</h4>
                                           {/* <p className="tier-count">({data?.gold?.length || 0} Customers)</p> */}
@@ -159,7 +163,7 @@ const Home = () => {
                                       </div>
                                       
                                       <div className="tier-card-home tier-silver">
-                                        <div className="tier-icon">🥈</div>
+                                        <div className="tier-icon"><img style={{width: '100px'}} src={samsung_a06} alt="Silver" /></div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">SILVER</h4>
                                           {/* <p className="tier-count">({data?.silver?.length || 0} Customers)</p> */}

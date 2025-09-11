@@ -12,7 +12,7 @@ import gold_1_tola from "../../assets/images/barr.png";
 import coin from "../../assets/images/ss.png";
 import Lottie from 'react-lottie';
 import confetti from "../../assets/Confetti.json";
-import wheel from "../../assets/countdown.json";
+import wheel from "../../assets/Countdownnew.json";
 import lifeboylogo from "../../assets/images/lifeboylogo.png";
 import campaignlogo from "../../assets/images/campaignlogo.png";
 
@@ -689,7 +689,7 @@ const LuckyDraw = () => {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className="tier-icon">
-                        {tier === 'Platinum' ? '💎' : tier === 'Gold' ? '🥇' : '🥈'}
+                        {tier === 'Platinum' ? <img style={{width: '100px'}} src={yaris} alt="Yaris" /> : tier === 'Gold' ? <img style={{width: '100px'}} src={gold_1_tola} alt="Gold" /> : <img style={{width: '100px'}} src={samsung_a06} alt="Silver" />}
                       </div>
                       <div className="tier-content">
                         <h4 className="tier-name">{tier.toUpperCase()}</h4>
