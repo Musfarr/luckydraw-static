@@ -49,6 +49,7 @@ const LuckyDraw = () => {
   const { data: dashboardData, isLoading, error } = useQuery({
     queryKey: ['dashboardData'],
     queryFn: () => apiGetasync('https://unilever.convexinteractive.com/api/customer-dashboard-data')
+    // queryFn: () => apiGetasync('http://localhost:8000/api/customer-dashboard-data')
   });
 
   const data = dashboardData?.data;
@@ -430,7 +431,7 @@ const LuckyDraw = () => {
       
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, 2000);
   };
 
   const resetDraw = () => {
