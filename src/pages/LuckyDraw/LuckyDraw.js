@@ -452,7 +452,22 @@ const LuckyDraw = () => {
       if (result.isConfirmed) {
         setDrawHistory([]);
         localStorage.removeItem('luckyDrawHistory');
-        Swal.fire('Cleared!', 'Draw history has been cleared.', 'success');
+        
+        // Also clear excluded winners and awarded giveaways
+        setExcludedWinners([]);
+        localStorage.removeItem('excludedWinners');
+        
+        setAwardedGiveaways([]);
+        localStorage.removeItem('awardedGiveaways');
+        
+        // Reset all geographic filters
+        setSelectedZone('');
+        setSelectedRegion('');
+        setSelectedArea('');
+        setWinner(null);
+        setEligibleParticipants([]);
+        
+        Swal.fire('Cleared!', 'Draw history and filters have been cleared.', 'success');
       }
     });
   };
