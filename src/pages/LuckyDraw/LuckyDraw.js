@@ -431,7 +431,7 @@ const LuckyDraw = () => {
       
       // Show winner modal
       setShowWinnerModal(true);
-    }, 2000);
+    }, 10000);
   };
 
   const resetDraw = () => {
@@ -770,7 +770,7 @@ const LuckyDraw = () => {
                           onChange={(e) => handleZoneChange(e.target.value)}
                           disabled={selectedTier === 'Gold' || selectedTier === 'Silver'}
                         >
-                          <option value="">All Zones</option>
+                          <option value="" disabled>Select Zone</option>
                           {getUniqueZones().map(zone => (
                             <option key={zone} value={zone}>{zone}</option>
                           ))}
@@ -786,7 +786,7 @@ const LuckyDraw = () => {
                           onChange={(e) => handleRegionChange(e.target.value)}
                           disabled={selectedTier === 'Platinum' || selectedTier === 'Silver'}
                         >
-                          <option value="">All Regions</option>
+                          <option value="" disabled>Select Region</option>
                           {getUniqueRegions().map(region => (
                             <option key={region} value={region}>{region}</option>
                           ))}
@@ -802,7 +802,7 @@ const LuckyDraw = () => {
                           onChange={(e) => handleAreaChange(e.target.value)}
                           disabled={selectedTier === 'Platinum'}
                         >
-                          <option value="">All Areas</option>
+                          <option value="" disabled>Select Area</option>
                           {getUniqueAreas().map(area => (
                             <option key={area} value={area}>{area}</option>
                           ))}
@@ -906,6 +906,7 @@ const LuckyDraw = () => {
                       {isSpinning ? 'Drawing...' : 'START LUCKY DRAW'}
                     </button>
                     
+                    {/* 
                     {winner && (
                       <button 
                         className="reset-action-btn"
@@ -914,6 +915,7 @@ const LuckyDraw = () => {
                         RESET
                       </button>
                     )}
+                       */}
                   </div>
                 </div>
               </div>

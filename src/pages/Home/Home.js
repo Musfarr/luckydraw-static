@@ -21,6 +21,7 @@ const Home = () => {
     Gold: { key: "totalGrossAmount", dir: "desc" },
     Silver: { key: "totalGrossAmount", dir: "desc" },
   });
+  const [searchQuery, setSearchQuery] = useState("");
 
   const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError} = useQuery({
     queryKey: ['dashboardData'],
@@ -77,7 +78,15 @@ const Home = () => {
 
   const getRows = (tier) => {
     const base = data?.[tier]?.data || [];
-    return applySort(base, tier);
+    const query = searchQuery.trim().toLowerCase();
+    const filtered = query
+      ? base.filter((customer) => {
+          const name = customer.customerName?.toLowerCase() || "";
+          const code = customer.customerCode?.toLowerCase() || "";
+          return name.includes(query) || code.includes(query);
+        })
+      : base;
+    return applySort(filtered, tier);
   };
 
   const handleSort = (tier, key) => {
@@ -188,11 +197,23 @@ const Home = () => {
                                   </div>
                                 </div> */}
 
-                                <ul className="uk-tab tier-tabs uk-flex uk-flex-center uk-flex-middle " uk-tab="connect: #tier-switcher" style={{paddingBottom: '10px'}}>
-                                  <li className="uk-active"><a href="#" className="platinum tier-tab-platinum">💎 Platinum Tier (>20 Lac PKR)</a></li>
-                                  <li><a href="#" className="gold tier-tab-gold">🥇 Gold Tier (15 - 20 Lac PKR)</a></li>
-                                  <li><a href="#" className="silver tier-tab-silver">🥈 Silver Tier (10 - 15 Lac PKR)</a></li>
-                                </ul>
+                                <div className="tier-toolbar">
+                                  <div className="tier-search">
+                                    <span className="tier-search-icon" aria-hidden="true"></span>
+                                    <input
+                                      className="uk-input tier-search-input"
+                                      type="text"
+                                      placeholder="Search by outlet name or code"
+                                      value={searchQuery}
+                                      onChange={(event) => setSearchQuery(event.target.value)}
+                                    />
+                                  </div>
+                                  <ul className="uk-tab tier-tabs tier-tab-buttons" uk-tab="connect: #tier-switcher" style={{paddingBottom: '10px'}}>
+                                    <li className="uk-active"><a href="#" className="platinum tier-tab-platinum">💎 Platinum Tier</a></li>
+                                    <li><a href="#" className="gold tier-tab-gold">🥇 Gold Tier</a></li>
+                                    <li><a href="#" className="silver tier-tab-silver">🥈 Silver Tier</a></li>
+                                  </ul>
+                                </div>
 
                                 <ul id="tier-switcher" className="uk-switcher uk-margin">
                                   {/* Platinum Tier Table */}
@@ -201,13 +222,13 @@ const Home = () => {
                                       <table className="  uk-table uk-table-small uk-table-divider uk-table-hover tier-table" >
                                         <thead className="tier-header-platinum">
                                           <tr>
-                                            <th className={`sortable  table-header-cell ${sortConfig.Platinum.key==='Region' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','Region')}> Region</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerName' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerName')}> Outlet Name</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerCode' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerCode')}> Outlet Code</th>
+                                            <th className={`sortable  table-header-cell ${sortConfig.Platinum.key==='Region' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','Region')}>Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerName' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerName')}>Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Platinum.key==='customerCode' ? 'sorted-'+sortConfig.Platinum.dir : ''}`} onClick={() => handleSort('Platinum','customerCode')}>Outlet Code</th>
                                            
-                                            <th className="table-header-cell">💎 Platinum Entries</th>
-                                            <th className="table-header-cell">🥇 Gold Entries</th>
-                                            <th className="table-header-cell">🥈 Silver Entries</th>
+                                            <th className="table-header-cell">Platinum Entries</th>
+                                            <th className="table-header-cell">Gold Entries</th>
+                                            <th className="table-header-cell">Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -229,7 +250,7 @@ const Home = () => {
                                           ))}
                                           {(!data?.Platinum?.data || data.Platinum.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="6" className="uk-text-center empty-state">💎 No platinum tier customers found</td>
+                                              <td colSpan="6" className="uk-text-center empty-state">No platinum tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -243,12 +264,12 @@ const Home = () => {
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                         <thead className="tier-header-gold">
                                           <tr>
-                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='Region' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','Region')}>📍 Region</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerName' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerName')}>🏪 Outlet Name</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerCode' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerCode')}>🏷️ Outlet Code</th>
-                                            <th className="table-header-cell">💎 Platinum Entries</th>
-                                            <th className="table-header-cell">🥇 Gold Entries</th>
-                                            <th className="table-header-cell">🥈 Silver Entries</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='Region' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','Region')}>Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerName' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerName')}>Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Gold.key==='customerCode' ? 'sorted-'+sortConfig.Gold.dir : ''}`} onClick={() => handleSort('Gold','customerCode')}>Outlet Code</th>
+                                            <th className="table-header-cell">Platinum Entries</th>
+                                            <th className="table-header-cell">Gold Entries</th>
+                                            <th className="table-header-cell">Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -287,7 +308,7 @@ const Home = () => {
                                           ))}
                                           {(!data?.Gold?.data || data.Gold.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="7" className="uk-text-center empty-state">🥇 No gold tier customers found</td>
+                                              <td colSpan="7" className="uk-text-center empty-state">No gold tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
@@ -301,12 +322,12 @@ const Home = () => {
                                       <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                         <thead className="tier-header-silver">
                                           <tr>
-                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='Region' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','Region')}>📍 Region</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerName' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerName')}>🏪 Outlet Name</th>
-                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerCode' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerCode')}>🏷️ Outlet Code</th>
-                                            <th className="table-header-cell">💎 Platinum Entries</th>
-                                            <th className="table-header-cell">🥇 Gold Entries</th>
-                                            <th className="table-header-cell">🥈 Silver Entries</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='Region' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','Region')}>Region</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerName' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerName')}>Outlet Name</th>
+                                            <th className={`sortable table-header-cell ${sortConfig.Silver.key==='customerCode' ? 'sorted-'+sortConfig.Silver.dir : ''}`} onClick={() => handleSort('Silver','customerCode')}>Outlet Code</th>
+                                            <th className="table-header-cell">Platinum Entries</th>
+                                            <th className="table-header-cell">Gold Entries</th>
+                                            <th className="table-header-cell">Silver Entries</th>
                                           </tr>
                                         </thead>
                                         <tbody>
@@ -328,7 +349,7 @@ const Home = () => {
                                           ))}
                                           {(!data?.Silver?.data || data.Silver.data.length === 0) && (
                                             <tr>
-                                              <td colSpan="7" className="uk-text-center empty-state">🥈 No silver tier customers found</td>
+                                              <td colSpan="7" className="uk-text-center empty-state">No silver tier customers found</td>
                                             </tr>
                                           )}
                                         </tbody>
