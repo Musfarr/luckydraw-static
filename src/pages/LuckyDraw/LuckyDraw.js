@@ -57,8 +57,8 @@ const LuckyDraw = () => {
         // page: 1,
         // limit: 10000000 
       });
-      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
-      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+      // return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 30 * 60 * 1000, // 30 minutes
     cacheTime: 60 * 60 * 1000, // 1 hour

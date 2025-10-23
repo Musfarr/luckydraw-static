@@ -38,8 +38,8 @@ const Home = () => {
         limit: 100,
         ...(debouncedSearch && { search: debouncedSearch })
       });
-      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
-      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+      // return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 60 * 60 * 1000,
     cacheTime: 60 * 60 * 1000,
