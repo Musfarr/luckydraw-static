@@ -768,7 +768,7 @@
   border-radius: 20px;
   box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
   backdrop-filter: blur(10px);
-  max-height: 600px;
+  max-height: 680px;
 }
 
 .participants-card .uk-card-title {

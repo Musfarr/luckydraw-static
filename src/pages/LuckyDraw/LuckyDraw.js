@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../Context/AuthProvider";
 import { useDistributorData } from "../../Context/DistributorDataProvider";
 import { apiGetasync } from "../../Utils/apiServices";
@@ -27,6 +27,7 @@ import juicer from "../../assets/images/juicer.png";
 import washing_machine from "../../assets/images/WASHINGmachine.png";
 import daraz_gift_card from "../../assets/images/CARD.png";
 
+
 const LuckyDraw = () => {
   const { auth } = useAuth();
   const { distributorData: globalDistributorData } = useDistributorData();
@@ -44,15 +45,26 @@ const LuckyDraw = () => {
   const [showWinnerModal, setShowWinnerModal] = useState(false);
   const [showWheelModal, setShowWheelModal] = useState(false);
   const [winnerData, setWinnerData] = useState(null);
+  const [currentPage, setCurrentPage] = useState(1);
+  const [searchQuery, setSearchQuery] = useState('');
+  const itemsPerPage = 30;
 
-  // Fetch dashboard data from API
+  // Fetch dashboard data from API (fetch all data for lucky draw)
   const { data: dashboardData, isLoading, error } = useQuery({
-    queryKey: ['dashboardData'],
-    queryFn: () => apiGetasync('https://unilever.convexinteractive.com/api/customer-dashboard-data')
-    // queryFn: () => apiGetasync('http://localhost:8000/api/customer-dashboard-data')
+    queryKey: ['luckyDrawData'],
+    queryFn: () => {
+      const params = new URLSearchParams({
+        // page: 1,
+        // limit: 10000000 
+      });
+      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+    },
+    staleTime: 30 * 60 * 1000, // 30 minutes
+    cacheTime: 60 * 60 * 1000, // 1 hour
   });
 
-  const data = dashboardData?.data;
+  const data = dashboardData?.data; // This is now a flat array of all customers
 
   const confettiOptions = {
     loop: true,
@@ -114,15 +126,11 @@ const LuckyDraw = () => {
   }, []);
 
 
-  // Get available zones (excluding those that reached giveaway limits)
-  const getUniqueZones = () => {
-    if (!data) return [];
-    const allCustomers = [
-      ...(data.Platinum?.data || []),
-      ...(data.Gold?.data || []),
-      ...(data.Silver?.data || [])
-    ];
-    let zones = [...new Set(allCustomers.map(c => c.ZONE).filter(Boolean))];
+  // Get available zones (excluding those that reached giveaway limits) - Memoized for performance
+  const uniqueZones = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    const allCustomers = data;
+    let zones = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.ZoneDesc).filter(Boolean))];
     
     // Filter out zones that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -141,21 +149,19 @@ const LuckyDraw = () => {
     }
     
     return zones.sort();
-  };
+  }, [data, selectedGiveaway, awardedGiveaways]);
 
-  const getUniqueRegions = () => {
-    if (!data) return [];
-    let allCustomers = [
-      ...(data.Platinum?.data || []),
-      ...(data.Gold?.data || []),
-      ...(data.Silver?.data || [])
-    ];
+  const getUniqueZones = () => uniqueZones;
+
+  const uniqueRegions = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    let allCustomers = data;
     
     if (selectedZone) {
-      allCustomers = allCustomers.filter(c => c.ZONE === selectedZone);
+      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.ZoneDesc === selectedZone);
     }
     
-    let regions = [...new Set(allCustomers.map(c => c.Region).filter(Boolean))];
+    let regions = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.Region).filter(Boolean))];
     
     // Filter out regions that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -174,24 +180,22 @@ const LuckyDraw = () => {
     }
     
     return regions.sort();
-  };
+  }, [data, selectedZone, selectedGiveaway, awardedGiveaways]);
 
-  const getUniqueAreas = () => {
-    if (!data) return [];
-    let allCustomers = [
-      ...(data.Platinum?.data || []),
-      ...(data.Gold?.data || []),
-      ...(data.Silver?.data || [])
-    ];
+  const getUniqueRegions = () => uniqueRegions;
+
+  const uniqueAreas = useMemo(() => {
+    if (!data || !Array.isArray(data)) return [];
+    let allCustomers = data;
     
     if (selectedZone) {
-      allCustomers = allCustomers.filter(c => c.ZONE === selectedZone);
+      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.ZoneDesc === selectedZone);
     }
     if (selectedRegion) {
-      allCustomers = allCustomers.filter(c => c.Region === selectedRegion);
+      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.Region === selectedRegion);
     }
     
-    let areas = [...new Set(allCustomers.map(c => c.AREA).filter(Boolean))];
+    let areas = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.Area).filter(Boolean))];
     
     // Filter out areas that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -210,22 +214,20 @@ const LuckyDraw = () => {
     }
     
     return areas.sort();
-  };
+  }, [data, selectedZone, selectedRegion, selectedGiveaway, awardedGiveaways]);
+
+  const getUniqueAreas = () => uniqueAreas;
 
 
-  // Get all customers from all tiers in a unified pool
+  // Get all customers from the flat array
   const getAllCustomers = () => {
-    if (!data) return [];
-    return [
-      ...(data.Platinum?.data || []),
-      ...(data.Gold?.data || []),
-      ...(data.Silver?.data || [])
-    ];
+    if (!data || !Array.isArray(data)) return [];
+    return data;
   };
 
   // Check if customer is excluded based on hierarchical rules
   const isCustomerExcluded = (customer, targetTier) => {
-    const customerCode = customer.customerCode;
+    const customerCode = customer.cust_cd;
     const excludedEntry = excludedWinners.find(w => w.customerCode === customerCode);
     
     if (!excludedEntry) return false;
@@ -253,11 +255,11 @@ const LuckyDraw = () => {
       
       // Check based on limit type
       if (giveaway.limitType === 'zone') {
-        return award.zone === customer.ZONE;
+        return award.zone === customer.GeoData?.[0]?.ZoneDesc;
       } else if (giveaway.limitType === 'region') {
-        return award.region === customer.Region;
+        return award.region === customer.GeoData?.[0]?.Region;
       } else if (giveaway.limitType === 'area') {
-        return award.area === customer.AREA;
+        return award.area === customer.GeoData?.[0]?.Area;
       }
       
       return false;
@@ -266,8 +268,8 @@ const LuckyDraw = () => {
     return awardedCount >= giveaway.limit;
   };
 
-  // Filter participants based on selected criteria with cross-tier eligibility
-  const filterParticipants = () => {
+  // Filter participants based on selected criteria with cross-tier eligibility - Memoized
+  const eligibleParticipantsList = useMemo(() => {
     if (!data) return [];
     
     // Get all customers from unified pool
@@ -275,15 +277,15 @@ const LuckyDraw = () => {
     
     // Apply geographic filters
     if (selectedZone) {
-      participants = participants.filter(p => p.ZONE === selectedZone);
+      participants = participants.filter(p => p.GeoData?.[0]?.ZoneDesc === selectedZone);
     }
     
     if (selectedRegion) {
-      participants = participants.filter(p => p.Region === selectedRegion);
+      participants = participants.filter(p => p.GeoData?.[0]?.Region === selectedRegion);
     }
     
     if (selectedArea) {
-      participants = participants.filter(p => p.AREA === selectedArea);
+      participants = participants.filter(p => p.GeoData?.[0]?.Area === selectedArea);
     }
     
     // Filter by tier-specific entries > 0, exclusion status, and giveaway limits
@@ -301,11 +303,11 @@ const LuckyDraw = () => {
       // Check if they have entries for this tier
       let entries = 0;
       if (selectedTier === 'Platinum') {
-        entries = p.entries?.platinumEntries || 0;
+        entries = p.entry_count?.platinum || 0;
       } else if (selectedTier === 'Gold') {
-        entries = p.entries?.goldEntries || 0;
+        entries = p.entry_count?.gold || 0;
       } else if (selectedTier === 'Silver') {
-        entries = p.entries?.silverEntries || 0;
+        entries = p.entry_count?.silver || 0;
       }
       
       return entries > 0; // Only eligible if they have entries for this tier
@@ -315,15 +317,40 @@ const LuckyDraw = () => {
     return participants.map(p => {
       let entries = 0;
       if (selectedTier === 'Platinum') {
-        entries = p.entries?.platinumEntries || 0;
+        entries = p.entry_count?.platinum || 0;
       } else if (selectedTier === 'Gold') {
-        entries = p.entries?.goldEntries || 0;
+        entries = p.entry_count?.gold || 0;
       } else if (selectedTier === 'Silver') {
-        entries = p.entries?.silverEntries || 0;
+        entries = p.entry_count?.silver || 0;
       }
       return { ...p, drawEntries: entries };
     });
-  };
+  }, [data, selectedZone, selectedRegion, selectedArea, selectedTier, selectedGiveaway, excludedWinners, awardedGiveaways]);
+
+  const filterParticipants = () => eligibleParticipantsList;
+
+  // Search filtering
+  const searchFilteredParticipants = useMemo(() => {
+    if (!searchQuery.trim()) return eligibleParticipantsList;
+    
+    const query = searchQuery.toLowerCase().trim();
+    return eligibleParticipantsList.filter(participant => {
+      const custName = (participant.cust_name || participant.customerName || '').toLowerCase();
+      const custCode = (participant.cust_cd || participant.customerCode || '').toLowerCase();
+      return custName.includes(query) || custCode.includes(query);
+    });
+  }, [eligibleParticipantsList, searchQuery]);
+
+  // Pagination logic
+  const totalPages = Math.ceil(searchFilteredParticipants.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage;
+  const paginatedParticipants = searchFilteredParticipants.slice(startIndex, endIndex);
+
+  // Reset to page 1 when filters or search changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [selectedTier, selectedGiveaway, selectedZone, selectedRegion, selectedArea, searchQuery]);
 
   const startLuckyDraw = () => {
     if (!selectedGiveaway) {
@@ -347,10 +374,32 @@ const LuckyDraw = () => {
       return;
     }
 
-    console.log(participants , 'participants');
+    
+    // For car giveaway, filter draw pool to only include participants with at least 66 platinum entries
+    let drawPoolParticipants = participants;
+    if (selectedGiveaway === 'car') {
+      drawPoolParticipants = participants.filter(p => {
+        const platinumEntries = p.entry_count?.platinum || 0;
+        return platinumEntries >= 66;
+      });
+      
+      // Check if any participants qualify for the draw
+      if (drawPoolParticipants.length === 0) {
+        Swal.fire({
+          title: 'No Qualified Participants',
+          text: 'No participants qualified for the car giveaway',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      
+      console.log(`Car giveaway: ${drawPoolParticipants.length} out of ${participants.length} participants qualify with 66+ platinum entries`);
+    }
+    
     // Create weighted pool based on entries
     const weightedPool = [];
-    participants.forEach(participant => {
+    drawPoolParticipants.forEach(participant => {
       const entries = participant.drawEntries || 1; // At least 1 entry
       for (let i = 0; i < entries; i++) {
         weightedPool.push(participant);
@@ -388,8 +437,8 @@ const LuckyDraw = () => {
       
       // Add winner to excluded list
       const excludedWinner = {
-        customerCode: selectedWinner.customerCode,
-        customerName: selectedWinner.customerName,
+        customerCode: selectedWinner.cust_cd,
+        customerName: selectedWinner.cust_name,
         wonTier: selectedTier,
         wonGiveaway: giveaway.name,
         wonDate: new Date().toLocaleString()
@@ -404,11 +453,11 @@ const LuckyDraw = () => {
         giveawayId: selectedGiveaway,
         giveawayName: giveaway.name,
         tier: selectedTier,
-        zone: selectedWinner.ZONE,
-        region: selectedWinner.Region,
-        area: selectedWinner.AREA,
-        customerCode: selectedWinner.customerCode,
-        customerName: selectedWinner.customerName,
+        zone: selectedWinner.GeoData?.[0]?.ZoneDesc,
+        region: selectedWinner.GeoData?.[0]?.Region,
+        area: selectedWinner.GeoData?.[0]?.Area,
+        customerCode: selectedWinner.cust_cd,
+        customerName: selectedWinner.cust_name,
         awardedDate: new Date().toLocaleString()
       };
       
@@ -532,13 +581,13 @@ const LuckyDraw = () => {
   const csvData = drawHistory.map((entry, index) => ({
     'S.No': index + 1,
     'Date & Time': entry.date,
-    'Winner Name': entry.winner.customerName,
-    'Customer Code': entry.winner.customerCode,
+    'Winner Name': entry.winner.cust_name || entry.winner.customerName,
+    'Customer Code': entry.winner.cust_cd || entry.winner.customerCode,
     'Giveaway': entry.giveaway?.name,
     'Tier': entry.tier,
-    'Region': entry.winner.Region,
-    'Zone': entry.winner.ZONE,
-    'Area': entry.winner.AREA,
+    'Region': entry.winner.GeoData?.[0]?.Region || entry.winner.Region,
+    'Zone': entry.winner.GeoData?.[0]?.ZoneDesc || entry.winner.ZONE,
+    'Area': entry.winner.GeoData?.[0]?.Area || entry.winner.AREA,
     'Total Participants': entry.totalParticipants
   }));
 
@@ -625,7 +674,7 @@ const LuckyDraw = () => {
                       </div>
                       <div className="winner-header">
                         <h2 className="winner-title">🎉 Congratulations!</h2>
-                        <h1 className="winner-name">{winnerData.winner.customerName}</h1>
+                        <h1 className="winner-name">{winnerData.winner.cust_name || winnerData.winner.customerName}</h1>
                       </div>
                       
                       <div className="prize-info">
@@ -637,22 +686,22 @@ const LuckyDraw = () => {
                         <div className="winner-details">
                           <div className="detail-row">
                             <span className="info-label">Region:</span>
-                            <span className="info-value">{winnerData.winner.Region}</span>
+                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.Region || winnerData.winner.Region}</span>
                           </div>
                           <div className="detail-row">
                             <span className="info-label">Area:</span>
-                            <span className="info-value">{winnerData.winner.AREA}</span>
+                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.Area || winnerData.winner.AREA}</span>
                           </div>
                           
                           <div className="detail-row">
                             <span className="info-label">Zone:</span>
-                            <span className="info-value">{winnerData.winner.ZONE}</span>
+                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.ZoneDesc || winnerData.winner.ZONE}</span>
                           </div>
                           
                           
                           <div className="detail-row">
                             <span className="info-label">Customer Code:</span>
-                            <span className="info-value ">{winnerData.winner.customerCode}</span>
+                            <span className="info-value ">{winnerData.winner.cust_cd || winnerData.winner.customerCode}</span>
                           </div>
 
                           {/* <div className="detail-row">
@@ -844,12 +893,39 @@ const LuckyDraw = () => {
                   <h3 className="uk-card-title">Eligible Participants</h3>
                   <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name}</p>
                   
-                  <div className="participants-list">
+                  {/* Search Input */}
+                  <div className="uk-margin" style={{ marginBottom: '20px' }}>
+                    <div className="uk-inline uk-width-1-1">
+                      <span className="uk-form-icon" uk-icon="icon: search"></span>
+                      <input 
+                        className="uk-input" 
+                        type="text" 
+                        placeholder="Search by customer name or code..." 
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                      />
+                      {searchQuery && (
+                        <button 
+                          className="uk-form-icon uk-form-icon-flip" 
+                          style={{ background: 'none', border: 'none', cursor: 'pointer' }}
+                          onClick={() => setSearchQuery('')}
+                          uk-icon="icon: close"
+                        ></button>
+                      )}
+                    </div>
+                    {searchQuery && (
+                      <p className="uk-text-small uk-text-muted" style={{ marginTop: '5px' }}>
+                        Found {searchFilteredParticipants.length} participant(s) matching "{searchQuery}"
+                      </p>
+                    )}
+                  </div>
+                  
+                  {/* <div className="participants-list">
                     {filterParticipants().map((participant, index) => (
-                      <div key={participant.customerCode || index} className="participant-item">
+                      <div key={participant.cust_cd || participant.customerCode || index} className="participant-item">
                         <div className="participant-info">
-                          <h5>{participant.customerName}</h5>
-                          <p><strong>Customer Code:</strong> {participant.customerCode}</p>
+                          <h5>{participant.cust_name || participant.customerName}</h5>
+                          <p><strong>Customer Code:</strong> {participant.cust_cd || participant.customerCode}</p>
                           <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
                         </div>
                         <span className={`tier-badge tier-${selectedTier}`}>
@@ -860,7 +936,55 @@ const LuckyDraw = () => {
                     {filterParticipants().length === 0 && (
                       <p className="uk-text-center uk-text-muted">No eligible participants found</p>
                     )}
+                  </div> */}
+
+                  <div className="participants-list">
+                    {paginatedParticipants.map((participant, index) => (
+                      <div key={participant.cust_cd || participant.customerCode || index} className="participant-item">
+                        <div className="participant-info">
+                          <h5>{participant.cust_name || participant.customerName}</h5>
+                          <p><strong>Customer Code:</strong> {participant.cust_cd || participant.customerCode}</p>
+                          <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
+                        </div>
+                        <span className={`tier-badge tier-${selectedTier}`}>
+                          {selectedTier.toUpperCase()}
+                        </span>
+                      </div>
+                    ))}
+                    {eligibleParticipantsList.length === 0 && (
+                      <p className="uk-text-center uk-text-muted">No eligible participants found</p>
+                    )}
                   </div>
+
+                  {/* Pagination Controls */}
+                  {totalPages > 1 && (
+                    <div className="uk-flex uk-flex-between uk-flex-middle" style={{ marginTop: '20px', padding: '10px', borderTop: '1px solid #e5e5e5' }}>
+                      <div className="uk-text-small uk-text-muted">
+                        Showing {startIndex + 1}-{Math.min(endIndex, searchFilteredParticipants.length)} of {searchFilteredParticipants.length} participants
+                      </div>
+                      <div className="uk-flex uk-flex-middle" style={{ gap: '10px' }}>
+                        <button 
+                          className="uk-button uk-button-small uk-button-default"
+                          onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={currentPage === 1}
+                        >
+                          Previous
+                        </button>
+                        <span className="uk-text-small">
+                          Page {currentPage} of {totalPages}
+                        </span>
+                        <button 
+                          className="uk-button uk-button-small uk-button-default"
+                          onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                          disabled={currentPage === totalPages}
+                        >
+                          Next
+                        </button>
+                      </div>
+                    </div>
+                  )}
+
+
                 </div>
               </div>
             )}
@@ -969,15 +1093,15 @@ const LuckyDraw = () => {
                         {drawHistory.map((entry) => (
                           <tr key={entry.id} className="uk-text-center">
                             <td>{entry.date}</td>
-                            <td>{entry.winner.customerName}</td>
-                            <td>{entry.winner.customerCode}</td>
+                            <td>{entry.winner.cust_name || entry.winner.customerName}</td>
+                            <td>{entry.winner.cust_cd || entry.winner.customerCode}</td>
                             <td>{entry.giveaway?.icon} {entry.giveaway?.name}</td>
                             <td>
                               <span className={`tier-badge tier-${entry.tier}`}>
                                 {entry?.tier?.toUpperCase()}
                               </span>
                             </td>
-                            <td>{entry.winner.Region} - {entry.winner.ZONE}</td>
+                            <td>{entry.winner.GeoData?.[0]?.Region || entry.winner.Region} - {entry.winner.GeoData?.[0]?.ZoneDesc || entry.winner.ZONE}</td>
                             {/* <td>{entry.totalParticipants}</td> */}
                           </tr>
                         ))}
