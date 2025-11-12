@@ -151,6 +151,15 @@ const LuckyDraw = () => {
     return zones.sort();
   }, [data, selectedGiveaway, awardedGiveaways]);
 
+  // Auto-clear selectedZone if it's no longer in the available zones list
+  useEffect(() => {
+    if (selectedZone && !uniqueZones.includes(selectedZone)) {
+      setSelectedZone('');
+      setSelectedRegion('');
+      setSelectedArea('');
+    }
+  }, [uniqueZones, selectedZone]);
+
   const getUniqueZones = () => uniqueZones;
 
   const uniqueRegions = useMemo(() => {
@@ -181,6 +190,14 @@ const LuckyDraw = () => {
     
     return regions.sort();
   }, [data, selectedZone, selectedGiveaway, awardedGiveaways]);
+
+  // Auto-clear selectedRegion if it's no longer in the available regions list
+  useEffect(() => {
+    if (selectedRegion && !uniqueRegions.includes(selectedRegion)) {
+      setSelectedRegion('');
+      setSelectedArea('');
+    }
+  }, [uniqueRegions, selectedRegion]);
 
   const getUniqueRegions = () => uniqueRegions;
 
@@ -215,6 +232,13 @@ const LuckyDraw = () => {
     
     return areas.sort();
   }, [data, selectedZone, selectedRegion, selectedGiveaway, awardedGiveaways]);
+
+  // Auto-clear selectedArea if it's no longer in the available areas list
+  useEffect(() => {
+    if (selectedArea && !uniqueAreas.includes(selectedArea)) {
+      setSelectedArea('');
+    }
+  }, [uniqueAreas, selectedArea]);
 
   const getUniqueAreas = () => uniqueAreas;
 
