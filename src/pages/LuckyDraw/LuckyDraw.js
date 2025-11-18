@@ -6,6 +6,7 @@ import Spinner from "../../reusables/Spinner";
 import Swal from 'sweetalert2';
 import { useQuery } from "@tanstack/react-query";
 import { CSVLink } from "react-csv";
+import { useNavigate } from "react-router-dom";
 import "./LuckyDraw.css";
 import yaris from "../../assets/images/yaris2x.png";
 import gold_1_tola from "../../assets/images/barr.png";
@@ -26,11 +27,30 @@ import food_factory from "../../assets/images/foodfactory.png";
 import juicer from "../../assets/images/juicer.png";
 import washing_machine from "../../assets/images/WASHINGmachine.png";
 import daraz_gift_card from "../../assets/images/CARD.png";
+import axios from "axios";
 
+const BASE_GIVEAWAY_CONFIG = {
+  Platinum: [
+    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' }
+  ],
+  Gold: [
+    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region', limit: 1, limitType: 'region' },
+    { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area', limit: 1, limitType: 'area' }
+  ],
+  Silver: [
+    { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area', limit: 2, limitType: 'area' },
+    { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area', limit: 3, limitType: 'area' },
+    { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area', limit: 2, limitType: 'area' },
+    { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area', limit: 2, limitType: 'area' },
+    { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area', limit: 5, limitType: 'area' },
+    { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area', limit: 5, limitType: 'area' },
+    { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area', limit: 2, limitType: 'area' }
+  ]
+};
 
 const LuckyDraw = () => {
-  const { auth } = useAuth();
-  const { distributorData: globalDistributorData } = useDistributorData();
+  const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
   const [selectedTier, setSelectedTier] = useState('Platinum');
   const [selectedGiveaway, setSelectedGiveaway] = useState('');
   const [eligibleParticipants, setEligibleParticipants] = useState([]);
@@ -49,22 +69,34 @@ const LuckyDraw = () => {
   const [searchQuery, setSearchQuery] = useState('');
   const itemsPerPage = 30;
 
+
   // Fetch dashboard data from API (fetch all data for lucky draw)
-  const { data: dashboardData, isLoading, error } = useQuery({
+  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useQuery({
     queryKey: ['luckyDrawData'],
     queryFn: () => {
       const params = new URLSearchParams({
         // page: 1,
         // limit: 10000000 
       });
-      // return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
-      return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 30 * 60 * 1000, // 30 minutes
     cacheTime: 60 * 60 * 1000, // 1 hour
   });
 
   const data = dashboardData?.data; // This is now a flat array of all customers
+  const role =  auth?.user?.role;
+
+  const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
+    queryKey: ['winnerData'],
+    queryFn: () => {
+      return apiGetasync(`http://localhost:8000/api/winners-data`);
+    },
+    // staleTime: 30 * 60 * 1000, // 30 minutes
+    // cacheTime: 60 * 60 * 1000, // 1 hour
+  });
+  console.log(role , "role")
 
   const confettiOptions = {
     loop: true,
@@ -84,25 +116,14 @@ const LuckyDraw = () => {
     },
   };
 
-  // Giveaway configuration by tier with limits
-  const giveawayConfig = {
-    Platinum: [
-      { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' }
-    ],
-    Gold: [
-      { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region', limit: 1, limitType: 'region' },
-      { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area', limit: 1, limitType: 'area' }
-    ],
-    Silver: [
-      { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area', limit: 2, limitType: 'area' },
-      { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area', limit: 3, limitType: 'area' },
-      { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area', limit: 2, limitType: 'area' },
-      { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area', limit: 2, limitType: 'area' },
-      { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area', limit: 5, limitType: 'area' },
-      { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area', limit: 5, limitType: 'area' },
-      { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area', limit: 2, limitType: 'area' }
-    ]
-  };
+    // Giveaway configuration by tier with limits
+  const giveawayConfig = useMemo(() => {
+    if (role === 'admin') {
+      return BASE_GIVEAWAY_CONFIG;
+    }
+    const { Platinum, ...rest } = BASE_GIVEAWAY_CONFIG;
+    return rest;
+  }, [role]);
   
 
   useEffect(() => {
@@ -111,19 +132,15 @@ const LuckyDraw = () => {
     if (savedHistory) {
       setDrawHistory(JSON.parse(savedHistory));
     }
-    
-    // Load excluded winners from localStorage
-    const savedExcludedWinners = localStorage.getItem('excludedWinners');
-    if (savedExcludedWinners) {
-      setExcludedWinners(JSON.parse(savedExcludedWinners));
+   }, []);
+
+  useEffect(() => {
+    const availableTiers = Object.keys(giveawayConfig);
+    if (!availableTiers.includes(selectedTier)) {
+      setSelectedTier(availableTiers[0] || '');
+      setSelectedGiveaway('');
     }
-    
-    // Load awarded giveaways from localStorage
-    const savedAwardedGiveaways = localStorage.getItem('awardedGiveaways');
-    if (savedAwardedGiveaways) {
-      setAwardedGiveaways(JSON.parse(savedAwardedGiveaways));
-    }
-  }, []);
+  }, [giveawayConfig, selectedTier]);
 
 
   // Get available zones (excluding those that reached giveaway limits) - Memoized for performance
@@ -140,7 +157,7 @@ const LuckyDraw = () => {
       
       if (giveaway && giveaway.limitType === 'zone') {
         zones = zones.filter(zone => {
-          const awardedCount = awardedGiveaways.filter(award => 
+          const awardedCount = winnersData?.filter(award => 
             award.giveawayId === selectedGiveaway && award.zone === zone
           ).length;
           return awardedCount < giveaway.limit;
@@ -149,7 +166,7 @@ const LuckyDraw = () => {
     }
     
     return zones.sort();
-  }, [data, selectedGiveaway, awardedGiveaways]);
+  }, [data, selectedGiveaway, winnersData]);
 
   // Auto-clear selectedZone if it's no longer in the available zones list
   useEffect(() => {
@@ -180,7 +197,7 @@ const LuckyDraw = () => {
       
       if (giveaway && giveaway.limitType === 'region') {
         regions = regions.filter(region => {
-          const awardedCount = awardedGiveaways.filter(award => 
+          const awardedCount = winnersData?.filter(award => 
             award.giveawayId === selectedGiveaway && award.region === region
           ).length;
           return awardedCount < giveaway.limit;
@@ -189,7 +206,7 @@ const LuckyDraw = () => {
     }
     
     return regions.sort();
-  }, [data, selectedZone, selectedGiveaway, awardedGiveaways]);
+  }, [data, selectedZone, selectedGiveaway, winnersData]);
 
   // Auto-clear selectedRegion if it's no longer in the available regions list
   useEffect(() => {
@@ -222,7 +239,7 @@ const LuckyDraw = () => {
       
       if (giveaway && giveaway.limitType === 'area') {
         areas = areas.filter(area => {
-          const awardedCount = awardedGiveaways.filter(award => 
+          const awardedCount = winnersData?.filter(award => 
             award.giveawayId === selectedGiveaway && award.area === area
           ).length;
           return awardedCount < giveaway.limit;
@@ -231,7 +248,7 @@ const LuckyDraw = () => {
     }
     
     return areas.sort();
-  }, [data, selectedZone, selectedRegion, selectedGiveaway, awardedGiveaways]);
+  }, [data, selectedZone, selectedRegion, selectedGiveaway, winnersData]);
 
   // Auto-clear selectedArea if it's no longer in the available areas list
   useEffect(() => {
@@ -251,8 +268,9 @@ const LuckyDraw = () => {
 
   // Check if customer is excluded based on hierarchical rules
   const isCustomerExcluded = (customer, targetTier) => {
-    const customerCode = customer.cust_cd;
-    const excludedEntry = excludedWinners.find(w => w.customerCode === customerCode);
+
+    const customerCode = customer.cust_cd;   
+    const excludedEntry = winnersData.find(w => w.customerCode === customerCode);
     
     if (!excludedEntry) return false;
     
@@ -274,7 +292,7 @@ const LuckyDraw = () => {
     if (!giveaway) return false;
     
     // Count awarded giveaways for this specific giveaway and area
-    const awardedCount = awardedGiveaways.filter(award => {
+    const awardedCount = winnersData?.filter(award => {
       if (award.giveawayId !== giveawayId) return false;
       
       // Check based on limit type
@@ -349,7 +367,7 @@ const LuckyDraw = () => {
       }
       return { ...p, drawEntries: entries };
     });
-  }, [data, selectedZone, selectedRegion, selectedArea, selectedTier, selectedGiveaway, excludedWinners, awardedGiveaways]);
+  }, [data, selectedZone, selectedRegion, selectedArea, selectedTier, selectedGiveaway , winnersData]);
 
   const filterParticipants = () => eligibleParticipantsList;
 
@@ -431,8 +449,6 @@ const LuckyDraw = () => {
     });
 
 
-    console.log(weightedPool , 'weightedPool');
-
     setEligibleParticipants(participants);
     setIsSpinning(true);
     setWinner(null);
@@ -454,10 +470,12 @@ const LuckyDraw = () => {
     setShowWheelModal(true);
     
     // After wheel animation, show winner announcement
-    setTimeout(() => {
+    setTimeout(async () => {
       setShowWheelModal(false);
       setWinner({ ...selectedWinner, giveaway });
       setIsSpinning(false);
+      
+
       
       // Add winner to excluded list
       const excludedWinner = {
@@ -465,53 +483,39 @@ const LuckyDraw = () => {
         customerName: selectedWinner.cust_name,
         wonTier: selectedTier,
         wonGiveaway: giveaway.name,
-        wonDate: new Date().toLocaleString()
-      };
-      
-      const updatedExcludedWinners = [...excludedWinners, excludedWinner];
-      setExcludedWinners(updatedExcludedWinners);
-      localStorage.setItem('excludedWinners', JSON.stringify(updatedExcludedWinners));
-      
-      // Track awarded giveaway for limit enforcement
-      const awardedGiveaway = {
-        giveawayId: selectedGiveaway,
-        giveawayName: giveaway.name,
-        tier: selectedTier,
         zone: selectedWinner.GeoData?.[0]?.ZoneDesc,
         region: selectedWinner.GeoData?.[0]?.Region,
         area: selectedWinner.GeoData?.[0]?.Area,
-        customerCode: selectedWinner.cust_cd,
-        customerName: selectedWinner.cust_name,
-        awardedDate: new Date().toLocaleString()
+        giveawayId: selectedGiveaway,
+        giveawayName: giveaway.name,
+        wonDate: new Date().toLocaleString()
       };
+
+      try {
+        await axios.post(`http://localhost:8000/api/add-winner`, excludedWinner);
+        refetchWinnersData();
+      }
       
-      const updatedAwardedGiveaways = [...awardedGiveaways, awardedGiveaway];
-      setAwardedGiveaways(updatedAwardedGiveaways);
-      localStorage.setItem('awardedGiveaways', JSON.stringify(updatedAwardedGiveaways));
       
-      // Add to history
-      const newEntry = {
-        id: Date.now(),
-        winner: selectedWinner,
-        giveaway: giveaway,
-        tier: selectedTier,
-        date: new Date().toLocaleString(),
-        totalParticipants: participants.length
-      };
-      const updatedHistory = [newEntry, ...drawHistory];
-      setDrawHistory(updatedHistory);
-      localStorage.setItem('luckyDrawHistory', JSON.stringify(updatedHistory));
+        catch (error) {
+        console.error('Error excluding winner:', error);
+        Swal.fire({
+          title: 'Error Adding Winner',
+          text: 'Failed to add winner to draw',
+          icon: 'error',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+            
       
+            
       // Show winner modal
       setShowWinnerModal(true);
     }, 10000);
   };
 
-  const resetDraw = () => {
-    setWinner(null);
-    setIsSpinning(false);
-    setEligibleParticipants([]);
-  };
+ 
 
   const clearHistory = () => {
     Swal.fire({
@@ -521,17 +525,22 @@ const LuckyDraw = () => {
       showCancelButton: true,
       confirmButtonText: 'Yes, clear it!',
       cancelButtonText: 'Cancel'
-    }).then((result) => {
+    }).then( async (result) => {
       if (result.isConfirmed) {
-        setDrawHistory([]);
-        localStorage.removeItem('luckyDrawHistory');
+
+        try {
+          await axios.delete(`http://localhost:8000/api/clear-winners-data`);
+          refetchWinnersData();
+        } catch (error) {
+          console.log(error);
+          return;
+        }
+
         
         // Also clear excluded winners and awarded giveaways
         setExcludedWinners([]);
         localStorage.removeItem('excludedWinners');
         
-        setAwardedGiveaways([]);
-        localStorage.removeItem('awardedGiveaways');
         
         // Reset all geographic filters
         setSelectedZone('');
@@ -628,7 +637,7 @@ const LuckyDraw = () => {
     { label: 'Total Participants', key: 'Total Participants' }
   ];
 
-  if (isLoading) {
+  if (dashboardLoading) {
     return <Spinner />;
   }
 
@@ -638,7 +647,7 @@ const LuckyDraw = () => {
 
                         
         
-        {error ? (
+        {dashboardError ? (
           <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
             <div className="uk-card uk-card-default uk-card-body uk-text-center">
               <h3>Error Loading Data Please Refresh</h3>
@@ -753,6 +762,21 @@ const LuckyDraw = () => {
               </div>
             )}
 
+            <div className="lucky-draw-header-actions uk-width-1-1">
+              <button className="header-action-btn" onClick={() => navigate(-1)}>
+                ← Back
+              </button>
+              <button
+                className="header-action-btn logout"
+                onClick={() => {
+                  localStorage.clear();
+                  setAuth({ token: null, user: {} });
+                  navigate('/');
+                }}
+              >
+                Logout
+              </button>
+            </div>
               <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
                         <div className="uk-margin-remove">
                           <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
@@ -760,7 +784,8 @@ const LuckyDraw = () => {
                         <div className="uk-margin-remove">
                           <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
                         </div>
-                      </div>      
+                      </div>
+
             
 
             {/* Tier Selection */}
@@ -783,7 +808,7 @@ const LuckyDraw = () => {
                       <div className="tier-content">
                         <h4 className="tier-name">{tier.toUpperCase()}</h4>
                         <div className="tier-stats">
-                          <span className="tier-value">({giveawayConfig[tier].length} giveaways)</span>
+                          <span className="tier-value">({giveawayConfig[tier]?.length || 0} giveaways)</span>
                         </div>
                       </div>
                     </div>
@@ -794,7 +819,7 @@ const LuckyDraw = () => {
                   <div className="giveaway-selection">
                     {/* <h3 className="uk-card-title">Select {selectedTier.toUpperCase()} Giveaway:</h3> */}
                     <div className="giveaway-grid">
-                      {giveawayConfig[selectedTier].map((giveaway) => (
+                      {(giveawayConfig[selectedTier] || []).map((giveaway) => (
                         <div
                           key={giveaway.id}
                           className={ `giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''}`}
@@ -915,7 +940,7 @@ const LuckyDraw = () => {
               <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body participants-card">
                   <h3 className="uk-card-title">Eligible Participants</h3>
-                  <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name}</p>
+                  <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier]?.find(g => g.id === selectedGiveaway)?.name}</p>
                   
                   {/* Search Input */}
                   <div className="uk-margin" style={{ marginBottom: '20px' }}>
@@ -1018,7 +1043,7 @@ const LuckyDraw = () => {
               <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body draw-card">
                   <h3 className="uk-card-title">
-                    {giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} Draw
+                    {giveawayConfig[selectedTier]?.find(g => g.id === selectedGiveaway)?.name} Draw
                   </h3>
                   
                   <div className="draw-wheel-container">
@@ -1076,7 +1101,7 @@ const LuckyDraw = () => {
               <div className="uk-card uk-card-default uk-card-body history-card">
                 <div className="uk-flex uk-flex-between uk-flex-middle">
                   <h3 className="uk-card-title">Draw History</h3>
-                  {drawHistory.length > 0 && (
+                  {winnersData.length > 0 && (
                     <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
                       <CSVLink
                         data={csvData}
@@ -1087,17 +1112,20 @@ const LuckyDraw = () => {
                       >
                         📊 Export CSV
                       </CSVLink>
-                      <button 
-                        className="uk-button uk-button-danger uk-button-small"
-                        onClick={clearHistory}
-                      >
-                        Clear History
-                      </button>
+
+                      {role === 'admin' && (
+                        <button 
+                          className="uk-button uk-button-danger uk-button-small"
+                          onClick={clearHistory}
+                        >
+                          Clear History
+                        </button>
+                      )}
                     </div>
                   )}
                 </div>
                 
-                {drawHistory.length === 0 ? (
+                {winnersData?.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No draws conducted yet</p>
                 ) : (
                   <div className="uk-overflow-auto">
@@ -1114,18 +1142,18 @@ const LuckyDraw = () => {
                         </tr>
                       </thead>
                       <tbody>
-                        {drawHistory.map((entry) => (
-                          <tr key={entry.id} className="uk-text-center">
-                            <td>{entry.date}</td>
-                            <td>{entry.winner.cust_name || entry.winner.customerName}</td>
-                            <td>{entry.winner.cust_cd || entry.winner.customerCode}</td>
-                            <td>{entry.giveaway?.icon} {entry.giveaway?.name}</td>
+                        {winnersData?.map((entry) => (
+                          <tr key={entry?.id} className="uk-text-center">
+                            <td>{entry?.wonDate}</td>
+                            <td>{entry?.customerName}</td>
+                            <td>{entry?.customerCode}</td>
+                            <td>{entry?.wonGiveaway}</td>
                             <td>
-                              <span className={`tier-badge tier-${entry.tier}`}>
-                                {entry?.tier?.toUpperCase()}
+                              <span className={`tier-badge tier-${entry?.wonTier}`}>
+                                {entry?.wonTier?.toUpperCase()}
                               </span>
                             </td>
-                            <td>{entry.winner.GeoData?.[0]?.Region || entry.winner.Region} - {entry.winner.GeoData?.[0]?.ZoneDesc || entry.winner.ZONE}</td>
+                            <td>{entry?.region || '-'} - {entry?.zone || '-'}</td>
                             {/* <td>{entry.totalParticipants}</td> */}
                           </tr>
                         ))}

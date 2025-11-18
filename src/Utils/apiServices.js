@@ -113,10 +113,17 @@ export async function apiGet(endPoint, onSuccess, onFailure, custom ,params) {
  */
 export async function apiGetasync(endpoint) {
   try {
+    let token = await jwt();
     // Handle both string and object parameters
     const url = typeof endpoint === 'string' ? endpoint : endpoint.endPoint;
     
-    const response = await axios.get(url);
+    const response = await axios.get(url , {
+      headers: {
+        Authorization: `Bearer ${token}`,
+        // "Access-Control-Allow-Origin": "*",
+        // "Content-Type": "application/json",
+      },
+    });
     return response.data;
   } catch (error) {
     // Handle authentication errors

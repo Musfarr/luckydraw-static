@@ -13,8 +13,8 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const Login = () => {
   const navigate = useNavigate();
   const { auth } = useAuth();
-  if(auth?.token && auth?.user?.user_type){
-   const route = auth.user.user_type === "admin" ? "/home" : "/dashboard";
+  if(auth?.token && auth?.role){
+   const route = auth.role === "admin" ? "/home" : "/dashboard";
        navigate(route);
   }
   
@@ -45,15 +45,15 @@ const Login = () => {
       try {
         const response = await axios({
           method: "POST",
-          url: `${baseUrl}/auth/login`,
+          url: `${baseUrl}/login`,
           data: {
-            username: user.email,
+            email: user.email,
             password: user.password,
           },
         });
-
+        console.log(response.data , 'response');
         if (response.status === 200) {
-          const { token, user: userData } = response.data.data;
+          const { token, userData } = response.data;
 
           localStorage.setItem("token", token);
           localStorage.setItem("user", JSON.stringify(userData));
@@ -66,7 +66,7 @@ const Login = () => {
 
           // Use React Router navigation instead of window.location
           setTimeout(() => {
-            const route = userData.user_type === "admin" ? "/home" : "/dashboard";
+            const route = userData?.role === "admin" ? "/home" : "/home";
             window.location.href = route;
           }, 1000);
 
