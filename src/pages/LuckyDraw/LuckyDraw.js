@@ -524,7 +524,7 @@ const LuckyDraw = () => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, 2000);
   };
 
  
@@ -582,7 +582,7 @@ const LuckyDraw = () => {
     } else if (tier === 'Silver') {
       // Silver: disable Zone and Region
       setSelectedZone('');
-      setSelectedRegion('');
+      // setSelectedRegion('');
     }
     setEligibleParticipants([]);
   };
@@ -894,7 +894,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedRegion} 
                           onChange={(e) => handleRegionChange(e.target.value)}
-                          disabled={selectedTier === 'Platinum' || selectedTier === 'Silver'}
+                          disabled={selectedTier === 'Platinum' }
                         >
                           <option value="" disabled>Select Region</option>
                           {getUniqueRegions().map(region => (
@@ -1149,7 +1149,7 @@ const LuckyDraw = () => {
                           <th className="uk-text-center">Customer Code</th>
                           <th className="uk-text-center">Giveaway</th>
                           <th className="uk-text-center">Tier</th>
-                          <th className="uk-text-center">Region</th>
+                          <th className="uk-text-center">Region - Zone - Area</th>
                           {/* <th>Participants</th> */}
                         </tr>
                       </thead>
@@ -1161,11 +1161,11 @@ const LuckyDraw = () => {
                             <td>{entry?.customerCode}</td>
                             <td>{entry?.wonGiveaway}</td>
                             <td>
-                              <span className={`tier-badge tier-${entry?.wonTier}`}>
+                              <span className={`tier-badge tier-${entry?.wonTier.toLowerCase()}`}>
                                 {entry?.wonTier?.toUpperCase()}
                               </span>
                             </td>
-                            <td>{entry?.region || '-'} - {entry?.zone || '-'}</td>
+                            <td>{entry?.region || '-'} - {entry?.zone || '-'} - {entry?.area || '-'}</td>
                             {/* <td>{entry.totalParticipants}</td> */}
                           </tr>
                         ))}
