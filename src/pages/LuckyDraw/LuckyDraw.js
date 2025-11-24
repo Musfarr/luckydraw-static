@@ -394,7 +394,7 @@ const LuckyDraw = () => {
     setCurrentPage(1);
   }, [selectedTier, selectedGiveaway, selectedZone, selectedRegion, selectedArea, searchQuery]);
 
-  const startLuckyDraw = () => {
+  const startLuckyDraw = async () => {
     if (!selectedGiveaway) {
       Swal.fire({
         title: 'Select Giveaway',
@@ -402,6 +402,18 @@ const LuckyDraw = () => {
         icon: 'warning',
         confirmButtonText: 'OK'
       });
+      return;
+    }
+
+    try {
+     await refetchWinnersData(); 
+    } catch (error) {
+       Swal.fire({
+      title: 'Sync Error',
+      text: 'Failed to sync winner data. Please try again.',
+      icon: 'error',
+      confirmButtonText: 'OK'
+    });
       return;
     }
 
