@@ -96,7 +96,6 @@ const LuckyDraw = () => {
     // staleTime: 30 * 60 * 1000, // 30 minutes
     // cacheTime: 60 * 60 * 1000, // 1 hour
   });
-  console.log(role , "role")
 
   const confettiOptions = {
     loop: true,
@@ -434,7 +433,7 @@ const LuckyDraw = () => {
     if (selectedGiveaway === 'car') {
       drawPoolParticipants = participants.filter(p => {
         const platinumEntries = p.entry_count?.platinum || 0;
-        return platinumEntries >= 66;
+        return platinumEntries >= 17;
       });
       
       // Check if any participants qualify for the draw
@@ -448,7 +447,6 @@ const LuckyDraw = () => {
         return;
       }
       
-      console.log(`Car giveaway: ${drawPoolParticipants.length} out of ${participants.length} participants qualify with 66+ platinum entries`);
     }
     
     // Create weighted pool based on entries
