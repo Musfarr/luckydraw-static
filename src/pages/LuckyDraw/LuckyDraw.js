@@ -876,7 +876,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedZone} 
                           onChange={(e) => handleZoneChange(e.target.value)}
-                          disabled={selectedTier === 'Gold' || selectedTier === 'Silver'}
+                          // disabled={selectedTier === 'Gold' || selectedTier === 'Silver'}
                         >
                           <option value="" disabled>Select Zone</option>
                           {getUniqueZones().map(zone => (
