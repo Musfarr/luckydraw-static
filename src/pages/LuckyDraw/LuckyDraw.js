@@ -68,6 +68,9 @@ const LuckyDraw = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [searchQuery, setSearchQuery] = useState('');
   const itemsPerPage = 30;
+  const [historyCurrentPage, setHistoryCurrentPage] = useState(1);
+  const [historySearchQuery, setHistorySearchQuery] = useState('');
+  const historyItemsPerPage = 50;
 
 
   // Fetch dashboard data from API (fetch all data for lucky draw)
@@ -87,6 +90,7 @@ const LuckyDraw = () => {
 
   const data = dashboardData?.data; // This is now a flat array of all customers
   const role =  auth?.user?.role;
+  const name = auth?.user?.name || '';
 
   const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
     queryKey: ['winnerData'],
@@ -148,6 +152,13 @@ const LuckyDraw = () => {
     const allCustomers = data;
     let zones = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.ZoneDesc).filter(Boolean))];
     
+    // Filter zones based on user role
+    if (name === 'South') {
+      zones = zones.filter(zone => zone.toLowerCase() === 'south');
+    } else if (name === 'North') {
+      zones = zones.filter(zone => zone.toLowerCase() === 'north');
+    }
+    
     // Filter out zones that have reached limits for selected giveaway
     if (selectedGiveaway) {
       const giveaway = Object.values(giveawayConfig)
@@ -165,7 +176,7 @@ const LuckyDraw = () => {
     }
     
     return zones.sort();
-  }, [data, selectedGiveaway, winnersData]);
+  }, [data, selectedGiveaway, winnersData, role]);
 
   // Auto-clear selectedZone if it's no longer in the available zones list
   useEffect(() => {
@@ -392,6 +403,30 @@ const LuckyDraw = () => {
   useEffect(() => {
     setCurrentPage(1);
   }, [selectedTier, selectedGiveaway, selectedZone, selectedRegion, selectedArea, searchQuery]);
+
+  // Filter and paginate history data
+  const filteredHistoryData = useMemo(() => {
+    if (!winnersData || winnersData.length === 0) return [];
+    
+    if (!historySearchQuery.trim()) return winnersData;
+    
+    const query = historySearchQuery.toLowerCase().trim();
+    return winnersData.filter(entry => {
+      const customerCode = (entry.customerCode || '').toLowerCase();
+      const giveaway = (entry.wonGiveaway || '').toLowerCase();
+      return customerCode.includes(query) || giveaway.includes(query);
+    });
+  }, [winnersData, historySearchQuery]);
+
+  const historyTotalPages = Math.ceil(filteredHistoryData.length / historyItemsPerPage);
+  const historyStartIndex = (historyCurrentPage - 1) * historyItemsPerPage;
+  const historyEndIndex = historyStartIndex + historyItemsPerPage;
+  const paginatedHistoryData = filteredHistoryData.slice(historyStartIndex, historyEndIndex);
+
+  // Reset history page when search changes
+  useEffect(() => {
+    setHistoryCurrentPage(1);
+  }, [historySearchQuery]);
 
   const startLuckyDraw = async () => {
     if (!selectedGiveaway) {
@@ -621,17 +656,16 @@ const LuckyDraw = () => {
   };
 
   // Prepare CSV data for export
-  const csvData = drawHistory.map((entry, index) => ({
+  const csvData = (winnersData || []).map((entry, index) => ({
     'S.No': index + 1,
-    'Date & Time': entry.date,
-    'Winner Name': entry.winner.cust_name || entry.winner.customerName,
-    'Customer Code': entry.winner.cust_cd || entry.winner.customerCode,
-    'Giveaway': entry.giveaway?.name,
-    'Tier': entry.tier,
-    'Region': entry.winner.GeoData?.[0]?.Region || entry.winner.Region,
-    'Zone': entry.winner.GeoData?.[0]?.ZoneDesc || entry.winner.ZONE,
-    'Area': entry.winner.GeoData?.[0]?.Area || entry.winner.AREA,
-    'Total Participants': entry.totalParticipants
+    'Date & Time': entry.wonDate,
+    'Winner Name': entry.customerName,
+    'Customer Code': entry.customerCode,
+    'Giveaway': entry.wonGiveaway,
+    'Tier': entry.wonTier,
+    'Region': entry.region || '-',
+    'Zone': entry.zone || '-',
+    'Area': entry.area || '-'
   }));
 
   const csvHeaders = [
@@ -643,8 +677,7 @@ const LuckyDraw = () => {
     { label: 'Tier', key: 'Tier' },
     { label: 'Region', key: 'Region' },
     { label: 'Zone', key: 'Zone' },
-    { label: 'Area', key: 'Area' },
-    { label: 'Total Participants', key: 'Total Participants' }
+    { label: 'Area', key: 'Area' }
   ];
 
   if (dashboardLoading) {
@@ -1109,7 +1142,7 @@ const LuckyDraw = () => {
             {/* Draw History */}
             <div className="uk-width-1-1" style={{paddingLeft: '15px'}}>
               <div className="uk-card uk-card-default uk-card-body history-card">
-                <div className="uk-flex uk-flex-between uk-flex-middle">
+                <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
                   <h3 className="uk-card-title">Draw History</h3>
                   {winnersData.length > 0 && (
                     <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
@@ -1134,42 +1167,96 @@ const LuckyDraw = () => {
                     </div>
                   )}
                 </div>
+
+                {winnersData?.length > 0 && (
+                  <div className="uk-margin-bottom">
+                    <input
+                      type="text"
+                      className="uk-input"
+                      placeholder="Search by Customer Code or Giveaway..."
+                      value={historySearchQuery}
+                      onChange={(e) => setHistorySearchQuery(e.target.value)}
+                      style={{maxWidth: '400px'}}
+                    />
+                    <div className="uk-margin-small-top uk-text-small uk-text-muted">
+                      Showing {paginatedHistoryData.length} of {filteredHistoryData.length} results
+                    </div>
+                  </div>
+                )}
                 
                 {winnersData?.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No draws conducted yet</p>
+                ) : filteredHistoryData.length === 0 ? (
+                  <p className="uk-text-center uk-text-muted">No results found for "{historySearchQuery}"</p>
                 ) : (
-                  <div className="uk-overflow-auto">
-                    <table className="uk-table uk-table-small uk-table-divider uk-table-hover">
-                      <thead>
-                        <tr className="uk-text-center">
-                          <th className="uk-text-center">Date & Time</th>
-                          <th className="uk-text-center">Winner</th>
-                          <th className="uk-text-center">Customer Code</th>
-                          <th className="uk-text-center">Giveaway</th>
-                          <th className="uk-text-center">Tier</th>
-                          <th className="uk-text-center">Region - Zone - Area</th>
-                          {/* <th>Participants</th> */}
-                        </tr>
-                      </thead>
-                      <tbody>
-                        {winnersData?.map((entry) => (
-                          <tr key={entry?.id} className="uk-text-center">
-                            <td>{entry?.wonDate}</td>
-                            <td>{entry?.customerName}</td>
-                            <td>{entry?.customerCode}</td>
-                            <td>{entry?.wonGiveaway}</td>
-                            <td>
-                              <span className={`tier-badge tier-${entry?.wonTier.toLowerCase()}`}>
-                                {entry?.wonTier?.toUpperCase()}
-                              </span>
-                            </td>
-                            <td>{entry?.region || '-'} - {entry?.zone || '-'} - {entry?.area || '-'}</td>
-                            {/* <td>{entry.totalParticipants}</td> */}
+                  <>
+                    <div className="uk-overflow-auto">
+                      <table className="uk-table uk-table-small uk-table-divider uk-table-hover">
+                        <thead>
+                          <tr className="uk-text-center">
+                            <th className="uk-text-center">Date & Time</th>
+                            <th className="uk-text-center">Winner</th>
+                            <th className="uk-text-center">Customer Code</th>
+                            <th className="uk-text-center">Giveaway</th>
+                            <th className="uk-text-center">Tier</th>
+                            <th className="uk-text-center">Region - Zone - Area</th>
                           </tr>
-                        ))}
-                      </tbody>
-                    </table>
-                  </div>
+                        </thead>
+                        <tbody>
+                          {paginatedHistoryData?.map((entry) => (
+                            <tr key={entry?.id} className="uk-text-center">
+                              <td>{entry?.wonDate}</td>
+                              <td>{entry?.customerName}</td>
+                              <td>{entry?.customerCode}</td>
+                              <td>{entry?.wonGiveaway}</td>
+                              <td>
+                                <span className={`tier-badge tier-${entry?.wonTier.toLowerCase()}`}>
+                                  {entry?.wonTier?.toUpperCase()}
+                                </span>
+                              </td>
+                              <td>{entry?.region || '-'} - {entry?.zone || '-'} - {entry?.area || '-'}</td>
+                            </tr>
+                          ))}
+                        </tbody>
+                      </table>
+                    </div>
+
+                    {historyTotalPages > 1 && (
+                      <div className="uk-flex uk-flex-center uk-flex-middle uk-margin-top" style={{gap: '10px'}}>
+                        <button
+                          className="uk-button uk-button-default uk-button-small"
+                          onClick={() => setHistoryCurrentPage(1)}
+                          disabled={historyCurrentPage === 1}
+                        >
+                          First
+                        </button>
+                        <button
+                          className="uk-button uk-button-default uk-button-small"
+                          onClick={() => setHistoryCurrentPage(prev => Math.max(1, prev - 1))}
+                          disabled={historyCurrentPage === 1}
+                        >
+                          Previous
+                        </button>
+                        <span className="uk-text-small">
+                          Page {historyCurrentPage} of {historyTotalPages}
+                        </span>
+                        <button
+                          className="uk-button uk-button-default uk-button-small"
+                          onClick={() => setHistoryCurrentPage(prev => Math.min(historyTotalPages, prev + 1))}
+                          disabled={historyCurrentPage === historyTotalPages}
+                        >
+                          Next
+                        </button>
+                        <button
+                          className="uk-button uk-button-default uk-button-small"
+                          onClick={() => setHistoryCurrentPage(historyTotalPages)}
+                          disabled={historyCurrentPage === historyTotalPages}
+                        >
+                          Last
+                        </button>
+                      </div>
+                    )}
+                  </>
                 )}
               </div>
             </div>
