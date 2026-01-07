@@ -465,6 +465,8 @@ const LuckyDraw = () => {
     
     // For car giveaway, filter draw pool to only include participants with at least 66 platinum entries
     let drawPoolParticipants = participants;
+
+
     if (selectedGiveaway === 'car') {
       drawPoolParticipants = participants.filter(p => {
         const platinumEntries = p.entry_count?.platinum || 0;
@@ -476,6 +478,25 @@ const LuckyDraw = () => {
         Swal.fire({
           title: 'No Qualified Participants',
           text: 'No participants qualified for the car giveaway',
+          icon: 'warning',
+          confirmButtonText: 'OK'
+        });
+        return;
+      }
+      
+    }
+
+    if (selectedGiveaway === 'gold_5_grams') {
+      drawPoolParticipants = participants.filter(p => {
+        const GoldEntries = p.total_amount > 300000;
+        return GoldEntries;
+      });
+      
+      // Check if any participants qualify for the draw
+      if (drawPoolParticipants.length === 0) {
+        Swal.fire({
+          title: 'No Qualified Participants',
+          text: 'No participants qualified for the Gold 5 grams giveaway',
           icon: 'warning',
           confirmButtonText: 'OK'
         });
@@ -941,7 +962,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedArea} 
                           onChange={(e) => handleAreaChange(e.target.value)}
-                          disabled={selectedTier === 'Platinum'}
+                          disabled={selectedTier === 'Platinum' || selectedGiveaway === 'gold_1_tola'}
                         >
                           <option value="" disabled>Select Area</option>
                           {getUniqueAreas().map(area => (
