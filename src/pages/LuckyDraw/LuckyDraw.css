@@ -1,7 +1,7 @@
 .lucky-draw-container {
   padding: 20px;
   /* Fixed gradient that won't change with page size */
-  background: linear-gradient(170deg, rgba(217, 233, 201, 1) 0%, rgba(106, 156, 81, 1) 100%);
+  background: linear-gradient(170deg, #ffffff 0%, rgb(229, 22, 145) 100%) ;
   background-attachment: fixed;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -10,7 +10,8 @@
 
 .newLayout {
   padding: 20px;
-  background: linear-gradient(170deg, rgba(217, 233, 201, 1) 0%, rgba(106, 156, 81, 1) 100%);
+  background: linear-gradient(170deg, #ffffff 0%, rgb(229, 22, 145) 100%);
+  /* background: linear-gradient(170deg, rgba(217, 233, 201, 1) 0%, rgba(106, 156, 81, 1) 100%); */
   background-attachment: fixed;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -68,7 +69,8 @@
 
 .draw-button {
   /* background: linear-gradient(174deg,rgb(145, 221, 176) 37%, rgba(247, 247, 242, 1) 100%); */
-  background: linear-gradient(135deg, #1B5E20, #478f31) ;
+  background: linear-gradient(135deg, #e2178d, #3f2729) ;
+  /* background: linear-gradient(135deg, #1B5E20, #478f31) ; */
   border: none;
   padding: 18px 50px;
   font-size: 1.2rem;
@@ -1596,7 +1598,7 @@
 
 /* Enhanced Button Styles */
 .draw-action-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #892a62, #e149a2);
   color: white;
   border: none;
   padding: 0.8rem 1.5rem;
@@ -1613,7 +1615,7 @@
 .draw-action-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 6px 12px rgba(16, 185, 129, 0.3);
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg, #960596, #b108db50);
 }
 
 .draw-action-btn:disabled {

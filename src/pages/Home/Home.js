@@ -4,13 +4,14 @@ import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
 import { useQuery } from "@tanstack/react-query";
-import lifeboylogo from "../../assets/images/lifeboylogo.png";
-import campaignlogo from "../../assets/images/campaignlogo.png";
+// import lifeboylogo from "../../assets/images/gllogo.png";
+// import campaignlogo from "../../assets/images/WINTERPLAN.png";
 import "../LuckyDraw/LuckyDraw.css";
 
 import yaris from "../../assets/images/yaris2x.png";
 import gold_1_tola from "../../assets/images/barr.png";
-import samsung_a06 from "../../assets/images/samsung.png";
+import samsung_a06 from "../../assets/images/tv.png";
+import daraz_gift_card from "../../assets/images/CARD.png";
 
 
 const Home = () => {
@@ -38,8 +39,8 @@ const Home = () => {
         limit: 100,
         ...(debouncedSearch && { search: debouncedSearch })
       });
-      // return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
-      return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 60 * 60 * 1000,
     cacheTime: 60 * 60 * 1000,
@@ -177,7 +178,7 @@ const Home = () => {
 
                       <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
+                          <img className="logo-image" src='assets/images/gllogo.png' alt="Winter Plan Logo" />
                         </div>
                         {data && data.length > 0 && (
                           <div className="uk-text-center">
@@ -190,7 +191,7 @@ const Home = () => {
                           </div>
                         )}
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
+                          <img className="logo-image" src='assets/images/WINTERPLAN.png' alt="Campaign Logo" />
                         </div>
                       </div>                        
 
@@ -222,9 +223,19 @@ const Home = () => {
                                       </div>
                                       
                                       <div className="tier-card-home tier-silver">
-                                        <div className="tier-icon"><img style={{width: '100px'}} src={samsung_a06} alt="Silver" /></div>
+                                        <div className="tier-icon"><img style={{width: '60px'}} src={samsung_a06} alt="Silver" /></div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">SILVER</h4>
+                                          <div className="tier-stats">
+                                            {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
+                                          </div>
+                                        </div>
+                                      </div>
+
+                                      <div className="tier-card-home tier-bronze">
+                                        <div className="tier-icon"><img style={{width: '60px'}} src={daraz_gift_card} alt="Bronze" /></div>
+                                        <div className="tier-content">
+                                          <h4 className="tier-name">Bronze</h4>
                                           <div className="tier-stats">
                                             {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
                                           </div>
@@ -269,23 +280,27 @@ const Home = () => {
                                           <th className={`sortable table-header-cell ${sortConfig.key==='platinum_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('platinum_entries')}>Platinum Entries</th>
                                           <th className={`sortable table-header-cell ${sortConfig.key==='gold_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('gold_entries')}>Gold Entries</th>
                                           <th className={`sortable table-header-cell ${sortConfig.key==='silver_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('silver_entries')}>Silver Entries</th>
+                                          <th className={`sortable table-header-cell ${sortConfig.key==='bronze_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('bronze_entries')}>Bronze Entries</th>
                                         </tr>
                                       </thead>
                                       <tbody>
                                         {getRows().map((customer, index) => (
                                           <tr key={customer._id || index} className="table-row">
-                                            <td className="table-cell">{customer.GeoData?.[0]?.Region || 'N/A'}</td>
-                                            <td className="table-cell">{customer.cust_name}</td>
-                                            <td className="table-cell-code">{customer.cust_cd}</td>
-                                            <td className="table-cell">{customer.total_amount?.toLocaleString() || 0}</td>
+                                            <td className="table-cell">{customer.Region || 'N/A'}</td>
+                                            <td className="table-cell">{customer["Customer Name"]}</td>
+                                            <td className="table-cell-code">{customer["Customer Code"]}</td>
+                                            <td className="table-cell">{customer["Total Amount"]?.toLocaleString() || 0}</td>
                                             <td className="table-cell-entries table-cell-entries-platinum">
-                                              <span className="entry-badge entry-badge-platinum">{customer.entry_count?.platinum || 0}</span>
+                                              <span className="entry-badge entry-badge-platinum">{customer.Platinum || 0}</span>
                                             </td>
                                             <td className="table-cell-entries table-cell-entries-gold">
-                                              <span className="entry-badge entry-badge-gold">{customer.entry_count?.gold || 0}</span>
+                                              <span className="entry-badge entry-badge-gold">{customer.Gold || 0}</span>
                                             </td>
                                             <td className="table-cell-entries table-cell-entries-silver">
-                                              <span className="entry-badge entry-badge-silver">{customer.entry_count?.silver || 0}</span>
+                                              <span className="entry-badge entry-badge-silver">{customer.Silver || 0}</span>
+                                            </td>
+                                            <td className="table-cell-entries table-cell-entries-bronze">
+                                              <span className="entry-badge entry-badge-bronze">{customer.Bronze || 0}</span>
                                             </td>
                                           </tr>
                                         ))}

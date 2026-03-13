@@ -21,6 +21,7 @@ import campaignlogo from "../../assets/images/campaignlogo.png";
 // silver assets
 
 import microwave_oven from "../../assets/images/microwave.png";
+import tv from "../../assets/images/tv.png";
 import samsung_a06 from "../../assets/images/samsung.png";
 import iron from "../../assets/images/iron2x.png";
 import food_factory from "../../assets/images/foodfactory.png";
@@ -30,21 +31,23 @@ import daraz_gift_card from "../../assets/images/CARD.png";
 import axios from "axios";
 
 const BASE_GIVEAWAY_CONFIG = {
+  Car: [
+    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' },
+  ],
   Platinum: [
-    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' }
+    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 4, limitType: 'region' },
+
   ],
   Gold: [
-    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '1 Per Region', limit: 1, limitType: 'region' },
-    { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '1 Per Area', limit: 1, limitType: 'area' }
+    { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '7 Per Region', limit: 7, limitType: 'region' }
   ],
   Silver: [
-    { id: 'microwave_oven', name: 'Microwave Oven', icon: '📱', description: '2 Per Area', limit: 2, limitType: 'area' },
-    { id: 'samsung_a06', name: 'Samsung A06', icon: '📱', description: '3 Per Area', limit: 3, limitType: 'area' },
-    { id: 'washing_machine', name: 'Washing Machine', icon: '🧺', description: '2 Per Area', limit: 2, limitType: 'area' },
-    { id: 'food_factory', name: 'Food Factory', icon: '🍳', description: '2 Per Area', limit: 2, limitType: 'area' },
-    { id: 'daraz_gift_card', name: 'Daraz 10K Gift Card', icon: '🎁', description: '5 Per Area', limit: 5, limitType: 'area' },
-    { id: 'iron', name: 'Iron', icon: '👔', description: '5 Per Area', limit: 5, limitType: 'area' },
-    { id: 'juicer', name: 'Juicer', icon: '🥤', description: '2 Per Area', limit: 2, limitType: 'area' }
+    { id: 'daraz_gift_card', name: 'Daraz 40K Gift Card', icon: '🎁', description: '9 Per Region', limit: 9, limitType: 'region' },
+    { id: 'tv', name: 'LED TV', icon: '📺', description: '5 Per Region', limit: 5, limitType: 'region' },
+    
+  ],
+  Bronze: [
+    { id: 'daraz_gift_card', name: 'Daraz 5K Gift Card', icon: '🎁', description: '90 Per Region', limit: 90, limitType: 'region' },
   ]
 };
 
@@ -81,8 +84,8 @@ const LuckyDraw = () => {
         // page: 1,
         // limit: 10000000 
       });
-      // return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
-      return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
+      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 30 * 60 * 1000, // 30 minutes
     cacheTime: 60 * 60 * 1000, // 1 hour
@@ -96,6 +99,7 @@ const LuckyDraw = () => {
     queryKey: ['winnerData'],
     queryFn: () => {
       return apiGetasync(`https://unilever.convexinteractive.com/api/winners-data`);
+
     },
     // staleTime: 30 * 60 * 1000, // 30 minutes
     // cacheTime: 60 * 60 * 1000, // 1 hour
@@ -121,10 +125,10 @@ const LuckyDraw = () => {
 
     // Giveaway configuration by tier with limits
   const giveawayConfig = useMemo(() => {
-    if (role === 'admin') {
+    if (role === 'car') {
       return BASE_GIVEAWAY_CONFIG;
     }
-    const { Platinum, ...rest } = BASE_GIVEAWAY_CONFIG;
+    const { Car, ...rest } = BASE_GIVEAWAY_CONFIG;
     return rest;
   }, [role]);
   
@@ -150,7 +154,7 @@ const LuckyDraw = () => {
   const uniqueZones = useMemo(() => {
     if (!data || !Array.isArray(data)) return [];
     const allCustomers = data;
-    let zones = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.ZoneDesc).filter(Boolean))];
+    let zones = [...new Set(allCustomers.map(c => c.ZoneDesc).filter(Boolean))];
     
     // Filter zones based on user role
     if (name === 'South') {
@@ -194,10 +198,10 @@ const LuckyDraw = () => {
     let allCustomers = data;
     
     if (selectedZone) {
-      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.ZoneDesc === selectedZone);
+      allCustomers = allCustomers.filter(c => c.ZoneDesc === selectedZone);
     }
     
-    let regions = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.Region).filter(Boolean))];
+    let regions = [...new Set(allCustomers.map(c => c.Region).filter(Boolean))];
     
     // Filter out regions that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -233,13 +237,13 @@ const LuckyDraw = () => {
     let allCustomers = data;
     
     if (selectedZone) {
-      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.ZoneDesc === selectedZone);
+      allCustomers = allCustomers.filter(c => c.ZoneDesc === selectedZone);
     }
     if (selectedRegion) {
-      allCustomers = allCustomers.filter(c => c.GeoData?.[0]?.Region === selectedRegion);
+      allCustomers = allCustomers.filter(c => c.Region === selectedRegion);
     }
     
-    let areas = [...new Set(allCustomers.map(c => c.GeoData?.[0]?.Area).filter(Boolean))];
+    let areas = [...new Set(allCustomers.map(c => c.Area).filter(Boolean))];
     
     // Filter out areas that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -307,11 +311,11 @@ const LuckyDraw = () => {
       
       // Check based on limit type
       if (giveaway.limitType === 'zone') {
-        return award.zone === customer.GeoData?.[0]?.ZoneDesc;
+        return award.zone === customer.ZoneDesc;
       } else if (giveaway.limitType === 'region') {
-        return award.region === customer.GeoData?.[0]?.Region;
+        return award.region === customer.Region;
       } else if (giveaway.limitType === 'area') {
-        return award.area === customer.GeoData?.[0]?.Area;
+        return award.area === customer.Area;
       }
       
       return false;
@@ -329,15 +333,15 @@ const LuckyDraw = () => {
     
     // Apply geographic filters
     if (selectedZone) {
-      participants = participants.filter(p => p.GeoData?.[0]?.ZoneDesc === selectedZone);
+      participants = participants.filter(p => p.ZoneDesc === selectedZone);
     }
     
     if (selectedRegion) {
-      participants = participants.filter(p => p.GeoData?.[0]?.Region === selectedRegion);
+      participants = participants.filter(p => p.Region === selectedRegion);
     }
     
     if (selectedArea) {
-      participants = participants.filter(p => p.GeoData?.[0]?.Area === selectedArea);
+      participants = participants.filter(p => p.Area === selectedArea);
     }
     
     // Filter by tier-specific entries > 0, exclusion status, and giveaway limits
@@ -355,11 +359,11 @@ const LuckyDraw = () => {
       // Check if they have entries for this tier
       let entries = 0;
       if (selectedTier === 'Platinum') {
-        entries = p.entry_count?.platinum || 0;
+        entries = p.Platinum || 0;
       } else if (selectedTier === 'Gold') {
-        entries = p.entry_count?.gold || 0;
+        entries = p.Gold || 0;
       } else if (selectedTier === 'Silver') {
-        entries = p.entry_count?.silver || 0;
+        entries = p.Silver || 0;
       }
       
       return entries > 0; // Only eligible if they have entries for this tier
@@ -369,11 +373,11 @@ const LuckyDraw = () => {
     return participants.map(p => {
       let entries = 0;
       if (selectedTier === 'Platinum') {
-        entries = p.entry_count?.platinum || 0;
+        entries = p.Platinum || 0;
       } else if (selectedTier === 'Gold') {
-        entries = p.entry_count?.gold || 0;
+        entries = p.Gold || 0;
       } else if (selectedTier === 'Silver') {
-        entries = p.entry_count?.silver || 0;
+        entries = p.Silver || 0;
       }
       return { ...p, drawEntries: entries };
     });
@@ -549,9 +553,9 @@ const LuckyDraw = () => {
         customerName: selectedWinner.cust_name,
         wonTier: selectedTier,
         wonGiveaway: giveaway.name,
-        zone: selectedWinner.GeoData?.[0]?.ZoneDesc,
-        region: selectedWinner.GeoData?.[0]?.Region,
-        area: selectedWinner.GeoData?.[0]?.Area,
+        zone: selectedWinner.ZoneDesc,
+        region: selectedWinner.Region,
+        area: selectedWinner.Area,
         giveawayId: selectedGiveaway,
         giveawayName: giveaway.name,
         wonDate: new Date().toLocaleString()
@@ -578,7 +582,7 @@ const LuckyDraw = () => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, 1000);
   };
 
  
@@ -783,16 +787,16 @@ const LuckyDraw = () => {
                         <div className="winner-details">
                           <div className="detail-row">
                             <span className="info-label">Region:</span>
-                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.Region || winnerData.winner.Region}</span>
+                            <span className="info-value">{winnerData.winner.Region || winnerData.winner.Region}</span>
                           </div>
                           <div className="detail-row">
                             <span className="info-label">Area:</span>
-                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.Area || winnerData.winner.AREA}</span>
+                            <span className="info-value">{winnerData.winner.Area || winnerData.winner.AREA}</span>
                           </div>
                           
                           <div className="detail-row">
                             <span className="info-label">Zone:</span>
-                            <span className="info-value">{winnerData.winner.GeoData?.[0]?.ZoneDesc || winnerData.winner.ZONE}</span>
+                            <span className="info-value">{winnerData.winner.ZoneDesc || winnerData.winner.ZONE}</span>
                           </div>
                           
                           
@@ -843,10 +847,10 @@ const LuckyDraw = () => {
             </div>
               <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src={lifeboylogo} alt="Lifeboy Logo" />
+                          <img className="logo-image" src='assets/images/gllogo.png' alt="Lifeboy Logo" />
                         </div>
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src={campaignlogo} alt="Campaign Logo" />
+                          <img className="logo-image" src="assets/images/WINTERPLAN.png" alt="Campaign Logo" />
                         </div>
                       </div>
 
@@ -924,7 +928,7 @@ const LuckyDraw = () => {
                     <div className="uk-grid uk-grid-small uk-margin-small-top" uk-grid="">
                       
                       {/* Zone Filter */}
-                      <div className="uk-width-1-3@m">
+                      {/* <div className="uk-width-1-3@m">
                         <label className="uk-form-label">Zone:</label>
                         <select 
                           className="uk-select" 
@@ -937,7 +941,7 @@ const LuckyDraw = () => {
                             <option key={zone} value={zone}>{zone}</option>
                           ))}
                         </select>
-                      </div>
+                      </div> */}
 
                       {/* Region Filter */}
                       <div className="uk-width-1-3@m">
@@ -956,7 +960,7 @@ const LuckyDraw = () => {
                       </div>
 
                       {/* Area Filter */}
-                      <div className="uk-width-1-3@m">
+                      {/* <div className="uk-width-1-3@m">
                         <label className="uk-form-label">Area:</label>
                         <select 
                           className="uk-select" 
@@ -969,7 +973,7 @@ const LuckyDraw = () => {
                             <option key={area} value={area}>{area}</option>
                           ))}
                         </select>
-                      </div>
+                      </div> */}
 
                       {/* Filter Summary and Clear Button */}
                       <div className="uk-width-1-1 uk-margin-small-top">
@@ -1117,6 +1121,7 @@ const LuckyDraw = () => {
                           className="prize-circle-image"
                           src={
                             selectedGiveaway === 'car' ? yaris :
+                            selectedGiveaway === 'tv' ? tv :
                             selectedGiveaway === 'gold_1_tola' ? gold_1_tola :
                             selectedGiveaway === 'gold_5_grams' ? coin :
                             selectedGiveaway === 'microwave_oven' ? microwave_oven :
