@@ -1,7 +1,7 @@
 .lucky-draw-container {
   padding: 20px;
   /* Fixed gradient that won't change with page size */
-  background: linear-gradient(170deg, #ffffff 0%, rgb(229, 22, 145) 100%) ;
+  background: linear-gradient(170deg, #ffffff 0%, rgb(229 22 145 / 68%) 100%) ;
   background-attachment: fixed;
   background-size: 100% 100%;
   background-repeat: no-repeat;
@@ -10,7 +10,7 @@
 
 .newLayout {
   padding: 20px;
-  background: linear-gradient(170deg, #ffffff 0%, rgb(229, 22, 145) 100%);
+  background: linear-gradient(170deg, #ffffff 0%, rgb(229 22 145 / 68%) 100%);
   /* background: linear-gradient(170deg, rgba(217, 233, 201, 1) 0%, rgba(106, 156, 81, 1) 100%); */
   background-attachment: fixed;
   background-size: 100% 100%;
@@ -751,7 +751,7 @@
 }
 
 .draw-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #10b981,#e2178d);
   border: none;
   padding: 18px 50px;
   font-size: 1.2rem;
@@ -765,7 +765,7 @@
 }
 
 .draw-btn:hover {
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg,#e2178d, #047857);
   transform: translateY(-3px);
   box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
 }
@@ -977,7 +977,7 @@
 
 /* Prize Won Section - Enhanced Prominence */
 .prize-won {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #10b981,#e2178d);
   border: 3px solid #047857;
   border-radius: 20px;
   padding: 25px 30px;
@@ -1217,7 +1217,7 @@
 }
 
 .filter-summary strong {
-  color: #059669;
+  color:#e2178d;
   font-weight: 700;
   font-size: 1.1rem;
 }
@@ -1427,7 +1427,7 @@
   font-size: 1.8rem;
   font-weight: 600;
   margin-bottom: 1.5rem;
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #10b981,#e2178d);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -1472,7 +1472,7 @@
 }
 
 .winner-close-btn {
-  background: linear-gradient(135deg, #10b981, #059669);
+  background: linear-gradient(135deg, #10b981,#e2178d);
   color: white;
   border: none;
   padding: 1rem 2rem;
@@ -1487,7 +1487,7 @@
 .winner-close-btn:hover {
   transform: translateY(-2px);
   box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4);
-  background: linear-gradient(135deg, #059669, #047857);
+  background: linear-gradient(135deg,#e2178d, #047857);
 }
 
 /* Prize Circle Styles */

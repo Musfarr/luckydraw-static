@@ -32,7 +32,7 @@ import axios from "axios";
 
 const BASE_GIVEAWAY_CONFIG = {
   Car: [
-    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Per Zone', limit: 1, limitType: 'zone' },
+    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Winner Total', limit: 1, limitType: 'global' },
   ],
   Platinum: [
     { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 4, limitType: 'region' },
@@ -126,11 +126,20 @@ const LuckyDraw = () => {
 
     // Giveaway configuration by tier with limits
   const giveawayConfig = useMemo(() => {
-    if (role === 'car') {
-      return BASE_GIVEAWAY_CONFIG;
-    }
+    
+    
     const { Car, ...rest } = BASE_GIVEAWAY_CONFIG;
-    return rest;
+
+    const Carconfig = {
+      Car
+    };
+
+    const restconfig = { ...rest };
+
+    if (role !== 'admin') {
+      return restconfig;
+    }
+      return Carconfig;
   }, [role]);
   
 
@@ -187,7 +196,7 @@ const LuckyDraw = () => {
   useEffect(() => {
     if (selectedZone && !uniqueZones.includes(selectedZone)) {
       setSelectedZone('');
-      setSelectedRegion('');
+      // setSelectedRegion('');
       setSelectedArea('');
     }
   }, [uniqueZones, selectedZone]);
@@ -226,7 +235,7 @@ const LuckyDraw = () => {
   // Auto-clear selectedRegion if it's no longer in the available regions list
   useEffect(() => {
     if (selectedRegion && !uniqueRegions.includes(selectedRegion)) {
-      setSelectedRegion('');
+      // setSelectedRegion('');
       setSelectedArea('');
     }
   }, [uniqueRegions, selectedRegion]);
@@ -311,7 +320,10 @@ const LuckyDraw = () => {
       if (award.giveawayId !== giveawayId) return false;
       
       // Check based on limit type
-      if (giveaway.limitType === 'zone') {
+      if (giveaway.limitType === 'global') {
+        // Global limit - count all winners regardless of location
+        return true;
+      } else if (giveaway.limitType === 'zone') {
         return award.zone === customer.ZoneDesc;
       } else if (giveaway.limitType === 'region') {
         return award.region === customer.Region;
@@ -333,17 +345,17 @@ const LuckyDraw = () => {
     let participants = getAllCustomers();
     
     // Apply geographic filters
-    if (selectedZone) {
-      participants = participants.filter(p => p.ZoneDesc === selectedZone);
-    }
+    // if (selectedZone) {
+    //   participants = participants.filter(p => p.ZoneDesc === selectedZone);
+    // }
     
-    if (selectedRegion) {
+    if (selectedRegion && selectedTier !== 'Car') {
       participants = participants.filter(p => p.Region === selectedRegion);
     }
     
-    if (selectedArea) {
-      participants = participants.filter(p => p.Area === selectedArea);
-    }
+    // if (selectedArea) {
+    //   participants = participants.filter(p => p.Area === selectedArea);
+    // }
     
     // Filter by tier-specific entries > 0, exclusion status, and giveaway limits
     participants = participants.filter(p => {
@@ -352,33 +364,45 @@ const LuckyDraw = () => {
         return false;
       }
       
-      // Check if giveaway limit is reached for this customer's area
+      // Check if giveaway limit is reached for this customer's area/region/global
       if (selectedGiveaway && isGiveawayLimitReached(selectedGiveaway, p)) {
         return false;
       }
       
       // Check if they have entries for this tier
+      // Car uses Platinum entries, others use their own tier entries
       let entries = 0;
-      if (selectedTier === 'Platinum') {
+      if (selectedTier === 'Car') {
+        entries = p.Platinum || 0;
+      } else if (selectedTier === 'Platinum') {
         entries = p.Platinum || 0;
       } else if (selectedTier === 'Gold') {
         entries = p.Gold || 0;
       } else if (selectedTier === 'Silver') {
         entries = p.Silver || 0;
+      }
+       else if (selectedTier === 'Bronze') {
+        entries = p.Bronze || 0;
       }
       
       return entries > 0; // Only eligible if they have entries for this tier
     });
     
     // Add drawEntries for weighted selection
+    // Car uses Platinum entries, others use their own tier entries
     return participants.map(p => {
       let entries = 0;
-      if (selectedTier === 'Platinum') {
+      if (selectedTier === 'Car') {
+        entries = p.Platinum || 0;
+      } else if (selectedTier === 'Platinum') {
         entries = p.Platinum || 0;
       } else if (selectedTier === 'Gold') {
         entries = p.Gold || 0;
       } else if (selectedTier === 'Silver') {
         entries = p.Silver || 0;
+      }
+       else if (selectedTier === 'Bronze') {
+        entries = p.Bronze || 0;
       }
       return { ...p, drawEntries: entries };
     });
@@ -472,43 +496,6 @@ const LuckyDraw = () => {
     let drawPoolParticipants = participants;
 
 
-    if (selectedGiveaway === 'car') {
-      drawPoolParticipants = participants.filter(p => {
-        const platinumEntries = p.entry_count?.platinum || 0;
-        return platinumEntries >= 17;
-      });
-      
-      // Check if any participants qualify for the draw
-      if (drawPoolParticipants.length === 0) {
-        Swal.fire({
-          title: 'No Qualified Participants',
-          text: 'No participants qualified for the car giveaway',
-          icon: 'warning',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-      
-    }
-
-    if (selectedGiveaway === 'gold_5_grams') {
-      drawPoolParticipants = participants.filter(p => {
-        const GoldEntries = p.total_amount > 300000;
-        return GoldEntries;
-      });
-      
-      // Check if any participants qualify for the draw
-      if (drawPoolParticipants.length === 0) {
-        Swal.fire({
-          title: 'No Qualified Participants',
-          text: 'No participants qualified for the Gold 5 grams giveaway',
-          icon: 'warning',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-      
-    }
     
     // Create weighted pool based on entries
     const weightedPool = [];
@@ -535,6 +522,7 @@ const LuckyDraw = () => {
       giveaway: giveaway,
       tier: selectedTier
     };
+
     
     // Show wheel modal
     setWinnerData(winnerInfo);
@@ -550,13 +538,13 @@ const LuckyDraw = () => {
       
       // Add winner to excluded list
       const excludedWinner = {
-        customerCode: selectedWinner.cust_cd,
-        customerName: selectedWinner.cust_name,
+        customerCode: selectedWinner['Customer Code'],
+        customerName: selectedWinner['Customer Name'],
         wonTier: selectedTier,
         wonGiveaway: giveaway.name,
-        zone: selectedWinner.ZoneDesc,
-        region: selectedWinner.Region,
-        area: selectedWinner.Area,
+        zone: selectedWinner['Zone Desc'],
+        region: selectedWinner['Region'],
+        area: selectedWinner['Area'],
         giveawayId: selectedGiveaway,
         giveawayName: giveaway.name,
         wonDate: new Date().toLocaleString()
@@ -633,7 +621,7 @@ const LuckyDraw = () => {
     // Clear disabled fields based on tier
     if (tier === 'Platinum') {
       // Platinum: disable Region and Area
-      setSelectedRegion('');
+      // setSelectedRegion('');
       setSelectedArea('');
     } else if (tier === 'Gold') {
       // Gold: disable Zone
@@ -675,7 +663,7 @@ const LuckyDraw = () => {
 
   const clearFilters = () => {
     setSelectedZone('');
-    setSelectedRegion('');
+    // setSelectedRegion('');
     setSelectedArea('');
     setWinner(null);
     setEligibleParticipants([]);
@@ -776,7 +764,7 @@ const LuckyDraw = () => {
                       </div>
                       <div className="winner-header">
                         <h2 className="winner-title">🎉 Congratulations!</h2>
-                        <h1 className="winner-name">{winnerData.winner.cust_name || winnerData.winner.customerName}</h1>
+                        <h1 className="winner-name">{winnerData.winner['Customer Name'] || winnerData.winner.customerName}</h1>
                       </div>
                       
                       <div className="prize-info">
@@ -795,15 +783,15 @@ const LuckyDraw = () => {
                             <span className="info-value">{winnerData.winner.Area || winnerData.winner.AREA}</span>
                           </div>
                           
-                          <div className="detail-row">
+                          {/* <div className="detail-row">
                             <span className="info-label">Zone:</span>
                             <span className="info-value">{winnerData.winner.ZoneDesc || winnerData.winner.ZONE}</span>
-                          </div>
+                          </div> */}
                           
                           
                           <div className="detail-row">
                             <span className="info-label">Customer Code:</span>
-                            <span className="info-value ">{winnerData.winner.cust_cd || winnerData.winner.customerCode}</span>
+                            <span className="info-value ">{winnerData.winner['Customer Code'] || winnerData.winner.customerCode}</span>
                           </div>
 
                           {/* <div className="detail-row">
@@ -872,7 +860,11 @@ const LuckyDraw = () => {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className="tier-icon">
-                        {tier === 'Platinum' ? <img style={{width: '100px'}} src={yaris} alt="Yaris" /> : tier === 'Gold' ? <img style={{width: '100px'}} src={gold_1_tola} alt="Gold" /> : <img style={{width: '100px'}} src={samsung_a06} alt="Silver" />}
+                        {tier === 'Car' ? <img style={{width: '150px'}} src={yaris} alt="Yaris" /> :
+                        tier === 'Platinum' ? <img style={{width: '150px'}} src={gold_1_tola} alt="Yaris" /> :
+                         tier === 'Gold' ? <img style={{width: '150px'}} src={coin} alt="Gold" /> :
+                         tier === 'Silver' ? <img style={{width: '80px'}} src={tv} alt="Gold" /> :
+                          <img style={{width: '150px'}} src={daraz_gift_card} alt="Silver" />}
                       </div>
                       <div className="tier-content">
                         <h4 className="tier-name">{tier.toUpperCase()}</h4>
@@ -907,6 +899,7 @@ const LuckyDraw = () => {
                              giveaway.id === 'juicer' ? juicer :
                              giveaway.id === 'washing_machine' ? washing_machine :
                              giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
+                             giveaway.id === 'tv' ? tv :
                              '/src/assets/images/gift.png'}
                           
                           
@@ -951,7 +944,7 @@ const LuckyDraw = () => {
                           className="uk-select" 
                           value={selectedRegion} 
                           onChange={(e) => handleRegionChange(e.target.value)}
-                          disabled={selectedTier === 'Platinum' }
+                          disabled={selectedTier === 'Car' }
                         >
                           <option value="" disabled>Select Region</option>
                           {getUniqueRegions().map(region => (
@@ -1226,7 +1219,7 @@ const LuckyDraw = () => {
                             <th className="uk-text-center">Customer Code</th>
                             <th className="uk-text-center">Giveaway</th>
                             <th className="uk-text-center">Tier</th>
-                            <th className="uk-text-center">Region - Zone - Area</th>
+                            <th className="uk-text-center">Region - Area</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1241,7 +1234,7 @@ const LuckyDraw = () => {
                                   {entry?.wonTier?.toUpperCase()}
                                 </span>
                               </td>
-                              <td>{entry?.region || '-'} - {entry?.zone || '-'} - {entry?.area || '-'}</td>
+                              <td>{entry?.region || '-'} - {entry?.area || '-'}</td>
                             </tr>
                           ))}
                         </tbody>
