@@ -51,6 +51,8 @@ const BASE_GIVEAWAY_CONFIG = {
   ]
 };
 
+const baseUrl = process.env.REACT_APP_BASEURL;
+
 const LuckyDraw = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
@@ -84,7 +86,7 @@ const LuckyDraw = () => {
         // page: 1,
         // limit: 10000000 
       });
-      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      return apiGetasync(`${baseUrl}/api/new-customer-data?${params}`);
       // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 30 * 60 * 1000, // 30 minutes
@@ -98,8 +100,7 @@ const LuckyDraw = () => {
   const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
     queryKey: ['winnerData'],
     queryFn: () => {
-      return apiGetasync(`https://unilever.convexinteractive.com/api/winners-data`);
-
+      return apiGetasync(`${baseUrl}/api/winners-data`);
     },
     // staleTime: 30 * 60 * 1000, // 30 minutes
     // cacheTime: 60 * 60 * 1000, // 1 hour
@@ -562,7 +563,7 @@ const LuckyDraw = () => {
       };
 
       try {
-        await axios.post(`https://unilever.convexinteractive.com/api/add-winner`, excludedWinner);
+        await axios.post(`${baseUrl}/api/add-winner`, excludedWinner);
         refetchWinnersData();
       }
       
@@ -599,7 +600,7 @@ const LuckyDraw = () => {
       if (result.isConfirmed) {
 
         try {
-          await axios.delete(`https://unilever.convexinteractive.com/api/clear-winners-data`);
+          await axios.delete(`${baseUrl}/api/clear-winners-data`);
           refetchWinnersData();
         } catch (error) {
           console.log(error);

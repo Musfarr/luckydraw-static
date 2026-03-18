@@ -45,8 +45,7 @@ const Login = () => {
       try {
         const response = await axios({
           method: "POST",
-          url: `https://localhost:8000/api/login`,
-          // url: `https://unilever.convexinteractive.com/api/login`,
+          url: `${baseUrl}/api/login`,
           data: {
             email: user.email,
             password: user.password,

@@ -14,6 +14,8 @@ import samsung_a06 from "../../assets/images/tv.png";
 import daraz_gift_card from "../../assets/images/CARD.png";
 
 
+const baseUrl = process.env.REACT_APP_BASEURL;
+
 const Home = () => {
   const navigate = useNavigate();
   const { distributorData, updateDistributorData } = useDistributorData();
@@ -39,7 +41,7 @@ const Home = () => {
         limit: 100,
         ...(debouncedSearch && { search: debouncedSearch })
       });
-      return apiGetasync(`http://localhost:8000/api/new-customer-data?${params}`);
+      return apiGetasync(`${baseUrl}/api/new-customer-data?${params}`);
       // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
     },
     staleTime: 60 * 60 * 1000,
