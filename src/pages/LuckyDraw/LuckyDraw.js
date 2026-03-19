@@ -159,7 +159,13 @@ const LuckyDraw = () => {
     }
   }, [giveawayConfig, selectedTier]);
 
-
+  useEffect(() => {
+    if (role !== 'admin' && name && selectedRegion !== name) {
+      setSelectedRegion(name);
+    }
+  }, [role, name, selectedRegion]);
+ 
+ 
   // Get available zones (excluding those that reached giveaway limits) - Memoized for performance
   const uniqueZones = useMemo(() => {
     if (!data || !Array.isArray(data)) return [];
@@ -234,11 +240,11 @@ const LuckyDraw = () => {
 
   // Auto-clear selectedRegion if it's no longer in the available regions list
   useEffect(() => {
-    if (selectedRegion && !uniqueRegions.includes(selectedRegion)) {
+    if (role === 'admin' && selectedRegion && !uniqueRegions.includes(selectedRegion)) {
       // setSelectedRegion('');
       setSelectedArea('');
     }
-  }, [uniqueRegions, selectedRegion]);
+  }, [role, uniqueRegions, selectedRegion]);
 
   const getUniqueRegions = () => uniqueRegions;
 
@@ -649,6 +655,10 @@ const LuckyDraw = () => {
   };
 
   const handleRegionChange = (region) => {
+    if (role !== 'admin') {
+      setSelectedRegion(name || '');
+      return;
+    }
     setSelectedRegion(region);
     setSelectedArea(''); // Reset area when region changes
     setWinner(null);
@@ -663,7 +673,11 @@ const LuckyDraw = () => {
 
   const clearFilters = () => {
     setSelectedZone('');
-    // setSelectedRegion('');
+    if (role === 'admin') {
+      setSelectedRegion('');
+    } else {
+      setSelectedRegion(name || '');
+    }
     setSelectedArea('');
     setWinner(null);
     setEligibleParticipants([]);
@@ -942,9 +956,9 @@ const LuckyDraw = () => {
                         <label className="uk-form-label">Region:</label>
                         <select 
                           className="uk-select" 
-                          value={selectedRegion} 
+                          value={role !== 'admin' && name ? name : selectedRegion} 
                           onChange={(e) => handleRegionChange(e.target.value)}
-                          disabled={selectedTier === 'Car' }
+                          disabled={selectedTier === 'Car' || role !== 'admin'}
                         >
                           <option value="" disabled>Select Region</option>
                           {getUniqueRegions().map(region => (
