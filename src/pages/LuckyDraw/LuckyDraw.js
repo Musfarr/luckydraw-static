@@ -304,13 +304,15 @@ const LuckyDraw = () => {
     
     if (!excludedEntry) return false;
     
-    // Hierarchical exclusion logic
-    const tierHierarchy = { 'Platinum': 3, 'Gold': 2, 'Silver': 1 };
-    const wonTierLevel = tierHierarchy[excludedEntry.wonTier];
-    const targetTierLevel = tierHierarchy[targetTier];
+    // // Hierarchical exclusion logic
+    // const tierHierarchy = {'Car' :4 , 'Platinum': 3, 'Gold': 2, 'Silver': 1 };
+    // const wonTierLevel = tierHierarchy[excludedEntry.wonTier];
+    // const targetTierLevel = tierHierarchy[targetTier];
     
-    // If they won a higher or equal tier, they're excluded from lower/equal tiers
-    return wonTierLevel >= targetTierLevel;
+    // // If they won a higher or equal tier, they're excluded from lower/equal tiers
+    // return wonTierLevel >= targetTierLevel;
+
+    return true;
   };
 
   // Check if giveaway limit is reached for a specific area
