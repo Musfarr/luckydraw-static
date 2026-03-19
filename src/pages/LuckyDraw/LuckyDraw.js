@@ -683,6 +683,12 @@ const LuckyDraw = () => {
     setEligibleParticipants([]);
   };
 
+  const displayedRegion = selectedTier === 'Car'
+    ? 'All Regions'
+    : (role !== 'admin' && name ? name : selectedRegion || 'All Regions');
+
+  const displayedParticipantsCount = filterParticipants().length;
+
   // Prepare CSV data for export
   const csvData = (winnersData || []).map((entry, index) => ({
     'S.No': index + 1,
@@ -934,69 +940,32 @@ const LuckyDraw = () => {
                   <div className="filter-section">
                     <h4>Filter Participants by Location:</h4>
                     <div className="uk-grid uk-grid-small uk-margin-small-top" uk-grid="">
-                      
-                      {/* Zone Filter */}
-                      {/* <div className="uk-width-1-3@m">
-                        <label className="uk-form-label">Zone:</label>
-                        <select 
-                          className="uk-select" 
-                          value={selectedZone} 
-                          onChange={(e) => handleZoneChange(e.target.value)}
-                          // disabled={selectedTier === 'Gold' || selectedTier === 'Silver'}
-                        >
-                          <option value="" disabled>Select Zone</option>
-                          {getUniqueZones().map(zone => (
-                            <option key={zone} value={zone}>{zone}</option>
-                          ))}
-                        </select>
-                      </div> */}
-
-                      {/* Region Filter */}
-                      <div className="uk-width-1-3@m">
-                        <label className="uk-form-label">Region:</label>
-                        <select 
-                          className="uk-select" 
-                          value={role !== 'admin' && name ? name : selectedRegion} 
-                          onChange={(e) => handleRegionChange(e.target.value)}
-                          disabled={selectedTier === 'Car' || role !== 'admin'}
-                        >
-                          <option value="" disabled>Select Region</option>
-                          {getUniqueRegions().map(region => (
-                            <option key={region} value={region}>{region}</option>
-                          ))}
-                        </select>
-                      </div>
-
-                      {/* Area Filter */}
-                      {/* <div className="uk-width-1-3@m">
-                        <label className="uk-form-label">Area:</label>
-                        <select 
-                          className="uk-select" 
-                          value={selectedArea} 
-                          onChange={(e) => handleAreaChange(e.target.value)}
-                          disabled={selectedTier === 'Platinum' || selectedGiveaway === 'gold_1_tola'}
-                        >
-                          <option value="" disabled>Select Area</option>
-                          {getUniqueAreas().map(area => (
-                            <option key={area} value={area}>{area}</option>
-                          ))}
-                        </select>
-                      </div> */}
-
-                      {/* Filter Summary and Clear Button */}
                       <div className="uk-width-1-1 uk-margin-small-top">
-                        <div className="uk-flex uk-flex-between uk-flex-middle">
-                          <div className="filter-summary">
+                        <div className="uk-card uk-card-default uk-card-body " style={{ borderRadius:'20px' }} >
+                          <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{ gap: '16px' }}>
+                            <div>
+                              <div className="uk-text-meta">Draw Region</div>
+                              <div style={{ fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
+                                {displayedRegion}
+                              </div>
+                            </div>
+                            <div style={{ textAlign: 'right' }}>
+                              <div className="uk-text-meta">Eligible Participants</div>
+                              <div style={{ fontSize: '32px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
+                                {displayedParticipantsCount}
+                              </div>
+                            </div>
+                          </div>
+                          <div className="filter-summary uk-margin-small-top">
                             <span className="uk-text-small uk-text-muted">
-                              Eligible Participants: <strong>{filterParticipants().length}</strong>
                               {selectedZone && <span className="filter-tag">Zone: {selectedZone}</span>}
-                              {selectedRegion && <span className="filter-tag">Region: {selectedRegion}</span>}
+                              {displayedRegion && <span className="filter-tag">Region: {displayedRegion}</span>}
                               {selectedArea && <span className="filter-tag">Area: {selectedArea}</span>}
                             </span>
                           </div>
-                          {(selectedZone || selectedRegion || selectedArea) && (
+                          {(selectedZone || (role === 'admin' && selectedRegion) || selectedArea) && (
                             <button 
-                              className="uk-button uk-button-secondary uk-button-small"
+                              className="uk-button uk-button-secondary uk-button-small uk-margin-small-top"
                               onClick={clearFilters}
                             >
                               Clear Filters
