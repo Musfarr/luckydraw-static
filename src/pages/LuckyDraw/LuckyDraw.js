@@ -579,7 +579,7 @@ const LuckyDraw = () => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 1000);
+    }, 10000);
   };
 
  
