@@ -436,6 +436,9 @@ const LuckyDraw = () => {
   const endIndex = startIndex + itemsPerPage;
   const paginatedParticipants = searchFilteredParticipants.slice(startIndex, endIndex);
 
+
+
+  console.log(paginatedParticipants , " paginatedParticipants")
   // Reset to page 1 when filters or search changes
   useEffect(() => {
     setCurrentPage(1);
@@ -579,7 +582,7 @@ const LuckyDraw = () => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, 1000);
   };
 
  
@@ -1038,8 +1041,8 @@ const LuckyDraw = () => {
                     {paginatedParticipants.map((participant, index) => (
                       <div key={participant.cust_cd || participant.customerCode || index} className="participant-item">
                         <div className="participant-info">
-                          <h5>{participant.cust_name || participant.customerName}</h5>
-                          <p><strong>Customer Code:</strong> {participant.cust_cd || participant.customerCode}</p>
+                          <h5>{participant.cust_name || participant["Customer Name"]}</h5>
+                          <p><strong>Customer Code:</strong> {participant['Customer Code'] || participant.customerCode}</p>
                           <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
                         </div>
                         <span className={`tier-badge tier-${selectedTier}`}>
