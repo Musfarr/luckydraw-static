@@ -3,6 +3,7 @@ import { useDistributorData } from "../../Context/DistributorDataProvider";
 import { apiGetasync } from "../../Utils/apiServices";
 import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../../Context/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
 // import lifeboylogo from "../../assets/images/gllogo.png";
 // import campaignlogo from "../../assets/images/WINTERPLAN.png";
@@ -18,6 +19,7 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 
 const Home = () => {
   const navigate = useNavigate();
+  const { auth, setAuth } = useAuth();
   const { distributorData, updateDistributorData } = useDistributorData();
   const [sortConfig, setSortConfig] = useState({ key: "total_amount", dir: "desc" });
   const [searchQuery, setSearchQuery] = useState("");
@@ -102,12 +104,6 @@ const Home = () => {
     return applySort(data || []);
   };
 
-  const handleSort = (key) => {
-    setSortConfig((prev) => {
-      const dir = prev.key === key && prev.dir === "asc" ? "desc" : "asc";
-      return { key, dir };
-    });
-  };
 
   // Calculate total entry counts from current page data
   const totalCounts = data?.reduce((acc, customer) => {
@@ -173,6 +169,22 @@ const Home = () => {
       ) : (
             <div className="newLayout">
               <div className="uk-container uk-container-large" style={{paddingBottom: '50px'}}>
+
+                <div className="lucky-draw-header-actions uk-width-1-1">
+              {/* <button className="header-action-btn" onClick={() => navigate(-1)}>
+                ← Back
+              </button> */}
+              <button
+                className="header-action-btn logout"
+                onClick={() => {
+                  localStorage.clear();
+                  setAuth({ token: null, user: {} });
+                  navigate('/');
+                }}
+              >
+                Logout
+              </button>
+            </div>
                 <div className="uk-grid uk-flex-middle uk-flex-baseline" uk-grid="">
                   <div className="uk-width-1-1 uk-margin-remove-top">
                     <div className="analyticsWhatsappContent analytics-content">
@@ -182,16 +194,26 @@ const Home = () => {
                         <div className="uk-margin-remove">
                           <img className="logo-image" src='assets/images/gllogo.png' alt="Winter Plan Logo" />
                         </div>
-                        {data && data.length > 0 && (
-                          <div className="uk-text-center">
+                        <div className="uk-flex uk-flex-center" style={{gap: '20px'}}>
+                          {data && data.length > 0 && (
                             <button 
                               onClick={() => navigate('/luckydraw')} 
                               className="draw-button"
                             >
                               🎲 Start Lucky Draw
                             </button>
-                          </div>
-                        )}
+                          )}
+                          {/* <button
+                            className="header-action-btn logout"
+                            onClick={() => {
+                              localStorage.clear();
+                              setAuth({ token: null, user: {} });
+                              navigate('/');
+                            }}
+                          >
+                            Logout
+                          </button> */}
+                        </div>
                         <div className="uk-margin-remove">
                           <img className="logo-image" src='assets/images/WINTERPLAN.png' alt="Campaign Logo" />
                         </div>
@@ -275,14 +297,14 @@ const Home = () => {
                                     <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                       <thead style={{position: 'sticky', top: 0, background: '#fff', zIndex: 10}}>
                                         <tr>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='region' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('region')}>Region</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='cust_name' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('cust_name')}>Outlet Name</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='cust_cd' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('cust_cd')}>Outlet Code</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='total_amount' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('total_amount')}>Total Amount</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='platinum_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('platinum_entries')}>Platinum Entries</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='gold_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('gold_entries')}>Gold Entries</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='silver_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('silver_entries')}>Silver Entries</th>
-                                          <th className={`sortable table-header-cell ${sortConfig.key==='bronze_entries' ? 'sorted-'+sortConfig.dir : ''}`} onClick={() => handleSort('bronze_entries')}>Bronze Entries</th>
+                                          <th className="table-header-cell">Region</th>
+                                          <th className="table-header-cell">Outlet Name</th>
+                                          <th className="table-header-cell">Outlet Code</th>
+                                          <th className="table-header-cell">Total Amount</th>
+                                          <th className="table-header-cell">Platinum Entries</th>
+                                          <th className="table-header-cell">Gold Entries</th>
+                                          <th className="table-header-cell">Silver Entries</th>
+                                          <th className="table-header-cell">Bronze Entries</th>
                                         </tr>
                                       </thead>
                                       <tbody>

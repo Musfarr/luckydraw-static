@@ -47,7 +47,7 @@ const BASE_GIVEAWAY_CONFIG = {
     
   ],
   Bronze: [
-    { id: 'daraz_gift_card', name: 'Daraz 5K Gift Card', icon: '🎁', description: '90 Per Region', limit: 90, limitType: 'region' },
+    { id: 'daraz_gift_card_5k', name: 'Daraz 5K Gift Card', icon: '🎁', description: '90 Per Region', limit: 90, limitType: 'region' },
   ]
 };
 
@@ -299,9 +299,16 @@ const LuckyDraw = () => {
   // Check if customer is excluded based on hierarchical rules
   const isCustomerExcluded = (customer, targetTier) => {
 
-    const customerCode = customer.cust_cd;   
-    const excludedEntry = winnersData.find(w => w.customerCode === customerCode);
+
+    const customerCode = customer['Customer Code'];   
+    const excludedEntry = winnersData?.find(w => w.customerCode  === customerCode);
     
+
+
+    // console.log(winnerData , "winderrdataata")
+    // console.log(customerCode , "asdasdsa" , excludedEntry)
+
+
     if (!excludedEntry) return false;
     
     // // Hierarchical exclusion logic
@@ -424,8 +431,8 @@ const LuckyDraw = () => {
     
     const query = searchQuery.toLowerCase().trim();
     return eligibleParticipantsList.filter(participant => {
-      const custName = (participant.cust_name || participant.customerName || '').toLowerCase();
-      const custCode = (participant.cust_cd || participant.customerCode || '').toLowerCase();
+      const custName = (participant["Customer Name"] || participant.customerName || '').toLowerCase();
+      const custCode = (participant["Customer Code"] || participant.customerCode || '').toLowerCase();
       return custName.includes(query) || custCode.includes(query);
     });
   }, [eligibleParticipantsList, searchQuery]);

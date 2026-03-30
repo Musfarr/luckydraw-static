@@ -34,8 +34,8 @@
 
 .header-action-btn {
   border: none;
-  border-radius: 999px;
-  padding: 10px 24px;
+  border-radius: 14px;
+  padding: 8px 20px;
   font-weight: 600;
   letter-spacing: 0.3px;
   cursor: pointer;

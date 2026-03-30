@@ -115,6 +115,7 @@ const Login = () => {
           </div>
 
           <div className="uk-width-1-3">
+            
             <div className="formwrp">
               <form onSubmit={handleLogin}>
                 <div className="loginHeading">
@@ -173,9 +174,9 @@ const Login = () => {
                       Password is Required
                     </div>
                   )}
-                  <div className="term-service-text">
+                  {/* <div className="term-service-text">
                     <a>Privacy Policy</a> and <a>Terms of Service</a> apply.
-                  </div>
+                  </div> */}
                   <div className="uk-width-1-1">
                     <div className="fbInstaBtn">
                     <div className="loginBtn">
