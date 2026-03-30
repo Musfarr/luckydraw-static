@@ -370,8 +370,7 @@ const Home = () => {
                                         </li>
                                       </ul>
 
-                                      <div className="uk-text-meta">
-                                        {/* Jump to page */}
+                                      {/* <div className="uk-text-meta">
                                         <span style={{marginRight: '8px'}}>Go to:</span>
                                         <input 
                                           type="number" 
@@ -387,7 +386,7 @@ const Home = () => {
                                           className="uk-input"
                                           style={{width: '70px', display: 'inline-block', padding: '5px', textAlign: 'center'}}
                                         />
-                                      </div>
+                                      </div> */}
                                     </div>
                                   </div>
                                 )}
