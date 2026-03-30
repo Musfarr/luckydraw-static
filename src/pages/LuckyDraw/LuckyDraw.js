@@ -35,7 +35,7 @@ const BASE_GIVEAWAY_CONFIG = {
     { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Winner Total', limit: 1, limitType: 'global' },
   ],
   Platinum: [
-    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 4, limitType: 'region' },
+    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 20, limitType: 'region' },
 
   ],
   Gold: [
@@ -789,6 +789,7 @@ const LuckyDraw = () => {
                             winnerData.giveaway.id === 'juicer' ? juicer :
                             winnerData.giveaway.id === 'washing_machine' ? washing_machine :
                             winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
+                            winnerData.giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
                             '/src/assets/images/gift.png'
                           }
                           alt={winnerData.giveaway.name} 
@@ -931,6 +932,7 @@ const LuckyDraw = () => {
                              giveaway.id === 'juicer' ? juicer :
                              giveaway.id === 'washing_machine' ? washing_machine :
                              giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
+                             giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
                              giveaway.id === 'tv' ? tv :
                              '/src/assets/images/gift.png'}
                           
@@ -1120,6 +1122,7 @@ const LuckyDraw = () => {
                             selectedGiveaway === 'juicer' ? juicer :
                             selectedGiveaway === 'washing_machine' ? washing_machine :
                             selectedGiveaway === 'daraz_gift_card' ? daraz_gift_card :
+                            selectedGiveaway === 'daraz_gift_card_5k' ? daraz_gift_card :
                             '/src/assets/images/gift.png'
                           }
                           alt={giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} 

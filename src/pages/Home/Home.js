@@ -35,7 +35,7 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError} = useQuery({
+  const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError, isFetching} = useQuery({
     queryKey: ['dashboardData', currentPage, debouncedSearch],
     queryFn: () => {
       const params = new URLSearchParams({
@@ -154,7 +154,7 @@ const Home = () => {
 
   return (
     <div className="boradcastWrp">
-      { dashboardLoading ? (
+      { dashboardLoading && !dashboardData && !isFetching ? (
         <Spinner />
       ) : dashboardError ? (
         <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
@@ -174,6 +174,7 @@ const Home = () => {
               {/* <button className="header-action-btn" onClick={() => navigate(-1)}>
                 ← Back
               </button> */}
+              <div></div>
               <button
                 className="header-action-btn logout"
                 onClick={() => {
@@ -313,7 +314,7 @@ const Home = () => {
                                             <td className="table-cell">{customer.Region || 'N/A'}</td>
                                             <td className="table-cell">{customer["Customer Name"]}</td>
                                             <td className="table-cell-code">{customer["Customer Code"]}</td>
-                                            <td className="table-cell">{customer["Total Amount"]?.toLocaleString() || 0}</td>
+                                            <td className="table-cell">{customer["Invoice - Value (GSV)"]?.toLocaleString() || 0}</td>
                                             <td className="table-cell-entries table-cell-entries-platinum">
                                               <span className="entry-badge entry-badge-platinum">{customer.Platinum || 0}</span>
                                             </td>
