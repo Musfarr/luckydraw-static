@@ -97,14 +97,14 @@ const LuckyDraw = () => {
   const role =  auth?.user?.role;
   const name = auth?.user?.name || '';
 
-  const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
-    queryKey: ['winnerData'],
-    queryFn: () => {
-      return apiGetasync(`${baseUrl}/api/winners-data`);
-    },
-    // staleTime: 30 * 60 * 1000, // 30 minutes
-    // cacheTime: 60 * 60 * 1000, // 1 hour
-  });
+    const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
+      queryKey: ['winnerData'],
+      queryFn: () => {
+        return apiGetasync(`${baseUrl}/api/winners-data`);
+      },
+      staleTime: 0, // 30 minutes
+      cacheTime: 0, // 1 hour
+    });
 
   const confettiOptions = {
     loop: true,
@@ -475,6 +475,30 @@ const LuckyDraw = () => {
     setHistoryCurrentPage(1);
   }, [historySearchQuery]);
 
+  const pickUniqueWeightedWinners = (participants, count) => {
+    const pool = [...participants];
+    const picked = [];
+
+    while (picked.length < count && pool.length > 0) {
+      const totalWeight = pool.reduce((sum, p) => sum + (p.drawEntries || 1), 0);
+      let random = Math.random() * totalWeight;
+      let selectedIndex = 0;
+
+      for (let i = 0; i < pool.length; i++) {
+        random -= pool[i].drawEntries || 1;
+        if (random <= 0) {
+          selectedIndex = i;
+          break;
+        }
+      }
+
+      picked.push(pool[selectedIndex]);
+      pool.splice(selectedIndex, 1);
+    }
+
+    return picked;
+  };
+
   const startLuckyDraw = async () => {
     if (!selectedGiveaway) {
       Swal.fire({
@@ -509,8 +533,66 @@ const LuckyDraw = () => {
       return;
     }
 
+    const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
+
+    if (selectedTier === 'Bronze' && selectedGiveaway === 'daraz_gift_card_5k') {
+      const drawCount = Math.min(90, participants.length);
+      const selectedWinners = pickUniqueWeightedWinners(participants, drawCount);
+
+      setEligibleParticipants(participants);
+      setIsSpinning(true);
+      setWinner(null);
+      setShowWheelModal(true);
+
+      setTimeout(async () => {
+        setShowWheelModal(false);
+
+        const winnerPayloads = selectedWinners.map((selectedWinner) => ({
+          customerCode: selectedWinner['Customer Code'],
+          customerName: selectedWinner['Customer Name'],
+          wonTier: selectedTier,
+          wonGiveaway: giveaway.name,
+          zone: selectedWinner['Zone Desc'],
+          region: selectedWinner['Region'],
+          area: selectedWinner['Area'],
+          giveawayId: selectedGiveaway,
+          giveawayName: giveaway.name,
+          wonDate: new Date().toLocaleString()
+        }));
+
+        const results = await Promise.allSettled(
+          winnerPayloads.map((payload) => axios.post(`${baseUrl}/api/add-winner`, payload))
+        );
+
+        const failedCount = results.filter((result) => result.status === 'rejected').length;
+
+        await refetchWinnersData();
+        setIsSpinning(false);
+
+        if (failedCount > 0) {
+          Swal.fire({
+            title: 'Partial Save Error',
+            text: `${drawCount - failedCount}/${drawCount} winners were saved. Please retry for remaining winners.`,
+            icon: 'warning',
+            confirmButtonText: 'OK'
+          });
+          return;
+        }
+
+        setWinnerData({
+          winners: selectedWinners,
+          giveaway,
+          tier: selectedTier,
+          isBulk: true
+        });
+        setWinner({ ...selectedWinners[0], giveaway });
+        setShowWinnerModal(true);
+      }, 1000);
+
+      return;
+    }
+
     
-    // For car giveaway, filter draw pool to only include participants with at least 66 platinum entries
     let drawPoolParticipants = participants;
 
 
@@ -532,7 +614,6 @@ const LuckyDraw = () => {
     // Show wheel modal first
     const randomIndex = Math.floor(Math.random() * weightedPool.length);
     const selectedWinner = weightedPool[randomIndex];
-    const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
     
     // Prepare winner data
     const winnerInfo = {
@@ -589,7 +670,7 @@ const LuckyDraw = () => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 1000);
+    }, 10000);
   };
 
  
@@ -775,71 +856,120 @@ const LuckyDraw = () => {
                   <Lottie options={confettiOptions} height={"100%"} width={"100%"} />
                   <div className="winner-info-overlay">
                     <div className="winner-announcement">
-                      <div className="giveaway-icon">
-                        <img 
-                          style={{width: '70%', objectFit: 'contain'}} 
-                          src={
-                            winnerData.giveaway.id === 'car' ? yaris :
-                            winnerData.giveaway.id === 'gold_1_tola' ? gold_1_tola :
-                            winnerData.giveaway.id === 'gold_5_grams' ? coin :
-                            winnerData.giveaway.id === 'microwave_oven' ? microwave_oven :
-                            winnerData.giveaway.id === 'samsung_a06' ? samsung_a06 :
-                            winnerData.giveaway.id === 'iron' ? iron :
-                            winnerData.giveaway.id === 'food_factory' ? food_factory :
-                            winnerData.giveaway.id === 'juicer' ? juicer :
-                            winnerData.giveaway.id === 'washing_machine' ? washing_machine :
-                            winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
-                            winnerData.giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
-                            '/src/assets/images/gift.png'
-                          }
-                          alt={winnerData.giveaway.name} 
-                        />
-                      </div>
-                      <div className="winner-header">
-                        <h2 className="winner-title">🎉 Congratulations!</h2>
-                        <h1 className="winner-name">{winnerData.winner['Customer Name'] || winnerData.winner.customerName}</h1>
-                      </div>
-                      
-                      <div className="prize-info">
-                        <div className="prize-won">
-                          <span className="info-label">Won:</span>
-                          <span className="info-value prize-name">{winnerData.giveaway.name}</span>
-                        </div>
-                        
-                        <div className="winner-details">
-                          <div className="detail-row">
-                            <span className="info-label">Region:</span>
-                            <span className="info-value">{winnerData.winner.Region || winnerData.winner.Region}</span>
+                      {winnerData.isBulk ? (
+                        <>
+                          <div className="giveaway-icon">
+                            <img 
+                              style={{width: '70%', objectFit: 'contain'}} 
+                              src={daraz_gift_card}
+                              alt={winnerData.giveaway.name} 
+                            />
                           </div>
-                          <div className="detail-row">
-                            <span className="info-label">Area:</span>
-                            <span className="info-value">{winnerData.winner.Area || winnerData.winner.AREA}</span>
-                          </div>
-                          
-                          {/* <div className="detail-row">
-                            <span className="info-label">Zone:</span>
-                            <span className="info-value">{winnerData.winner.ZoneDesc || winnerData.winner.ZONE}</span>
-                          </div> */}
-                          
-                          
-                          <div className="detail-row">
-                            <span className="info-label">Customer Code:</span>
-                            <span className="info-value ">{winnerData.winner['Customer Code'] || winnerData.winner.customerCode}</span>
+                          <div className="winner-header">
+                            <h2 className="winner-title">🎉 Bronze Bulk Draw Complete!</h2>
+                            <h1 className="winner-name">{winnerData.winners?.length || 0} Winners Selected</h1>
                           </div>
 
-                          {/* <div className="detail-row">
-                            <span className="info-label">Entries:</span>
-                            <span className="info-value entries-count">{winnerData.winner.drawEntries}</span>
-                          </div> */}
+                          <div className="prize-info" style={{width: '100%'}}>
+                            <div className="prize-won">
+                              <span className="info-label">Giveaway:</span>
+                              <span className="info-value prize-name">{winnerData.giveaway.name}</span>
+                            </div>
+
+                            <div style={{maxHeight: '280px', overflowY: 'auto', width: '100%', marginTop: '12px'}}>
+                              <table className="uk-table uk-table-small uk-table-divider" style={{background: 'rgba(255,255,255,0.92)', borderRadius: '10px'}}>
+                                <thead>
+                                  <tr>
+                                    <th>#</th>
+                                    <th>Winner Name</th>
+                                    <th>Customer Code</th>
+                                    <th>Region</th>
+                                  </tr>
+                                </thead>
+                                <tbody>
+                                  {(winnerData.winners || []).map((bulkWinner, index) => (
+                                    <tr key={`${bulkWinner['Customer Code']}-${index}`}>
+                                      <td>{index + 1}</td>
+                                      <td>{bulkWinner['Customer Name'] || bulkWinner.customerName}</td>
+                                      <td>{bulkWinner['Customer Code'] || bulkWinner.customerCode}</td>
+                                      <td>{bulkWinner.Region || '-'}</td>
+                                    </tr>
+                                  ))}
+                                </tbody>
+                              </table>
+                            </div>
+                          </div>
+                        </>
+                      ) : (
+                        <>
+                          <div className="giveaway-icon">
+                            <img 
+                              style={{width: '70%', objectFit: 'contain'}} 
+                              src={
+                                winnerData.giveaway.id === 'car' ? yaris :
+                                winnerData.giveaway.id === 'gold_1_tola' ? gold_1_tola :
+                                winnerData.giveaway.id === 'gold_5_grams' ? coin :
+                                winnerData.giveaway.id === 'microwave_oven' ? microwave_oven :
+                                winnerData.giveaway.id === 'samsung_a06' ? samsung_a06 :
+                                winnerData.giveaway.id === 'iron' ? iron :
+                                winnerData.giveaway.id === 'food_factory' ? food_factory :
+                                winnerData.giveaway.id === 'juicer' ? juicer :
+                                winnerData.giveaway.id === 'washing_machine' ? washing_machine :
+                                winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
+                                winnerData.giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
+                                '/src/assets/images/gift.png'
+                              }
+                              alt={winnerData.giveaway.name} 
+                            />
+                          </div>
+                          <div className="winner-header">
+                            <h2 className="winner-title">🎉 Congratulations!</h2>
+                            <h1 className="winner-name">{winnerData.winner['Customer Name'] || winnerData.winner.customerName}</h1>
+                          </div>
                           
-                          {/* <div className="detail-row tier-row">
-                            <span className="info-label">Tier:</span>
-                            <span className={`tier-badge-winner tier-${winnerData.tier.toLowerCase()}`}>
-                              {winnerData.tier.toUpperCase()}
-                            </span>
-                          </div> */}
-                        </div>
-                      </div>
+                          <div className="prize-info">
+                            <div className="prize-won">
+                              <span className="info-label">Won:</span>
+                              <span className="info-value prize-name">{winnerData.giveaway.name}</span>
+                            </div>
+                            
+                            <div className="winner-details">
+                              <div className="detail-row">
+                                <span className="info-label">Region:</span>
+                                <span className="info-value">{winnerData.winner.Region || winnerData.winner.Region}</span>
+                              </div>
+                              <div className="detail-row">
+                                <span className="info-label">Area:</span>
+                                <span className="info-value">{winnerData.winner.Area || winnerData.winner.AREA}</span>
+                              </div>
+                              
+                              {/* <div className="detail-row">
+                                <span className="info-label">Zone:</span>
+                                <span className="info-value">{winnerData.winner.ZoneDesc || winnerData.winner.ZONE}</span>
+                              </div> */}
+                              
+                              
+                              <div className="detail-row">
+                                <span className="info-label">Customer Code:</span>
+                                <span className="info-value ">{winnerData.winner['Customer Code'] || winnerData.winner.customerCode}</span>
+                              </div>
+
+                              {/* <div className="detail-row">
+                                <span className="info-label">Entries:</span>
+                                <span className="info-value entries-count">{winnerData.winner.drawEntries}</span>
+                              </div> */}
+                              
+                              {/* <div className="detail-row tier-row">
+                                <span className="info-label">Tier:</span>
+                                <span className={`tier-badge-winner tier-${winnerData.tier.toLowerCase()}`}>
+                                  {winnerData.tier.toUpperCase()}
+                                </span>
+                              </div> */}
+                            </div>
+                          </div>
+                        </>
+                      )}
+
                       <button 
                         className="winner-close-btn"
                         onClick={() => setShowWinnerModal(false)}
@@ -1162,7 +1292,7 @@ const LuckyDraw = () => {
               <div className="uk-card uk-card-default uk-card-body history-card">
                 <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
                   <h3 className="uk-card-title">Draw History</h3>
-                  {winnersData.length > 0 && (
+                  {winnersData?.length > 0 && (
                     <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
                       <CSVLink
                         data={csvData}
