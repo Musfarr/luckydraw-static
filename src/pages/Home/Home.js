@@ -35,11 +35,16 @@ const Home = () => {
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
+
+  const region  = auth.user.name
+
+
   const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError, isFetching} = useQuery({
     queryKey: ['dashboardData', currentPage, debouncedSearch],
     queryFn: () => {
       const params = new URLSearchParams({
         page: currentPage,
+        region:region,
         limit: 100,
         ...(debouncedSearch && { search: debouncedSearch })
       });

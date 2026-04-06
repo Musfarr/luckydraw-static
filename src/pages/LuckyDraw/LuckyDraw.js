@@ -75,7 +75,10 @@ const LuckyDraw = () => {
   const itemsPerPage = 30;
   const [historyCurrentPage, setHistoryCurrentPage] = useState(1);
   const [historySearchQuery, setHistorySearchQuery] = useState('');
+  const [filteredWinnersData, setFilteredWinnersData] = useState([]);
   const historyItemsPerPage = 50;
+
+  const name = auth?.user?.name || '';
 
 
   // Fetch dashboard data from API (fetch all data for lucky draw)
@@ -83,7 +86,8 @@ const LuckyDraw = () => {
     queryKey: ['luckyDrawData'],
     queryFn: () => {
       const params = new URLSearchParams({
-        // page: 1,
+        region: name,
+
         // limit: 10000000 
       });
       return apiGetasync(`${baseUrl}/api/new-customer-data?${params}`);
@@ -95,7 +99,6 @@ const LuckyDraw = () => {
 
   const data = dashboardData?.data; // This is now a flat array of all customers
   const role =  auth?.user?.role;
-  const name = auth?.user?.name || '';
 
     const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
       queryKey: ['winnerData'],
@@ -143,6 +146,28 @@ const LuckyDraw = () => {
   }, [role]);
   
 
+
+
+  // region based Winners filtering 
+useEffect(() => {
+  if (winnersLoading || !name) return;
+ 
+  if (name.toLowerCase() === 'admin') {
+    setFilteredWinnersData(winnersData || []);
+    return;
+  }
+ 
+  const filtered = (winnersData || []).filter(
+    (w) => (w.region || '').toLowerCase().trim() === name.toLowerCase().trim()
+  );
+  setFilteredWinnersData(filtered);
+}, [winnersData, name, winnersLoading]);
+
+
+
+
+
+
   useEffect(() => {
     // Load draw history from localStorage
     const savedHistory = localStorage.getItem('luckyDrawHistory');
@@ -178,6 +203,10 @@ const LuckyDraw = () => {
     } else if (name === 'North') {
       zones = zones.filter(zone => zone.toLowerCase() === 'north');
     }
+
+    // else{
+    //   winnersData = winnerData?
+    // }
     
     // Filter out zones that have reached limits for selected giveaway
     if (selectedGiveaway) {
@@ -455,15 +484,15 @@ const LuckyDraw = () => {
   const filteredHistoryData = useMemo(() => {
     if (!winnersData || winnersData.length === 0) return [];
     
-    if (!historySearchQuery.trim()) return winnersData;
+    if (!historySearchQuery.trim()) return filteredWinnersData;
     
     const query = historySearchQuery.toLowerCase().trim();
-    return winnersData.filter(entry => {
+    return filteredWinnersData.filter(entry => {
       const customerCode = (entry.customerCode || '').toLowerCase();
       const giveaway = (entry.wonGiveaway || '').toLowerCase();
       return customerCode.includes(query) || giveaway.includes(query);
     });
-  }, [winnersData, historySearchQuery]);
+  }, [winnersData, historySearchQuery, filteredWinnersData]);
 
   const historyTotalPages = Math.ceil(filteredHistoryData.length / historyItemsPerPage);
   const historyStartIndex = (historyCurrentPage - 1) * historyItemsPerPage;
@@ -587,7 +616,7 @@ const LuckyDraw = () => {
         });
         setWinner({ ...selectedWinners[0], giveaway });
         setShowWinnerModal(true);
-      }, 1000);
+      }, 10000);
 
       return;
     }
@@ -853,7 +882,7 @@ const LuckyDraw = () => {
             {showWinnerModal && winnerData && (
               <div className="winner-modal-overlay">
                 <div className="winner-modal-content">
-                  <Lottie options={confettiOptions} height={"100%"} width={"100%"} />
+                  <Lottie options={confettiOptions} height={"100%"} width={"100%"} direction={-1} />
                   <div className="winner-info-overlay">
                     <div className="winner-announcement">
                       {winnerData.isBulk ? (
@@ -1316,7 +1345,7 @@ const LuckyDraw = () => {
                   )}
                 </div>
 
-                {winnersData?.length > 0 && (
+                {filteredWinnersData?.length > 0 && (
                   <div className="uk-margin-bottom">
                     <input
                       type="text"
@@ -1332,7 +1361,7 @@ const LuckyDraw = () => {
                   </div>
                 )}
                 
-                {winnersData?.length === 0 ? (
+                {filteredWinnersData?.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No draws conducted yet</p>
                 ) : filteredHistoryData.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No results found for "{historySearchQuery}"</p>
