@@ -1,12 +1,5 @@
-import React, { useState, useEffect } from "react";
-import { useDistributorData } from "../../Context/DistributorDataProvider";
-import { apiGetasync } from "../../Utils/apiServices";
-import Spinner from "../../reusables/Spinner";
+import React, { useState, useMemo } from "react";
 import { useNavigate } from "react-router-dom";
-import { useAuth } from "../../Context/AuthProvider";
-import { useQuery } from "@tanstack/react-query";
-// import lifeboylogo from "../../assets/images/gllogo.png";
-// import campaignlogo from "../../assets/images/WINTERPLAN.png";
 import "../LuckyDraw/LuckyDraw.css";
 
 import yaris from "../../assets/images/yaris2x.png";
@@ -14,138 +7,80 @@ import gold_1_tola from "../../assets/images/barr.png";
 import samsung_a06 from "../../assets/images/tv.png";
 import daraz_gift_card from "../../assets/images/CARD.png";
 
-
-const baseUrl = process.env.REACT_APP_BASEURL;
+// Static data with entries
+const STATIC_DATA = [
+  { name: "Muhammad Hanif", contact_number: "03182342620", outlet_name: "Imtiaz", cnic: "4230140019925", city: "Karachi", invoice_number: "00029 2.030526.1.103.S", platinum: 5, gold: 3, silver: 2, bronze: 1 },
+  { name: "Ahmed Khan", contact_number: "03001234567", outlet_name: "Metro", cnic: "4230140019926", city: "Lahore", invoice_number: "00030 2.030526.1.104.S", platinum: 3, gold: 5, silver: 4, bronze: 2 },
+  { name: "Fatima Ali", contact_number: "03211234567", outlet_name: "Carrefour", cnic: "4230140019927", city: "Islamabad", invoice_number: "00031 2.030526.1.105.S", platinum: 8, gold: 2, silver: 6, bronze: 3 },
+  { name: "Bilal Hussain", contact_number: "03331234567", outlet_name: "Al-Fatah", cnic: "4230140019928", city: "Rawalpindi", invoice_number: "00032 2.030526.1.106.S", platinum: 2, gold: 7, silver: 3, bronze: 4 },
+  { name: "Sara Malik", contact_number: "03451234567", outlet_name: "Hyperstar", cnic: "4230140019929", city: "Faisalabad", invoice_number: "00033 2.030526.1.107.S", platinum: 6, gold: 4, silver: 8, bronze: 2 },
+  { name: "Usman Tariq", contact_number: "03121234567", outlet_name: "CSD", cnic: "4230140019930", city: "Multan", invoice_number: "00034 2.030526.1.108.S", platinum: 4, gold: 6, silver: 5, bronze: 3 },
+  { name: "Ayesha Siddiqui", contact_number: "03031234567", outlet_name: "Utility", cnic: "4230140019931", city: "Peshawar", invoice_number: "00035 2.030526.1.109.S", platinum: 7, gold: 3, silver: 4, bronze: 5 },
+  { name: "Hamza Sheikh", contact_number: "03231234567", outlet_name: "Madina", cnic: "4230140019932", city: "Quetta", invoice_number: "00036 2.030526.1.110.S", platinum: 3, gold: 8, silver: 2, bronze: 6 },
+  { name: "Zainab Bukhari", contact_number: "03341234567", outlet_name: "Save Mart", cnic: "4230140019933", city: "Sialkot", invoice_number: "00037 2.030526.1.111.S", platinum: 9, gold: 2, silver: 7, bronze: 1 },
+  { name: "Taimoor Akhtar", contact_number: "03441234567", outlet_name: "Green Store", cnic: "4230140019934", city: "Gujranwala", invoice_number: "00038 2.030526.1.112.S", platinum: 1, gold: 9, silver: 3, bronze: 8 },
+];
 
 const Home = () => {
   const navigate = useNavigate();
-  const { auth, setAuth } = useAuth();
-  const { distributorData, updateDistributorData } = useDistributorData();
-  const [sortConfig, setSortConfig] = useState({ key: "total_amount", dir: "desc" });
   const [searchQuery, setSearchQuery] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [debouncedSearch, setDebouncedSearch] = useState("");
+  const itemsPerPage = 10;
 
-  // Debounce search query
-  useEffect(() => {
-    const timer = setTimeout(() => {
-      setDebouncedSearch(searchQuery);
-      setCurrentPage(1); // Reset to first page on search
-    }, 500);
-    return () => clearTimeout(timer);
+  // Filter data based on search
+  const filteredData = useMemo(() => {
+    if (!searchQuery.trim()) return STATIC_DATA;
+    const query = searchQuery.toLowerCase();
+    return STATIC_DATA.filter(item => 
+      item.name.toLowerCase().includes(query) ||
+      item.outlet_name.toLowerCase().includes(query) ||
+      item.contact_number.includes(query) ||
+      item.cnic.includes(query)
+    );
   }, [searchQuery]);
 
+  // Pagination
+  const totalPages = Math.ceil(filteredData.length / itemsPerPage);
+  const paginatedData = useMemo(() => {
+    const start = (currentPage - 1) * itemsPerPage;
+    return filteredData.slice(start, start + itemsPerPage);
+  }, [filteredData, currentPage]);
 
-  const region  = auth.user.name
-
-
-  const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError, isFetching} = useQuery({
-    queryKey: ['dashboardData', currentPage, debouncedSearch],
-    queryFn: () => {
-      const params = new URLSearchParams({
-        page: currentPage,
-        region:region,
-        limit: 100,
-        ...(debouncedSearch && { search: debouncedSearch })
-      });
-      return apiGetasync(`${baseUrl}/api/new-customer-data?${params}`);
-      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
-    },
-    staleTime: 60 * 60 * 1000,
-    cacheTime: 60 * 60 * 1000,
-    keepPreviousData: true,
-  })
-  
-  const data = dashboardData?.data;
-  const pagination = dashboardData?.pagination;
-  // console.log(data, pagination)
-  
-  
-  // Helpers: sorting and filtering
-  const applySort = (list) => {
-    if (!sortConfig?.key) return list;
-    const key = sortConfig.key;
-    const sorted = [...list].sort((a, b) => {
-      let va, vb;
-      
-      // Handle nested properties
-      if (key === 'region') {
-        va = a.GeoData?.[0]?.Region || '';
-        vb = b.GeoData?.[0]?.Region || '';
-      } else if (key === 'cust_name') {
-        va = a.cust_name;
-        vb = b.cust_name;
-      } else if (key === 'cust_cd') {
-        va = a.cust_cd;
-        vb = b.cust_cd;
-      } else if (key === 'total_amount') {
-        va = a.total_amount || 0;
-        vb = b.total_amount || 0;
-      } else if (key === 'platinum_entries') {
-        va = a.entry_count?.platinum || 0;
-        vb = b.entry_count?.platinum || 0;
-      } else if (key === 'gold_entries') {
-        va = a.entry_count?.gold || 0;
-        vb = b.entry_count?.gold || 0;
-      } else if (key === 'silver_entries') {
-        va = a.entry_count?.silver || 0;
-        vb = b.entry_count?.silver || 0;
-      } else {
-        va = a[key];
-        vb = b[key];
-      }
-
-      if (typeof va === 'number' && typeof vb === 'number') {
-        return va - vb;
-      }
-
-      return String(va ?? '').toLowerCase().localeCompare(String(vb ?? '').toLowerCase());
-    });
-    return sortConfig.dir === 'desc' ? sorted.reverse() : sorted;
-  };
-
-  const getRows = () => {
-    // Data is already filtered and paginated from server
-    return applySort(data || []);
-  };
-
-
-  // Calculate total entry counts from current page data
-  const totalCounts = data?.reduce((acc, customer) => {
-    acc.platinum += customer.entry_count?.platinum || 0;
-    acc.gold += customer.entry_count?.gold || 0;
-    acc.silver += customer.entry_count?.silver || 0;
+  // Calculate total entry counts
+  const totalCounts = STATIC_DATA.reduce((acc, customer) => {
+    acc.platinum += customer.platinum || 0;
+    acc.gold += customer.gold || 0;
+    acc.silver += customer.silver || 0;
+    acc.bronze += customer.bronze || 0;
     return acc;
-  }, { platinum: 0, gold: 0, silver: 0 }) || { platinum: 0, gold: 0, silver: 0 };
+  }, { platinum: 0, gold: 0, silver: 0, bronze: 0 });
 
   // Pagination handlers
   const handlePageChange = (newPage) => {
-    if (newPage >= 1 && newPage <= (pagination?.totalPages || 1)) {
+    if (newPage >= 1 && newPage <= totalPages) {
       setCurrentPage(newPage);
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
   };
 
   const getPageNumbers = () => {
-    const totalPages = pagination?.totalPages || 1;
-    const current = currentPage;
     const pages = [];
     
     if (totalPages <= 7) {
       for (let i = 1; i <= totalPages; i++) pages.push(i);
     } else {
-      if (current <= 4) {
+      if (currentPage <= 4) {
         for (let i = 1; i <= 5; i++) pages.push(i);
         pages.push('...');
         pages.push(totalPages);
-      } else if (current >= totalPages - 3) {
+      } else if (currentPage >= totalPages - 3) {
         pages.push(1);
         pages.push('...');
         for (let i = totalPages - 4; i <= totalPages; i++) pages.push(i);
       } else {
         pages.push(1);
         pages.push('...');
-        for (let i = current - 1; i <= current + 1; i++) pages.push(i);
+        for (let i = currentPage - 1; i <= currentPage + 1; i++) pages.push(i);
         pages.push('...');
         pages.push(totalPages);
       }
@@ -153,26 +88,9 @@ const Home = () => {
     return pages;
   };
 
-  
-
-  
-
   return (
     <div className="boradcastWrp">
-      { dashboardLoading && !dashboardData && !isFetching ? (
-        <Spinner />
-      ) : dashboardError ? (
-        <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
-          <div className="uk-card uk-card-default uk-card-body uk-text-center">
-            <h3>Error Loading Dashboard</h3>
-            <p>{dashboardError?.message || 'Failed to load dashboard data'}</p>
-            <button onClick={() => window.location.reload()} className="uk-button uk-button-primary">
-              Retry
-            </button>
-          </div>
-        </div>
-      ) : (
-            <div className="newLayout">
+      <div className="newLayout">
               <div className="uk-container uk-container-large" style={{paddingBottom: '50px'}}>
 
                 <div className="lucky-draw-header-actions uk-width-1-1">
@@ -184,7 +102,6 @@ const Home = () => {
                 className="header-action-btn logout"
                 onClick={() => {
                   localStorage.clear();
-                  setAuth({ token: null, user: {} });
                   navigate('/');
                 }}
               >
@@ -198,10 +115,10 @@ const Home = () => {
 
                       <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/gllogo.png' alt="Winter Plan Logo" />
+                          <img className="logo-image" src='assets/images/nfllogo.png' alt="NFL Logo" />
                         </div>
                         <div className="uk-flex uk-flex-center" style={{gap: '20px'}}>
-                          {data && data.length > 0 && (
+                          {STATIC_DATA && STATIC_DATA.length > 0 && (
                             <button 
                               onClick={() => navigate('/luckydraw')} 
                               className="draw-button"
@@ -221,13 +138,15 @@ const Home = () => {
                           </button> */}
                         </div>
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/WINTERPLAN.png' alt="Campaign Logo" />
+                          <h2 style={{margin: 0}}>NFL Campaign</h2>
+                          
+                          {/* <img className="logo-image" src='assets/images/WINTERPLAN.png' alt="Campaign Logo" /> */}
                         </div>
                       </div>                        
 
                         <div className="uk-width-1-1 uk-margin-remove">
                           <div className="overviewMainContent " >
-                            <div className="uk-margin">
+                            {/* <div className="uk-margin">
                               <div className="uk-grid " uk-grid="">
                                 <div className="uk-width-1-1 main-content-card">
                                   <div className=" uk-padding " style={{paddingTop:0}}>
@@ -237,7 +156,6 @@ const Home = () => {
                                         <div className="tier-content">
                                           <h4 className="tier-name">PLATINUM</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.platinum} Entries</span> */}
                                           </div>
                                         </div>
                                       </div>
@@ -247,7 +165,6 @@ const Home = () => {
                                         <div className="tier-content">
                                           <h4 className="tier-name">GOLD</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.gold} Entries</span> */}
                                           </div>
                                         </div>
                                       </div>
@@ -257,7 +174,6 @@ const Home = () => {
                                         <div className="tier-content">
                                           <h4 className="tier-name">SILVER</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
                                           </div>
                                         </div>
                                       </div>
@@ -267,7 +183,6 @@ const Home = () => {
                                         <div className="tier-content">
                                           <h4 className="tier-name">Bronze</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
                                           </div>
                                         </div>
                                       </div>
@@ -275,7 +190,7 @@ const Home = () => {
                                   </div>
                                 </div>
                               </div>
-                            </div>
+                            </div> */}
 
                             <div className="uk-grid" uk-grid="" uk-height-match="target: >div> div">
                               <div className="uk-card uk-card-default uk-card-body uk-width-1-1 main-content-card">
@@ -292,8 +207,8 @@ const Home = () => {
                                   </div>
                                   <div className="uk-text-meta" style={{padding: '10px 0'}}>
                                     <span className="summary-badge">
-                                      Showing {data?.length || 0} of {pagination?.total || 0} customers
-                                      {debouncedSearch && ` (filtered by "${debouncedSearch}")`}
+                                      Showing {paginatedData.length} of {filteredData.length} customers
+                                      {searchQuery && ` (filtered by "${searchQuery}")`}
                                     </span>
                                   </div>
                                 </div>
@@ -303,40 +218,46 @@ const Home = () => {
                                     <table className="uk-table uk-table-small uk-table-divider uk-table-hover tier-table">
                                       <thead style={{position: 'sticky', top: 0, background: '#fff', zIndex: 10}}>
                                         <tr>
-                                          <th className="table-header-cell">Region</th>
+                                          <th className="table-header-cell">S.No</th>
+                                          <th className="table-header-cell">Name</th>
+                                          <th className="table-header-cell">Contact Number</th>
                                           <th className="table-header-cell">Outlet Name</th>
-                                          <th className="table-header-cell">Outlet Code</th>
-                                          <th className="table-header-cell">Total Amount</th>
-                                          <th className="table-header-cell">Platinum Entries</th>
-                                          <th className="table-header-cell">Gold Entries</th>
-                                          <th className="table-header-cell">Silver Entries</th>
-                                          <th className="table-header-cell">Bronze Entries</th>
+                                          <th className="table-header-cell">CNIC</th>
+                                          <th className="table-header-cell">City</th>
+                                          <th className="table-header-cell">Invoice Number</th>
+                                          {/* <th className="table-header-cell">Platinum</th>
+                                          <th className="table-header-cell">Gold</th>
+                                          <th className="table-header-cell">Silver</th>
+                                          <th className="table-header-cell">Bronze</th> */}
                                         </tr>
                                       </thead>
                                       <tbody>
-                                        {getRows().map((customer, index) => (
-                                          <tr key={customer._id || index} className="table-row">
-                                            <td className="table-cell">{customer.Region || 'N/A'}</td>
-                                            <td className="table-cell">{customer["Customer Name"]}</td>
-                                            <td className="table-cell-code">{customer["Customer Code"]}</td>
-                                            <td className="table-cell">{customer["Invoice - Value (GSV)"]?.toLocaleString() || 0}</td>
-                                            <td className="table-cell-entries table-cell-entries-platinum">
-                                              <span className="entry-badge entry-badge-platinum">{customer.Platinum || 0}</span>
+                                        {paginatedData.map((customer, index) => (
+                                          <tr key={index} className="table-row">
+                                            <td className="table-cell">{index + 1}</td>
+                                            <td className="table-cell">{customer.name}</td>
+                                            <td className="table-cell">{customer.contact_number}</td>
+                                            <td className="table-cell">{customer.outlet_name}</td>
+                                            <td className="table-cell-code">{customer.cnic}</td>
+                                            <td className="table-cell">{customer.city}</td>
+                                            <td className="table-cell">{customer.invoice_number}</td>
+                                            {/* <td className="table-cell-entries table-cell-entries-platinum">
+                                              <span className="entry-badge entry-badge-platinum">{customer.platinum || 0}</span>
                                             </td>
                                             <td className="table-cell-entries table-cell-entries-gold">
-                                              <span className="entry-badge entry-badge-gold">{customer.Gold || 0}</span>
+                                              <span className="entry-badge entry-badge-gold">{customer.gold || 0}</span>
                                             </td>
                                             <td className="table-cell-entries table-cell-entries-silver">
-                                              <span className="entry-badge entry-badge-silver">{customer.Silver || 0}</span>
+                                              <span className="entry-badge entry-badge-silver">{customer.silver || 0}</span>
                                             </td>
                                             <td className="table-cell-entries table-cell-entries-bronze">
-                                              <span className="entry-badge entry-badge-bronze">{customer.Bronze || 0}</span>
-                                            </td>
+                                              <span className="entry-badge entry-badge-bronze">{customer.bronze || 0}</span>
+                                            </td> */}
                                           </tr>
                                         ))}
-                                        {(!data || data.length === 0) && (
+                                        {paginatedData.length === 0 && (
                                           <tr>
-                                            <td colSpan="7" className="uk-text-center empty-state">No customers found</td>
+                                            <td colSpan="10" className="uk-text-center empty-state">No customers found</td>
                                           </tr>
                                         )}
                                       </tbody>
@@ -345,16 +266,16 @@ const Home = () => {
                                 </div>
 
                                 {/* Pagination Controls */}
-                                {pagination && pagination.totalPages > 1 && (
+                                {totalPages > 1 && (
                                   <div className="uk-padding" style={{paddingTop: 0}}>
                                     <div className="uk-flex uk-flex-between uk-flex-middle">
                                       <div className="uk-text-meta">
-                                        Page {pagination.page} of {pagination.totalPages}
+                                        Page {currentPage} of {totalPages}
                                       </div>
                                       
                                       <ul className="uk-pagination uk-flex-center" style={{margin: 0}}>
-                                        <li className={!pagination.hasPrevPage ? 'uk-disabled' : ''}>
-                                          <a onClick={() => handlePageChange(currentPage - 1)} style={{cursor: pagination.hasPrevPage ? 'pointer' : 'not-allowed'}}>
+                                        <li className={currentPage === 1 ? 'uk-disabled' : ''}>
+                                          <a onClick={() => handlePageChange(currentPage - 1)} style={{cursor: currentPage === 1 ? 'not-allowed' : 'pointer'}}>
                                             <span uk-pagination-previous=""></span>
                                           </a>
                                         </li>
@@ -369,30 +290,13 @@ const Home = () => {
                                           )
                                         ))}
                                         
-                                        <li className={!pagination.hasNextPage ? 'uk-disabled' : ''}>
-                                          <a onClick={() => handlePageChange(currentPage + 1)} style={{cursor: pagination.hasNextPage ? 'pointer' : 'not-allowed'}}>
+                                        <li className={currentPage === totalPages ? 'uk-disabled' : ''}>
+                                          <a onClick={() => handlePageChange(currentPage + 1)} style={{cursor: currentPage === totalPages ? 'not-allowed' : 'pointer'}}>
                                             <span uk-pagination-next=""></span>
                                           </a>
                                         </li>
                                       </ul>
 
-                                      {/* <div className="uk-text-meta">
-                                        <span style={{marginRight: '8px'}}>Go to:</span>
-                                        <input 
-                                          type="number" 
-                                          min="1" 
-                                          max={pagination.totalPages}
-                                          value={currentPage}
-                                          onChange={(e) => {
-                                            const page = parseInt(e.target.value);
-                                            if (page >= 1 && page <= pagination.totalPages) {
-                                              handlePageChange(page);
-                                            }
-                                          }}
-                                          className="uk-input"
-                                          style={{width: '70px', display: 'inline-block', padding: '5px', textAlign: 'center'}}
-                                        />
-                                      </div> */}
                                     </div>
                                   </div>
                                 )}
@@ -408,7 +312,6 @@ const Home = () => {
                 </div>
               </div>
             </div>
-      )}
     </div>
   );
 };
