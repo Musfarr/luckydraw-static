@@ -1,25 +1,12 @@
 import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../Context/AuthProvider";
-import { useDistributorData } from "../../Context/DistributorDataProvider";
-import { apiGetasync } from "../../Utils/apiServices";
-import Spinner from "../../reusables/Spinner";
 import Swal from 'sweetalert2';
-import { useQuery } from "@tanstack/react-query";
 import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
 import "./LuckyDraw.css";
 import yaris from "../../assets/images/yaris2x.png";
 import gold_1_tola from "../../assets/images/barr.png";
 import coin from "../../assets/images/ss.png";
-import Lottie from 'react-lottie';
-import confetti from "../../assets/Confetti.json";
-import wheel from "../../assets/Countdownnew.json";
-import lifeboylogo from "../../assets/images/lifeboylogo.png";
-import campaignlogo from "../../assets/images/campaignlogo.png";
-
-
-// silver assets
-
 import microwave_oven from "../../assets/images/microwave.png";
 import tv from "../../assets/images/tv.png";
 import samsung_a06 from "../../assets/images/samsung.png";
@@ -28,26 +15,76 @@ import food_factory from "../../assets/images/foodfactory.png";
 import juicer from "../../assets/images/juicer.png";
 import washing_machine from "../../assets/images/WASHINGmachine.png";
 import daraz_gift_card from "../../assets/images/CARD.png";
-import axios from "axios";
+import Lottie from 'react-lottie';
+import confetti from "../../assets/Confetti.json";
+import wheel from "../../assets/Countdownnew.json";
+
+// Store list from the image
+const GROCERY_STORES = [
+  { id: 'alfatah', name: 'AlFatah' },
+  { id: 'rainbow', name: 'Rainbow' },
+  { id: 'risen_rahim', name: 'Risen Rahim' },
+  { id: 'euro', name: 'Euro' },
+  { id: 'lateef', name: 'Lateef' },
+  { id: 'imtiaz', name: 'Imtiaz' },
+  { id: 'chase_up', name: 'Chase Up' },
+  { id: 'kifaya', name: 'Kifaya' },
+  { id: 'bin_hashim', name: 'Bin Hashim' },
+  { id: 'diamond', name: 'Diamond' },
+  { id: 'dawood_mart', name: 'Dawood Mart' },
+  { id: 'max_bachat', name: 'Max Bachat' },
+  { id: 'ideal', name: 'Ideal' },
+  { id: 'pcc', name: 'PCC' },
+  { id: 'sm', name: 'SM' },
+  { id: 'gm', name: 'GM' },
+  { id: 'mcc', name: 'MCC' },
+  { id: 'asian', name: 'Asian' },
+  { id: 'mushtaq', name: 'Mushtaq' },
+  { id: 'italian', name: 'Italian' },
+  { id: 'hbk', name: 'HBK' }
+];
+
+// Store-specific limits from the table image
+const STORE_GIVEAWAY_LIMITS = {
+  'alfatah': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 5, 'mobile_phone': 6, 'led': 6, 'voucher': 100 },
+  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 6, 'led': 6, 'voucher': 50 },
+  'risen_rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 6, 'voucher': 50 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 6, 'voucher': 50 },
+  'lateef': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 6, 'led': 6, 'voucher': 50 },
+  'imtiaz': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 8, 'mobile_phone': 8, 'led': 25, 'voucher': 20 },
+  'chase_up': { '660_cc_car': 1, '1300_cc_car': 1, 'motor_bike': 2, 'mobile_phone': 2, 'led': 5, 'voucher': 0 },
+  'kifaya': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 5, 'voucher': 0 },
+  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'dawood_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 4, 'led': 4, 'voucher': 0 },
+  'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
+  'ideal': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 11, 'mobile_phone': 11, 'led': 11, 'voucher': 110 },
+  'pcc': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 6, 'mobile_phone': 6, 'led': 6, 'voucher': 40 },
+  'sm': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 4, 'voucher': 0 },
+  'gm': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
+  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
+  'asian': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
+  'mushtaq': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'italian': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 }
+};
 
 const BASE_GIVEAWAY_CONFIG = {
   Car: [
-    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Winner Total', limit: 1, limitType: 'global' },
+    { id: '660_cc_car', name: '660 CC Car (Alto)', icon: '🚗', description: 'Per Store Limit', limitType: 'store', limitKey: '660_cc_car' },
+    { id: '1300_cc_car', name: '1300 CC Car (Yaris)', icon: '🚙', description: 'Per Store Limit', limitType: 'store', limitKey: '1300_cc_car' },
   ],
   Platinum: [
-    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 20, limitType: 'region' },
-
+    { id: 'motor_bike', name: 'Motor Bike', icon: '🏍️', description: 'Per Store Limit', limitType: 'store', limitKey: 'motor_bike' },
   ],
   Gold: [
-    { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '7 Per Region', limit: 7, limitType: 'region' }
+    { id: 'mobile_phone', name: 'Smart Phone', icon: '📱', description: 'Per Store Limit', limitType: 'store', limitKey: 'mobile_phone' }
   ],
   Silver: [
-    { id: 'daraz_gift_card', name: 'Daraz 40K Gift Card', icon: '🎁', description: '9 Per Region', limit: 9, limitType: 'region' },
-    { id: 'tv', name: 'LED TV', icon: '📺', description: '5 Per Region', limit: 5, limitType: 'region' },
-    
+    { id: 'led', name: 'Smart LED', icon: '📺', description: 'Per Store Limit', limitType: 'store', limitKey: 'led' },
   ],
   Bronze: [
-    { id: 'daraz_gift_card_5k', name: 'Daraz 5K Gift Card', icon: '🎁', description: '90 Per Region', limit: 90, limitType: 'region' },
+    { id: 'voucher', name: 'Voucher', icon: '�', description: 'Per Store Limit', limitType: 'store', limitKey: 'voucher' },
   ]
 };
 
@@ -56,7 +93,6 @@ const baseUrl = process.env.REACT_APP_BASEURL;
 const LuckyDraw = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
-  const [selectedTier, setSelectedTier] = useState('Platinum');
   const [selectedGiveaway, setSelectedGiveaway] = useState('');
   const [eligibleParticipants, setEligibleParticipants] = useState([]);
   const [winner, setWinner] = useState(null);
@@ -77,37 +113,27 @@ const LuckyDraw = () => {
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const [filteredWinnersData, setFilteredWinnersData] = useState([]);
   const historyItemsPerPage = 50;
+  const [selectedStore, setSelectedStore] = useState('');
 
   const name = auth?.user?.name || '';
+  const role = 'admin'; // Static role
 
+  // Static participants data - no API
+  const data = [
+    { id: 1, cust_name: 'Ahmed Khan', cust_cd: 'OUT001', phone: '0300-1111111', Region: 'Central', Zone: 'Zone1', Area: 'Area1', total_amount: 50000 },
+    { id: 2, cust_name: 'Fatima Ali', cust_cd: 'OUT002', phone: '0300-2222222', Region: 'South', Zone: 'Zone2', Area: 'Area2', total_amount: 75000 },
+    { id: 3, cust_name: 'Bilal Hussain', cust_cd: 'OUT003', phone: '0300-3333333', Region: 'North', Zone: 'Zone3', Area: 'Area3', total_amount: 45000 },
+    { id: 4, cust_name: 'Sara Malik', cust_cd: 'OUT004', phone: '0300-4444444', Region: 'Central', Zone: 'Zone1', Area: 'Area1', total_amount: 60000 },
+    { id: 5, cust_name: 'Usman Tariq', cust_cd: 'OUT005', phone: '0300-5555555', Region: 'South', Zone: 'Zone2', Area: 'Area2', total_amount: 80000 },
+    { id: 6, cust_name: 'Ayesha Siddiqui', cust_cd: 'OUT006', phone: '0300-6666666', Region: 'North', Zone: 'Zone3', Area: 'Area3', total_amount: 35000 },
+    { id: 7, cust_name: 'Hamza Sheikh', cust_cd: 'OUT007', phone: '0300-7777777', Region: 'Central', Zone: 'Zone1', Area: 'Area1', total_amount: 90000 },
+    { id: 8, cust_name: 'Zainab Bukhari', cust_cd: 'OUT008', phone: '0300-8888888', Region: 'South', Zone: 'Zone2', Area: 'Area2', total_amount: 55000 },
+    { id: 9, cust_name: 'Taimoor Akhtar', cust_cd: 'OUT009', phone: '0300-9999999', Region: 'North', Zone: 'Zone3', Area: 'Area3', total_amount: 42000 },
+    { id: 10, cust_name: 'Muhammad Hanif', cust_cd: 'OUT010', phone: '0300-1010101', Region: 'Central', Zone: 'Zone1', Area: 'Area1', total_amount: 68000 },
+  ];
 
-  // Fetch dashboard data from API (fetch all data for lucky draw)
-  const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useQuery({
-    queryKey: ['luckyDrawData'],
-    queryFn: () => {
-      const params = new URLSearchParams({
-        region: name,
-
-        // limit: 10000000 
-      });
-      return apiGetasync(`${baseUrl}/api/new-customer-data?${params}`);
-      // return apiGetasync(`https://unilever.convexinteractive.com/api/new-customer-data?${params}`);
-    },
-    staleTime: 30 * 60 * 1000, // 30 minutes
-    cacheTime: 60 * 60 * 1000, // 1 hour
-  });
-
-  const data = dashboardData?.data; // This is now a flat array of all customers
-  const role =  auth?.user?.role;
-
-    const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
-      queryKey: ['winnerData'],
-      queryFn: () => {
-        return apiGetasync(`${baseUrl}/api/winners-data`);
-      },
-      staleTime: 0, // 30 minutes
-      cacheTime: 0, // 1 hour
-    });
+  // Static winners data - no API
+  const winnersData = [];
 
   const confettiOptions = {
     loop: true,
@@ -127,41 +153,29 @@ const LuckyDraw = () => {
     },
   };
 
-    // Giveaway configuration by tier with limits
-  const giveawayConfig = useMemo(() => {
-    
-    
-    const { Car, ...rest } = BASE_GIVEAWAY_CONFIG;
-
-    const Carconfig = {
-      Car
-    };
-
-    const restconfig = { ...rest };
-
-    if (role !== 'admin') {
-      return restconfig;
-    }
-      return Carconfig;
-  }, [role]);
+    // Flattened giveaway configuration - all rewards without tier hierarchy
+  const allGiveaways = useMemo(() => {
+    // Flatten all tiers into a single array
+    return Object.values(BASE_GIVEAWAY_CONFIG).flat();
+  }, []);
   
 
 
 
   // region based Winners filtering 
-useEffect(() => {
-  if (winnersLoading || !name) return;
+// useEffect(() => {
+//   if (!name) return;
  
-  if (name.toLowerCase() === 'admin') {
-    setFilteredWinnersData(winnersData || []);
-    return;
-  }
+//   if (name.toLowerCase() === 'admin') {
+//     setFilteredWinnersData(winnersData || []);
+//     return;
+//   }
  
-  const filtered = (winnersData || []).filter(
-    (w) => (w.region || '').toLowerCase().trim() === name.toLowerCase().trim()
-  );
-  setFilteredWinnersData(filtered);
-}, [winnersData, name, winnersLoading]);
+//   const filtered = (winnersData || []).filter(
+//     (w) => (w.region || '').toLowerCase().trim() === name.toLowerCase().trim()
+//   );
+//   setFilteredWinnersData(filtered);
+// }, [winnersData, name]);
 
 
 
@@ -176,13 +190,6 @@ useEffect(() => {
     }
    }, []);
 
-  useEffect(() => {
-    const availableTiers = Object.keys(giveawayConfig);
-    if (!availableTiers.includes(selectedTier)) {
-      setSelectedTier(availableTiers[0] || '');
-      setSelectedGiveaway('');
-    }
-  }, [giveawayConfig, selectedTier]);
 
   useEffect(() => {
     if (role !== 'admin' && name && selectedRegion !== name) {
@@ -210,9 +217,7 @@ useEffect(() => {
     
     // Filter out zones that have reached limits for selected giveaway
     if (selectedGiveaway) {
-      const giveaway = Object.values(giveawayConfig)
-        .flat()
-        .find(g => g.id === selectedGiveaway);
+      const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
       
       if (giveaway && giveaway.limitType === 'zone') {
         zones = zones.filter(zone => {
@@ -250,9 +255,7 @@ useEffect(() => {
     
     // Filter out regions that have reached limits for selected giveaway
     if (selectedGiveaway) {
-      const giveaway = Object.values(giveawayConfig)
-        .flat()
-        .find(g => g.id === selectedGiveaway);
+      const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
       
       if (giveaway && giveaway.limitType === 'region') {
         regions = regions.filter(region => {
@@ -292,9 +295,7 @@ useEffect(() => {
     
     // Filter out areas that have reached limits for selected giveaway
     if (selectedGiveaway) {
-      const giveaway = Object.values(giveawayConfig)
-        .flat()
-        .find(g => g.id === selectedGiveaway);
+      const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
       
       if (giveaway && giveaway.limitType === 'area') {
         areas = areas.filter(area => {
@@ -353,9 +354,7 @@ useEffect(() => {
 
   // Check if giveaway limit is reached for a specific area
   const isGiveawayLimitReached = (giveawayId, customer) => {
-    const giveaway = Object.values(giveawayConfig)
-      .flat()
-      .find(g => g.id === giveawayId);
+    const giveaway = allGiveaways.find(g => g.id === giveawayId);
     
     if (!giveaway) return false;
     
@@ -381,7 +380,7 @@ useEffect(() => {
     return awardedCount >= giveaway.limit;
   };
 
-  // Filter participants based on selected criteria with cross-tier eligibility - Memoized
+  // Filter participants based on selected criteria - simplified without tier hierarchy
   const eligibleParticipantsList = useMemo(() => {
     if (!data) return [];
     
@@ -389,68 +388,18 @@ useEffect(() => {
     let participants = getAllCustomers();
     
     // Apply geographic filters
-    // if (selectedZone) {
-    //   participants = participants.filter(p => p.ZoneDesc === selectedZone);
-    // }
-    
-    if (selectedRegion && selectedTier !== 'Car') {
+    if (selectedRegion) {
       participants = participants.filter(p => p.Region === selectedRegion);
     }
     
-    // if (selectedArea) {
-    //   participants = participants.filter(p => p.Area === selectedArea);
-    // }
+    // Check if giveaway limit is reached
+    if (selectedGiveaway) {
+      participants = participants.filter(p => !isGiveawayLimitReached(selectedGiveaway, p));
+    }
     
-    // Filter by tier-specific entries > 0, exclusion status, and giveaway limits
-    participants = participants.filter(p => {
-      // Check if excluded based on hierarchical rules
-      if (isCustomerExcluded(p, selectedTier)) {
-        return false;
-      }
-      
-      // Check if giveaway limit is reached for this customer's area/region/global
-      if (selectedGiveaway && isGiveawayLimitReached(selectedGiveaway, p)) {
-        return false;
-      }
-      
-      // Check if they have entries for this tier
-      // Car uses Platinum entries, others use their own tier entries
-      let entries = 0;
-      if (selectedTier === 'Car') {
-        entries = p.Platinum || 0;
-      } else if (selectedTier === 'Platinum') {
-        entries = p.Platinum || 0;
-      } else if (selectedTier === 'Gold') {
-        entries = p.Gold || 0;
-      } else if (selectedTier === 'Silver') {
-        entries = p.Silver || 0;
-      }
-       else if (selectedTier === 'Bronze') {
-        entries = p.Bronze || 0;
-      }
-      
-      return entries > 0; // Only eligible if they have entries for this tier
-    });
-    
-    // Add drawEntries for weighted selection
-    // Car uses Platinum entries, others use their own tier entries
-    return participants.map(p => {
-      let entries = 0;
-      if (selectedTier === 'Car') {
-        entries = p.Platinum || 0;
-      } else if (selectedTier === 'Platinum') {
-        entries = p.Platinum || 0;
-      } else if (selectedTier === 'Gold') {
-        entries = p.Gold || 0;
-      } else if (selectedTier === 'Silver') {
-        entries = p.Silver || 0;
-      }
-       else if (selectedTier === 'Bronze') {
-        entries = p.Bronze || 0;
-      }
-      return { ...p, drawEntries: entries };
-    });
-  }, [data, selectedZone, selectedRegion, selectedArea, selectedTier, selectedGiveaway , winnersData]);
+    // Add default drawEntries for weighted selection
+    return participants.map(p => ({ ...p, drawEntries: 1 }));
+  }, [data, selectedRegion, selectedGiveaway, winnersData]);
 
   const filterParticipants = () => eligibleParticipantsList;
 
@@ -478,21 +427,21 @@ useEffect(() => {
   // Reset to page 1 when filters or search changes
   useEffect(() => {
     setCurrentPage(1);
-  }, [selectedTier, selectedGiveaway, selectedZone, selectedRegion, selectedArea, searchQuery]);
+  }, [selectedGiveaway, selectedZone, selectedRegion, selectedArea, searchQuery]);
 
   // Filter and paginate history data
   const filteredHistoryData = useMemo(() => {
-    if (!winnersData || winnersData.length === 0) return [];
+    if (!excludedWinners || excludedWinners.length === 0) return [];
     
-    if (!historySearchQuery.trim()) return filteredWinnersData;
+    if (!historySearchQuery.trim()) return excludedWinners;
     
     const query = historySearchQuery.toLowerCase().trim();
-    return filteredWinnersData.filter(entry => {
+    return excludedWinners.filter(entry => {
       const customerCode = (entry.customerCode || '').toLowerCase();
       const giveaway = (entry.wonGiveaway || '').toLowerCase();
       return customerCode.includes(query) || giveaway.includes(query);
     });
-  }, [winnersData, historySearchQuery, filteredWinnersData]);
+  }, [excludedWinners, historySearchQuery]);
 
   const historyTotalPages = Math.ceil(filteredHistoryData.length / historyItemsPerPage);
   const historyStartIndex = (historyCurrentPage - 1) * historyItemsPerPage;
@@ -528,7 +477,7 @@ useEffect(() => {
     return picked;
   };
 
-  const startLuckyDraw = async () => {
+  const startLuckyDraw = () => {
     if (!selectedGiveaway) {
       Swal.fire({
         title: 'Select Giveaway',
@@ -536,18 +485,6 @@ useEffect(() => {
         icon: 'warning',
         confirmButtonText: 'OK'
       });
-      return;
-    }
-
-    try {
-     await refetchWinnersData(); 
-    } catch (error) {
-       Swal.fire({
-      title: 'Sync Error',
-      text: 'Failed to sync winner data. Please try again.',
-      icon: 'error',
-      confirmButtonText: 'OK'
-    });
       return;
     }
 
@@ -562,93 +499,23 @@ useEffect(() => {
       return;
     }
 
-    const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
+    // Find giveaway from flat list
+    const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
 
-    if (selectedTier === 'Bronze' && selectedGiveaway === 'daraz_gift_card_5k') {
-      const drawCount = Math.min(90, participants.length);
-      const selectedWinners = pickUniqueWeightedWinners(participants, drawCount);
-
-      setEligibleParticipants(participants);
-      setIsSpinning(true);
-      setWinner(null);
-      setShowWheelModal(true);
-
-      setTimeout(async () => {
-        setShowWheelModal(false);
-
-        const winnerPayloads = selectedWinners.map((selectedWinner) => ({
-          customerCode: selectedWinner['Customer Code'],
-          customerName: selectedWinner['Customer Name'],
-          wonTier: selectedTier,
-          wonGiveaway: giveaway.name,
-          zone: selectedWinner['Zone Desc'],
-          region: selectedWinner['Region'],
-          area: selectedWinner['Area'],
-          giveawayId: selectedGiveaway,
-          giveawayName: giveaway.name,
-          wonDate: new Date().toLocaleString()
-        }));
-
-        const results = await Promise.allSettled(
-          winnerPayloads.map((payload) => axios.post(`${baseUrl}/api/add-winner`, payload))
-        );
-
-        const failedCount = results.filter((result) => result.status === 'rejected').length;
-
-        await refetchWinnersData();
-        setIsSpinning(false);
-
-        if (failedCount > 0) {
-          Swal.fire({
-            title: 'Partial Save Error',
-            text: `${drawCount - failedCount}/${drawCount} winners were saved. Please retry for remaining winners.`,
-            icon: 'warning',
-            confirmButtonText: 'OK'
-          });
-          return;
-        }
-
-        setWinnerData({
-          winners: selectedWinners,
-          giveaway,
-          tier: selectedTier,
-          isBulk: true
-        });
-        setWinner({ ...selectedWinners[0], giveaway });
-        setShowWinnerModal(true);
-      }, 10000);
-
-      return;
-    }
-
-    
-    let drawPoolParticipants = participants;
-
-
-    
-    // Create weighted pool based on entries
-    const weightedPool = [];
-    drawPoolParticipants.forEach(participant => {
-      const entries = participant.drawEntries || 1; // At least 1 entry
-      for (let i = 0; i < entries; i++) {
-        weightedPool.push(participant);
-      }
-    });
-
-
+    // Single draw - pick one random participant
     setEligibleParticipants(participants);
     setIsSpinning(true);
     setWinner(null);
 
     // Show wheel modal first
-    const randomIndex = Math.floor(Math.random() * weightedPool.length);
-    const selectedWinner = weightedPool[randomIndex];
+    const randomIndex = Math.floor(Math.random() * participants.length);
+    const selectedWinner = participants[randomIndex];
     
     // Prepare winner data
     const winnerInfo = {
       winner: selectedWinner,
       giveaway: giveaway,
-      tier: selectedTier
+      tier: 'N/A'
     };
 
     
@@ -657,49 +524,31 @@ useEffect(() => {
     setShowWheelModal(true);
     
     // After wheel animation, show winner announcement
-    setTimeout(async () => {
+    setTimeout(() => {
       setShowWheelModal(false);
       setWinner({ ...selectedWinner, giveaway });
       setIsSpinning(false);
       
-
-      
-      // Add winner to excluded list
+      // Add winner to excluded list (local only, no API)
       const excludedWinner = {
-        customerCode: selectedWinner['Customer Code'],
-        customerName: selectedWinner['Customer Name'],
-        wonTier: selectedTier,
+        customerCode: selectedWinner.cust_cd || selectedWinner['Customer Code'],
+        customerName: selectedWinner.cust_name || selectedWinner['Customer Name'],
+        wonTier: 'N/A',
         wonGiveaway: giveaway.name,
-        zone: selectedWinner['Zone Desc'],
-        region: selectedWinner['Region'],
-        area: selectedWinner['Area'],
+        zone: selectedWinner.Zone || selectedWinner['Zone Desc'],
+        region: selectedWinner.Region,
+        area: selectedWinner.Area,
         giveawayId: selectedGiveaway,
         giveawayName: giveaway.name,
         wonDate: new Date().toLocaleString()
       };
 
-      try {
-        await axios.post(`${baseUrl}/api/add-winner`, excludedWinner);
-        refetchWinnersData();
-      }
+      // Update local state only
+      setExcludedWinners(prev => [...prev, excludedWinner]);
       
-      
-        catch (error) {
-        console.error('Error excluding winner:', error);
-        Swal.fire({
-          title: 'Error Adding Winner',
-          text: 'Failed to add winner to draw',
-          icon: 'error',
-          confirmButtonText: 'OK'
-        });
-        return;
-      }
-            
-      
-            
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, 5000);
   };
 
  
@@ -712,22 +561,13 @@ useEffect(() => {
       showCancelButton: true,
       confirmButtonText: 'Yes, clear it!',
       cancelButtonText: 'Cancel'
-    }).then( async (result) => {
+    }).then((result) => {
       if (result.isConfirmed) {
-
-        try {
-          await axios.delete(`${baseUrl}/api/clear-winners-data`);
-          refetchWinnersData();
-        } catch (error) {
-          console.log(error);
-          return;
-        }
-
-        
-        // Also clear excluded winners and awarded giveaways
+        // Clear local state only (no API)
         setExcludedWinners([]);
         localStorage.removeItem('excludedWinners');
-        
+        setAwardedGiveaways([]);
+        localStorage.removeItem('awardedGiveaways');
         
         // Reset all geographic filters
         setSelectedZone('');
@@ -739,27 +579,6 @@ useEffect(() => {
         Swal.fire('Cleared!', 'Draw history and filters have been cleared.', 'success');
       }
     });
-  };
-
-  const handleTierChange = (tier) => {
-    setSelectedTier(tier);
-    setSelectedGiveaway('');
-    setWinner(null);
-    
-    // Clear disabled fields based on tier
-    if (tier === 'Platinum') {
-      // Platinum: disable Region and Area
-      // setSelectedRegion('');
-      setSelectedArea('');
-    } else if (tier === 'Gold') {
-      // Gold: disable Zone
-      setSelectedZone('');
-    } else if (tier === 'Silver') {
-      // Silver: disable Zone and Region
-      setSelectedZone('');
-      // setSelectedRegion('');
-    }
-    setEligibleParticipants([]);
   };
 
   const handleGiveawayChange = (giveawayId) => {
@@ -805,9 +624,7 @@ useEffect(() => {
     setEligibleParticipants([]);
   };
 
-  const displayedRegion = selectedTier === 'Car'
-    ? 'All Regions'
-    : (role !== 'admin' && name ? name : selectedRegion || 'All Regions');
+  const displayedRegion = role !== 'admin' && name ? name : selectedRegion || 'All Regions';
 
   const displayedParticipantsCount = filterParticipants().length;
 
@@ -836,38 +653,12 @@ useEffect(() => {
     { label: 'Area', key: 'Area' }
   ];
 
-  if (dashboardLoading) {
-    return <Spinner />;
-  }
-
   return (
     <div className="lucky-draw-container" >
       <div className="uk-container uk-container-large">
 
-                        
-        
-        {dashboardError ? (
-          <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
-            <div className="uk-card uk-card-default uk-card-body uk-text-center">
-              <h3>Error Loading Data Please Refresh</h3>
-              {/* <p>{error?.message || 'Failed to load dashboard data'}</p> */}
-              <button onClick={() => window.location.reload()} className="uk-button uk-button-primary">
-                Retry
-              </button>
-            </div>
-          </div>
-        ) : !data ? (
-          // Loading Screen
-          <div className="uk-flex uk-flex-center uk-flex-middle" style={{ height: '100vh' }}>
-            <div className="uk-card uk-card-default uk-card-body uk-text-center">
-              <h3>Loading Dashboard Data...</h3>
-              <p>Please wait while we load customer data for the lucky draw</p>
-              <div uk-spinner="ratio: 2"></div>
-            </div>
-          </div>
-        ) : (
-          // Main Lucky Draw Interface
-          <div className="uk-grid uk-grid-lare " uk-grid="" style={{ marginTop: "16px" }}>
+        {/* Main Lucky Draw Interface */}
+        <div className="uk-grid uk-grid-lare " uk-grid="" style={{ marginTop: "16px" }}>
             
             {/* Wheel Spinning Modal */}
             {showWheelModal && (
@@ -885,67 +676,17 @@ useEffect(() => {
                   <Lottie options={confettiOptions} height={"100%"} width={"100%"} direction={-1} />
                   <div className="winner-info-overlay">
                     <div className="winner-announcement">
-                      {winnerData.isBulk ? (
-                        <>
-                          <div className="giveaway-icon">
-                            <img 
-                              style={{width: '70%', objectFit: 'contain'}} 
-                              src={daraz_gift_card}
-                              alt={winnerData.giveaway.name} 
-                            />
-                          </div>
-                          <div className="winner-header">
-                            <h2 className="winner-title">🎉 Bronze Bulk Draw Complete!</h2>
-                            <h1 className="winner-name">{winnerData.winners?.length || 0} Winners Selected</h1>
-                          </div>
-
-                          <div className="prize-info" style={{width: '100%'}}>
-                            <div className="prize-won">
-                              <span className="info-label">Giveaway:</span>
-                              <span className="info-value prize-name">{winnerData.giveaway.name}</span>
-                            </div>
-
-                            <div style={{maxHeight: '280px', overflowY: 'auto', width: '100%', marginTop: '12px'}}>
-                              <table className="uk-table uk-table-small uk-table-divider" style={{background: 'rgba(255,255,255,0.92)', borderRadius: '10px'}}>
-                                <thead>
-                                  <tr>
-                                    <th>#</th>
-                                    <th>Winner Name</th>
-                                    <th>Customer Code</th>
-                                    <th>Region</th>
-                                  </tr>
-                                </thead>
-                                <tbody>
-                                  {(winnerData.winners || []).map((bulkWinner, index) => (
-                                    <tr key={`${bulkWinner['Customer Code']}-${index}`}>
-                                      <td>{index + 1}</td>
-                                      <td>{bulkWinner['Customer Name'] || bulkWinner.customerName}</td>
-                                      <td>{bulkWinner['Customer Code'] || bulkWinner.customerCode}</td>
-                                      <td>{bulkWinner.Region || '-'}</td>
-                                    </tr>
-                                  ))}
-                                </tbody>
-                              </table>
-                            </div>
-                          </div>
-                        </>
-                      ) : (
-                        <>
-                          <div className="giveaway-icon">
+                      <>
+                        <div className="giveaway-icon">
                             <img 
                               style={{width: '70%', objectFit: 'contain'}} 
                               src={
-                                winnerData.giveaway.id === 'car' ? yaris :
-                                winnerData.giveaway.id === 'gold_1_tola' ? gold_1_tola :
-                                winnerData.giveaway.id === 'gold_5_grams' ? coin :
-                                winnerData.giveaway.id === 'microwave_oven' ? microwave_oven :
-                                winnerData.giveaway.id === 'samsung_a06' ? samsung_a06 :
-                                winnerData.giveaway.id === 'iron' ? iron :
-                                winnerData.giveaway.id === 'food_factory' ? food_factory :
-                                winnerData.giveaway.id === 'juicer' ? juicer :
-                                winnerData.giveaway.id === 'washing_machine' ? washing_machine :
-                                winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
-                                winnerData.giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
+                                winnerData.giveaway.id === '660_cc_car' ? 'assets/images/Alto.png' :
+                                winnerData.giveaway.id === '1300_cc_car' ? yaris :
+                                winnerData.giveaway.id === 'motor_bike' ? 'assets/images/Bike.png' :
+                                winnerData.giveaway.id === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
+                                winnerData.giveaway.id === 'led' ? 'assets/images/Smart-Led.png' :
+                                winnerData.giveaway.id === 'voucher' ? 'assets/images/Voucher.png' :
                                 '/src/assets/images/gift.png'
                               }
                               alt={winnerData.giveaway.name} 
@@ -953,7 +694,7 @@ useEffect(() => {
                           </div>
                           <div className="winner-header">
                             <h2 className="winner-title">🎉 Congratulations!</h2>
-                            <h1 className="winner-name">{winnerData.winner['Customer Name'] || winnerData.winner.customerName}</h1>
+                            <h1 className="winner-name">{winnerData.winner.cust_name || winnerData.winner['Customer Name'] || winnerData.winner.customerName}</h1>
                           </div>
                           
                           <div className="prize-info">
@@ -964,44 +705,44 @@ useEffect(() => {
                             
                             <div className="winner-details">
                               <div className="detail-row">
-                                <span className="info-label">Region:</span>
-                                <span className="info-value">{winnerData.winner.Region || winnerData.winner.Region}</span>
+                                <span className="info-label">Winner Name:</span>
+                                <span className="info-value">{winnerData.winner.cust_name || winnerData.winner['Customer Name'] || winnerData.winner.customerName || '-'}</span>
                               </div>
                               <div className="detail-row">
-                                <span className="info-label">Area:</span>
-                                <span className="info-value">{winnerData.winner.Area || winnerData.winner.AREA}</span>
+                                <span className="info-label">Cust Code:</span>
+                                <span className="info-value">{winnerData.winner.cust_cd || winnerData.winner['Customer Code'] || winnerData.winner.customerCode || '-'}</span>
                               </div>
-                              
-                              {/* <div className="detail-row">
-                                <span className="info-label">Zone:</span>
-                                <span className="info-value">{winnerData.winner.ZoneDesc || winnerData.winner.ZONE}</span>
-                              </div> */}
-                              
-                              
                               <div className="detail-row">
-                                <span className="info-label">Customer Code:</span>
-                                <span className="info-value ">{winnerData.winner['Customer Code'] || winnerData.winner.customerCode}</span>
+                                <span className="info-label">Phone:</span>
+                                <span className="info-value">{winnerData.winner.phone || winnerData.winner.phone_number || '-'}</span>
                               </div>
-
-                              {/* <div className="detail-row">
-                                <span className="info-label">Entries:</span>
-                                <span className="info-value entries-count">{winnerData.winner.drawEntries}</span>
-                              </div> */}
-                              
-                              {/* <div className="detail-row tier-row">
-                                <span className="info-label">Tier:</span>
-                                <span className={`tier-badge-winner tier-${winnerData.tier.toLowerCase()}`}>
-                                  {winnerData.tier.toUpperCase()}
-                                </span>
-                              </div> */}
+                              <div className="detail-row">
+                                <span className="info-label">Reward:</span>
+                                <span className="info-value">{winnerData.giveaway.name || '-'}</span>
+                              </div>
                             </div>
                           </div>
                         </>
-                      )}
 
                       <button 
                         className="winner-close-btn"
-                        onClick={() => setShowWinnerModal(false)}
+                        onClick={() => {
+                          // Add winner to the list
+                          const winnerRecord = {
+                            customerCode: winnerData.winner.cust_cd || winnerData.winner['Customer Code'],
+                            customerName: winnerData.winner.cust_name || winnerData.winner['Customer Name'],
+                            phone: winnerData.winner.phone || winnerData.winner.phone_number || '-',
+                            wonGiveaway: winnerData.giveaway.name,
+                            giveawayId: winnerData.giveaway.id,
+                            wonTier: 'N/A',
+                            wonDate: new Date().toLocaleString(),
+                            region: winnerData.winner.Region,
+                            zone: winnerData.winner.Zone,
+                            area: winnerData.winner.Area
+                          };
+                          setExcludedWinners(prev => [...prev, winnerRecord]);
+                          setShowWinnerModal(false);
+                        }}
                       >
                         Great! 🎊
                       </button>
@@ -1026,13 +767,13 @@ useEffect(() => {
                 Logout
               </button>
             </div>
-              <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
+              <div className="  uk-width-1-1 uk-flex uk-flex-center main-content-card " style={{alignItems: 'baseline', padding: '26px 20px'}}> 
                         <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/gllogo.png' alt="Lifeboy Logo" />
+                          <img className="logo-image" src='assets/images/nfllogo.png' alt="Lifeboy Logo" />
                         </div>
-                        <div className="uk-margin-remove">
+                        {/* <div className="uk-margin-remove">
                           <img className="logo-image" src="assets/images/WINTERPLAN.png" alt="Campaign Logo" />
-                        </div>
+                        </div> */}
                       </div>
 
             
@@ -1041,72 +782,72 @@ useEffect(() => {
             <div className="uk-width-1-1 " style={{paddingLeft: '15px'}}>
               
               <div className="uk-card uk-card-default uk-card-body tier-selection-card" style={{backgroundImage: 'url(/src/assets/images/green bg.png)'}}>
-                <h3 className="uk-card-title">Select Tier & Giveaway</h3>
-                
-                <div className="tier-buttons-home">
-                  {Object.keys(giveawayConfig).map((tier) => (
-                    <div
-                      key={tier}
-                      className={`tier-card-home tier-${tier.toLowerCase()} ${selectedTier === tier ? 'active' : ''}`}
-                      onClick={() => handleTierChange(tier)}
-                      style={{ cursor: 'pointer' }}
+                <div className="uk-flex uk-flex-between uk-flex-middle" style={{marginBottom: '20px'}}>
+                  <h3 className="uk-card-title" style={{margin: 0}}>Select Tier & Giveaway</h3>
+                  
+                  {/* Store Selection Dropdown */}
+                  <div className="store-selector">
+                    <label style={{marginRight: '10px', fontWeight: 'bold'}}>Select Store:</label>
+                    <select 
+                      className="uk-select" 
+                      style={{width: '200px', padding: '8px', borderRadius: '4px'}}
+                      value={selectedStore}
+                      onChange={(e) => setSelectedStore(e.target.value)}
                     >
-                      <div className="tier-icon">
-                        {tier === 'Car' ? <img style={{width: '150px'}} src={yaris} alt="Yaris" /> :
-                        tier === 'Platinum' ? <img style={{width: '150px'}} src={gold_1_tola} alt="Yaris" /> :
-                         tier === 'Gold' ? <img style={{width: '150px'}} src={coin} alt="Gold" /> :
-                         tier === 'Silver' ? <img style={{width: '80px'}} src={tv} alt="Gold" /> :
-                          <img style={{width: '150px'}} src={daraz_gift_card} alt="Silver" />}
-                      </div>
-                      <div className="tier-content">
-                        <h4 className="tier-name">{tier.toUpperCase()}</h4>
-                        <div className="tier-stats">
-                          <span className="tier-value">({giveawayConfig[tier]?.length || 0} giveaways)</span>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
+                      <option value="">-- Select Store --</option>
+                      {GROCERY_STORES.map(store => (
+                        <option key={store.id} value={store.id}>{store.name}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
-
-                {selectedTier && (
-                  <div className="giveaway-selection">
-                    {/* <h3 className="uk-card-title">Select {selectedTier.toUpperCase()} Giveaway:</h3> */}
-                    <div className="giveaway-grid">
-                      {(giveawayConfig[selectedTier] || []).map((giveaway) => (
+                
+                {/* All Rewards Grid - No Tier Hierarchy */}
+                <div className="giveaway-selection" style={{marginTop: '20px'}}>
+                  <h3 className="uk-card-title" style={{marginBottom: '20px'}}>Select Reward</h3>
+                  <div className="giveaway-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px'}}>
+                    {allGiveaways.map((giveaway) => {
+                      // Get store-specific limit
+                      const storeLimit = selectedStore && STORE_GIVEAWAY_LIMITS[selectedStore] 
+                        ? STORE_GIVEAWAY_LIMITS[selectedStore][giveaway.limitKey] || 0 
+                        : 0;
+                      
+                      return (
                         <div
                           key={giveaway.id}
-                          className={ `giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''}`}
-                          onClick={() => handleGiveawayChange(giveaway.id)}
+                          className={`giveaway-card ${selectedGiveaway === giveaway.id ? 'selected' : ''} ${storeLimit === 0 ? 'disabled' : ''}`}
+                          onClick={() => storeLimit > 0 && handleGiveawayChange(giveaway.id)}
+                          style={{ 
+                            opacity: storeLimit === 0 ? 0.5 : 1, 
+                            cursor: storeLimit === 0 ? 'not-allowed' : 'pointer',
+                            padding: '20px',
+                            borderRadius: '12px',
+                            boxShadow: '0 2px 8px rgba(0,0,0,0.1)',
+                            textAlign: 'center'
+                          }}
                         >
-                          <div className="giveaway-icon"><img style={{width: '40%'}} 
-                          
-                          
-                          src={ giveaway.id === 'car' ? yaris :
-                             giveaway.id === 'gold_1_tola' ? gold_1_tola :
-                             giveaway.id === 'gold_5_grams' ? coin :
-                             giveaway.id === 'microwave_oven' ? microwave_oven :
-                             giveaway.id === 'samsung_a06' ? samsung_a06 :
-                             giveaway.id === 'iron' ? iron :
-                             giveaway.id === 'food_factory' ? food_factory :
-                             giveaway.id === 'juicer' ? juicer :
-                             giveaway.id === 'washing_machine' ? washing_machine :
-                             giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
-                             giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
-                             giveaway.id === 'tv' ? tv :
-                             '/src/assets/images/gift.png'}
-                          
-                          
-                          
-                          
-                          
-                          alt={giveaway.name} /></div>
-                          <h5>{giveaway.name}</h5>
-                          <p>{giveaway.description}</p>
+                          <div className="giveaway-icon" style={{marginBottom: '15px'}}>
+                            <img 
+                              style={{width: '120px', height: '120px', objectFit: 'contain'}} 
+                              src={ giveaway.id === '660_cc_car' ? 'assets/images/Alto.png' :
+                                 giveaway.id === '1300_cc_car' ? yaris :
+                                 giveaway.id === 'motor_bike' ? 'assets/images/Bike.png' :
+                                 giveaway.id === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
+                                 giveaway.id === 'led' ? 'assets/images/Smart-Led.png' :
+                                 giveaway.id === 'voucher' ? 'assets/images/Voucher.png' :
+                                 '/src/assets/images/gift.png'}
+                              alt={giveaway.name} 
+                            />
+                          </div>
+                          <h5 style={{margin: '10px 0', fontSize: '16px', fontWeight: '600'}}>{giveaway.name}</h5>
+                          <p style={{margin: 0, fontSize: '14px', color: storeLimit === 0 ? '#999' : '#e71b19'}}>
+                            {selectedStore ? `Limit: ${storeLimit}` : 'Select a store to see limit'}
+                          </p>
                         </div>
-                      ))}
-                    </div>
+                      );
+                    })}
                   </div>
-                )}
+                </div>
 
                 {/* Geographic Filters */}
                 {selectedGiveaway && data && (
@@ -1158,7 +899,7 @@ useEffect(() => {
               <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body participants-card">
                   <h3 className="uk-card-title">Eligible Participants</h3>
-                  <p className="uk-text-small uk-text-muted">For {selectedTier.toUpperCase()} - {giveawayConfig[selectedTier]?.find(g => g.id === selectedGiveaway)?.name}</p>
+                  <p className="uk-text-small uk-text-muted">For {allGiveaways.find(g => g.id === selectedGiveaway)?.name}</p>
                   
                   {/* Search Input */}
                   <div className="uk-margin" style={{ marginBottom: '20px' }}>
@@ -1187,35 +928,15 @@ useEffect(() => {
                     )}
                   </div>
                   
-                  {/* <div className="participants-list">
-                    {filterParticipants().map((participant, index) => (
-                      <div key={participant.cust_cd || participant.customerCode || index} className="participant-item">
-                        <div className="participant-info">
-                          <h5>{participant.cust_name || participant.customerName}</h5>
-                          <p><strong>Customer Code:</strong> {participant.cust_cd || participant.customerCode}</p>
-                          <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
-                        </div>
-                        <span className={`tier-badge tier-${selectedTier}`}>
-                          {selectedTier.toUpperCase()}
-                        </span>
-                      </div>
-                    ))}
-                    {filterParticipants().length === 0 && (
-                      <p className="uk-text-center uk-text-muted">No eligible participants found</p>
-                    )}
-                  </div> */}
 
                   <div className="participants-list">
                     {paginatedParticipants.map((participant, index) => (
                       <div key={participant.cust_cd || participant.customerCode || index} className="participant-item">
                         <div className="participant-info">
                           <h5>{participant.cust_name || participant["Customer Name"]}</h5>
-                          <p><strong>Customer Code:</strong> {participant['Customer Code'] || participant.customerCode}</p>
+                          <p><strong>Customer Code:</strong> {participant['cust_cd'] || participant.customerCode}</p>
                           <p><strong>Entries:</strong> {participant.drawEntries || 0}</p>
                         </div>
-                        <span className={`tier-badge tier-${selectedTier}`}>
-                          {selectedTier.toUpperCase()}
-                        </span>
                       </div>
                     ))}
                     {eligibleParticipantsList.length === 0 && (
@@ -1261,7 +982,7 @@ useEffect(() => {
               <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
                 <div className="uk-card uk-card-default uk-card-body draw-card">
                   <h3 className="uk-card-title">
-                    {giveawayConfig[selectedTier]?.find(g => g.id === selectedGiveaway)?.name} Draw
+                    {allGiveaways.find(g => g.id === selectedGiveaway)?.name} Draw
                   </h3>
                   
                   <div className="draw-wheel-container">
@@ -1270,21 +991,15 @@ useEffect(() => {
                         <img 
                           className="prize-circle-image"
                           src={
-                            selectedGiveaway === 'car' ? yaris :
-                            selectedGiveaway === 'tv' ? tv :
-                            selectedGiveaway === 'gold_1_tola' ? gold_1_tola :
-                            selectedGiveaway === 'gold_5_grams' ? coin :
-                            selectedGiveaway === 'microwave_oven' ? microwave_oven :
-                            selectedGiveaway === 'samsung_a06' ? samsung_a06 :
-                            selectedGiveaway === 'iron' ? iron :
-                            selectedGiveaway === 'food_factory' ? food_factory :
-                            selectedGiveaway === 'juicer' ? juicer :
-                            selectedGiveaway === 'washing_machine' ? washing_machine :
-                            selectedGiveaway === 'daraz_gift_card' ? daraz_gift_card :
-                            selectedGiveaway === 'daraz_gift_card_5k' ? daraz_gift_card :
+                            selectedGiveaway === '660_cc_car' ? "assets/images/Alto.png" :
+                            selectedGiveaway === '1300_cc_car' ? yaris :
+                            selectedGiveaway === 'motor_bike' ? 'assets/images/Bike.png' :
+                            selectedGiveaway === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
+                            selectedGiveaway === 'led' ? 'assets/images/Smart-Led.png' :
+                            selectedGiveaway === 'voucher' ? 'assets/images/Voucher.png' :
                             '/src/assets/images/gift.png'
                           }
-                          alt={giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} 
+                          alt={allGiveaways.find(g => g.id === selectedGiveaway)?.name} 
                         />
                       </div>
                     </div>
@@ -1321,7 +1036,7 @@ useEffect(() => {
               <div className="uk-card uk-card-default uk-card-body history-card">
                 <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
                   <h3 className="uk-card-title">Draw History</h3>
-                  {winnersData?.length > 0 && (
+                  {excludedWinners?.length > 0 && (
                     <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
                       <CSVLink
                         data={csvData}
@@ -1345,7 +1060,7 @@ useEffect(() => {
                   )}
                 </div>
 
-                {filteredWinnersData?.length > 0 && (
+                {excludedWinners?.length > 0 && (
                   <div className="uk-margin-bottom">
                     <input
                       type="text"
@@ -1361,7 +1076,7 @@ useEffect(() => {
                   </div>
                 )}
                 
-                {filteredWinnersData?.length === 0 ? (
+                {excludedWinners?.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No draws conducted yet</p>
                 ) : filteredHistoryData.length === 0 ? (
                   <p className="uk-text-center uk-text-muted">No results found for "{historySearchQuery}"</p>
@@ -1373,24 +1088,26 @@ useEffect(() => {
                           <tr className="uk-text-center">
                             <th className="uk-text-center">Date & Time</th>
                             <th className="uk-text-center">Winner</th>
-                            <th className="uk-text-center">Customer Code</th>
+                            <th className="uk-text-center">Invoice Code</th>
                             <th className="uk-text-center">Giveaway</th>
-                            <th className="uk-text-center">Tier</th>
-                            <th className="uk-text-center">Region - Area</th>
+                            <th className="uk-text-center">Phone</th>
+                            {/* <th className="uk-text-center">Tier</th> */}
+                            <th className="uk-text-center">City</th>
                           </tr>
                         </thead>
                         <tbody>
-                          {paginatedHistoryData?.map((entry) => (
-                            <tr key={entry?.id} className="uk-text-center">
+                          {paginatedHistoryData?.map((entry, index) => (
+                            <tr key={`${entry?.customerCode || 'unknown'}-${entry?.giveawayId || 'giveaway'}-${entry?.wonDate || index}-${index}`} className="uk-text-center">
                               <td>{entry?.wonDate}</td>
                               <td>{entry?.customerName}</td>
                               <td>{entry?.customerCode}</td>
                               <td>{entry?.wonGiveaway}</td>
-                              <td>
-                                <span className={`tier-badge tier-${entry?.wonTier.toLowerCase()}`}>
-                                  {entry?.wonTier?.toUpperCase()}
+                              <td>{entry?.phone || '-'}</td>
+                              {/* <td>
+                                <span className={`tier-badge tier-${(entry?.wonTier || 'na').toLowerCase()}`}>
+                                  {(entry?.wonTier || 'N/A').toUpperCase()}
                                 </span>
-                              </td>
+                              </td> */}
                               <td>{entry?.region || '-'} - {entry?.area || '-'}</td>
                             </tr>
                           ))}
@@ -1439,7 +1156,6 @@ useEffect(() => {
             </div>
 
           </div>
-        )}
       </div>
     </div>
   );
