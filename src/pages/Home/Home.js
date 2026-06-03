@@ -9,16 +9,31 @@ import daraz_gift_card from "../../assets/images/CARD.png";
 
 // Static data with entries
 const STATIC_DATA = [
-  { name: "Muhammad Hanif", contact_number: "03182342620", outlet_name: "Imtiaz", cnic: "4230140019925", city: "Karachi", invoice_number: "00029 2.030526.1.103.S", platinum: 5, gold: 3, silver: 2, bronze: 1 },
-  { name: "Ahmed Khan", contact_number: "03001234567", outlet_name: "Metro", cnic: "4230140019926", city: "Lahore", invoice_number: "00030 2.030526.1.104.S", platinum: 3, gold: 5, silver: 4, bronze: 2 },
-  { name: "Fatima Ali", contact_number: "03211234567", outlet_name: "Carrefour", cnic: "4230140019927", city: "Islamabad", invoice_number: "00031 2.030526.1.105.S", platinum: 8, gold: 2, silver: 6, bronze: 3 },
-  { name: "Bilal Hussain", contact_number: "03331234567", outlet_name: "Al-Fatah", cnic: "4230140019928", city: "Rawalpindi", invoice_number: "00032 2.030526.1.106.S", platinum: 2, gold: 7, silver: 3, bronze: 4 },
-  { name: "Sara Malik", contact_number: "03451234567", outlet_name: "Hyperstar", cnic: "4230140019929", city: "Faisalabad", invoice_number: "00033 2.030526.1.107.S", platinum: 6, gold: 4, silver: 8, bronze: 2 },
-  { name: "Usman Tariq", contact_number: "03121234567", outlet_name: "CSD", cnic: "4230140019930", city: "Multan", invoice_number: "00034 2.030526.1.108.S", platinum: 4, gold: 6, silver: 5, bronze: 3 },
-  { name: "Ayesha Siddiqui", contact_number: "03031234567", outlet_name: "Utility", cnic: "4230140019931", city: "Peshawar", invoice_number: "00035 2.030526.1.109.S", platinum: 7, gold: 3, silver: 4, bronze: 5 },
-  { name: "Hamza Sheikh", contact_number: "03231234567", outlet_name: "Madina", cnic: "4230140019932", city: "Quetta", invoice_number: "00036 2.030526.1.110.S", platinum: 3, gold: 8, silver: 2, bronze: 6 },
-  { name: "Zainab Bukhari", contact_number: "03341234567", outlet_name: "Save Mart", cnic: "4230140019933", city: "Sialkot", invoice_number: "00037 2.030526.1.111.S", platinum: 9, gold: 2, silver: 7, bronze: 1 },
-  { name: "Taimoor Akhtar", contact_number: "03441234567", outlet_name: "Green Store", cnic: "4230140019934", city: "Gujranwala", invoice_number: "00038 2.030526.1.112.S", platinum: 1, gold: 9, silver: 3, bronze: 8 },
+  { name: "Muhammad Hanif", contact_number: "03182342620", outlet_name: "Imtiaz", cnic: "4230140019925", city: "Karachi", invoice_number: "00029 2.030526.1.103.S" },
+  { name: "Ahmed Khan", contact_number: "03001234567", outlet_name: "Metro", cnic: "4230140019926", city: "Lahore", invoice_number: "00030 2.030526.1.104.S" },
+  { name: "Fatima Ali", contact_number: "03211234567", outlet_name: "Carrefour", cnic: "4230140019927", city: "Islamabad", invoice_number: "00031 2.030526.1.105.S" },
+  { name: "Bilal Hussain", contact_number: "03331234567", outlet_name: "Al-Fatah", cnic: "4230140019928", city: "Rawalpindi", invoice_number: "00032 2.030526.1.106.S" },
+  { name: "Sara Malik", contact_number: "03451234567", outlet_name: "Hyperstar", cnic: "4230140019929", city: "Faisalabad", invoice_number: "00033 2.030526.1.107.S" },
+  { name: "Usman Tariq", contact_number: "03121234567", outlet_name: "CSD", cnic: "4230140019930", city: "Multan", invoice_number: "00034 2.030526.1.108.S" },
+  { name: "Ayesha Siddiqui", contact_number: "03031234567", outlet_name: "Utility", cnic: "4230140019931", city: "Peshawar", invoice_number: "00035 2.030526.1.109.S" },
+  { name: "Hamza Sheikh", contact_number: "03231234567", outlet_name: "Madina", cnic: "4230140019932", city: "Quetta", invoice_number: "00036 2.030526.1.110.S" },
+  { name: "Zainab Bukhari", contact_number: "03341234567", outlet_name: "Save Mart", cnic: "4230140019933", city: "Sialkot", invoice_number: "00037 2.030526.1.111.S" },
+  { name: "Taimoor Akhtar", contact_number: "03441234567", outlet_name: "Green Store", cnic: "4230140019934", city: "Gujranwala", invoice_number: "00038 2.030526.1.112.S" },
+  { name: "Hassan Ali", contact_number: "03551234567", outlet_name: "Alfatah", cnic: "4230140019935", city: "Multan", invoice_number: "00039 2.030526.1.113.S" },
+  { name: "Nida Khan", contact_number: "03661234567", outlet_name: "Imtiaz", cnic: "4230140019936", city: "Karachi", invoice_number: "00040 2.030526.1.114.S" },
+  { name: "Rashid Ahmed", contact_number: "03771234567", outlet_name: "Utility", cnic: "4230140019937", city: "Lahore", invoice_number: "00041 2.030526.1.115.S" },
+  { name: "Amina Malik", contact_number: "03881234567", outlet_name: "Carrefour", cnic: "4230140019938", city: "Islamabad", invoice_number: "00042 2.030526.1.116.S" },
+  { name: "Karim Hassan", contact_number: "03991234567", outlet_name: "Metro", cnic: "4230140019939", city: "Rawalpindi", invoice_number: "00043 2.030526.1.117.S" },
+  { name: "Leila Siddiqui", contact_number: "03001111111", outlet_name: "Hyperstar", cnic: "4230140019940", city: "Faisalabad", invoice_number: "00044 2.030526.1.118.S" },
+  { name: "Farhan Khan", contact_number: "03112222222", outlet_name: "CSD", cnic: "4230140019941", city: "Peshawar", invoice_number: "00045 2.030526.1.119.S" },
+  { name: "Saira Ahmed", contact_number: "03223333333", outlet_name: "Save Mart", cnic: "4230140019942", city: "Quetta", invoice_number: "00046 2.030526.1.120.S" },
+  { name: "Imran Hussain", contact_number: "03334444444", outlet_name: "Green Store", cnic: "4230140019943", city: "Sialkot", invoice_number: "00047 2.030526.1.121.S" },
+  { name: "Hina Malik", contact_number: "03445555555", outlet_name: "Alfatah", cnic: "4230140019944", city: "Gujranwala", invoice_number: "00048 2.030526.1.122.S" },
+  { name: "Tariq Khan", contact_number: "03556666666", outlet_name: "Imtiaz", cnic: "4230140019945", city: "Karachi", invoice_number: "00049 2.030526.1.123.S" },
+  { name: "Zara Ahmed", contact_number: "03667777777", outlet_name: "Metro", cnic: "4230140019946", city: "Lahore", invoice_number: "00050 2.030526.1.124.S" },
+  { name: "Amir Hassan", contact_number: "03778888888", outlet_name: "Carrefour", cnic: "4230140019947", city: "Islamabad", invoice_number: "00051 2.030526.1.125.S" },
+  { name: "Rania Khan", contact_number: "03889999999", outlet_name: "Utility", cnic: "4230140019948", city: "Rawalpindi", invoice_number: "00052 2.030526.1.126.S" },
+  { name: "Salim Ahmed", contact_number: "03990000000", outlet_name: "Hyperstar", cnic: "4230140019949", city: "Faisalabad", invoice_number: "00053 2.030526.1.127.S" },
 ];
 
 const Home = () => {
@@ -46,14 +61,12 @@ const Home = () => {
     return filteredData.slice(start, start + itemsPerPage);
   }, [filteredData, currentPage]);
 
-  // Calculate total entry counts
-  const totalCounts = STATIC_DATA.reduce((acc, customer) => {
-    acc.platinum += customer.platinum || 0;
-    acc.gold += customer.gold || 0;
-    acc.silver += customer.silver || 0;
-    acc.bronze += customer.bronze || 0;
-    return acc;
-  }, { platinum: 0, gold: 0, silver: 0, bronze: 0 });
+  // Check if invoice number already won
+  const isInvoiceWinner = (invoiceNumber) => {
+    // This would check against winners data from LuckyDraw
+    // For now, returning false as placeholder
+    return false;
+  };
 
   // Pagination handlers
   const handlePageChange = (newPage) => {
@@ -225,39 +238,23 @@ const Home = () => {
                                           <th className="table-header-cell">CNIC</th>
                                           <th className="table-header-cell">City</th>
                                           <th className="table-header-cell">Invoice Number</th>
-                                          {/* <th className="table-header-cell">Platinum</th>
-                                          <th className="table-header-cell">Gold</th>
-                                          <th className="table-header-cell">Silver</th>
-                                          <th className="table-header-cell">Bronze</th> */}
                                         </tr>
                                       </thead>
                                       <tbody>
                                         {paginatedData.map((customer, index) => (
-                                          <tr key={index} className="table-row">
-                                            <td className="table-cell">{index + 1}</td>
+                                          <tr key={customer.invoice_number} className="table-row" style={{opacity: isInvoiceWinner(customer.invoice_number) ? 0.5 : 1}}>
+                                            <td className="table-cell">{(currentPage - 1) * itemsPerPage + index + 1}</td>
                                             <td className="table-cell">{customer.name}</td>
                                             <td className="table-cell">{customer.contact_number}</td>
                                             <td className="table-cell">{customer.outlet_name}</td>
                                             <td className="table-cell-code">{customer.cnic}</td>
                                             <td className="table-cell">{customer.city}</td>
                                             <td className="table-cell">{customer.invoice_number}</td>
-                                            {/* <td className="table-cell-entries table-cell-entries-platinum">
-                                              <span className="entry-badge entry-badge-platinum">{customer.platinum || 0}</span>
-                                            </td>
-                                            <td className="table-cell-entries table-cell-entries-gold">
-                                              <span className="entry-badge entry-badge-gold">{customer.gold || 0}</span>
-                                            </td>
-                                            <td className="table-cell-entries table-cell-entries-silver">
-                                              <span className="entry-badge entry-badge-silver">{customer.silver || 0}</span>
-                                            </td>
-                                            <td className="table-cell-entries table-cell-entries-bronze">
-                                              <span className="entry-badge entry-badge-bronze">{customer.bronze || 0}</span>
-                                            </td> */}
                                           </tr>
                                         ))}
                                         {paginatedData.length === 0 && (
                                           <tr>
-                                            <td colSpan="10" className="uk-text-center empty-state">No customers found</td>
+                                            <td colSpan="7" className="uk-text-center empty-state">No customers found</td>
                                           </tr>
                                         )}
                                       </tbody>

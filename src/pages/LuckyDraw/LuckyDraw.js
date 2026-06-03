@@ -629,28 +629,30 @@ const LuckyDraw = () => {
   const displayedParticipantsCount = filterParticipants().length;
 
   // Prepare CSV data for export
-  const csvData = (winnersData || []).map((entry, index) => ({
+  const csvData = (excludedWinners || []).map((entry, index) => ({
     'S.No': index + 1,
     'Date & Time': entry.wonDate,
     'Winner Name': entry.customerName,
-    'Customer Code': entry.customerCode,
+    'Invoice Code': entry.customerCode,
+    'Outlet Name': entry.outletName || '-',
     'Giveaway': entry.wonGiveaway,
-    'Tier': entry.wonTier,
-    'Region': entry.region || '-',
-    'Zone': entry.zone || '-',
-    'Area': entry.area || '-'
+    'Phone': entry.phone || '-',
+    'City': entry.region && entry.area ? `${entry.region} - ${entry.area}` : entry.region || entry.area || '-',
+    'Tier': entry.wonTier || '-',
+    'Zone': entry.zone || '-'
   }));
 
   const csvHeaders = [
     { label: 'S.No', key: 'S.No' },
     { label: 'Date & Time', key: 'Date & Time' },
     { label: 'Winner Name', key: 'Winner Name' },
-    { label: 'Customer Code', key: 'Customer Code' },
+    { label: 'Invoice Code', key: 'Invoice Code' },
+    { label: 'Outlet Name', key: 'Outlet Name' },
     { label: 'Giveaway', key: 'Giveaway' },
+    { label: 'Phone', key: 'Phone' },
+    { label: 'City', key: 'City' },
     { label: 'Tier', key: 'Tier' },
-    { label: 'Region', key: 'Region' },
-    { label: 'Zone', key: 'Zone' },
-    { label: 'Area', key: 'Area' }
+    { label: 'Zone', key: 'Zone' }
   ];
 
   return (
@@ -731,6 +733,7 @@ const LuckyDraw = () => {
                           const winnerRecord = {
                             customerCode: winnerData.winner.cust_cd || winnerData.winner['Customer Code'],
                             customerName: winnerData.winner.cust_name || winnerData.winner['Customer Name'],
+                            outletName: winnerData.winner.outlet_name || winnerData.winner['Outlet Name'] || '-',
                             phone: winnerData.winner.phone || winnerData.winner.phone_number || '-',
                             wonGiveaway: winnerData.giveaway.name,
                             giveawayId: winnerData.giveaway.id,
@@ -1091,8 +1094,8 @@ const LuckyDraw = () => {
                             <th className="uk-text-center">Invoice Code</th>
                             <th className="uk-text-center">Giveaway</th>
                             <th className="uk-text-center">Phone</th>
-                            {/* <th className="uk-text-center">Tier</th> */}
                             <th className="uk-text-center">City</th>
+                            <th className="uk-text-center">Outlet Name</th>
                           </tr>
                         </thead>
                         <tbody>
@@ -1103,12 +1106,8 @@ const LuckyDraw = () => {
                               <td>{entry?.customerCode}</td>
                               <td>{entry?.wonGiveaway}</td>
                               <td>{entry?.phone || '-'}</td>
-                              {/* <td>
-                                <span className={`tier-badge tier-${(entry?.wonTier || 'na').toLowerCase()}`}>
-                                  {(entry?.wonTier || 'N/A').toUpperCase()}
-                                </span>
-                              </td> */}
-                              <td>{entry?.region || '-'} - {entry?.area || '-'}</td>
+                              <td>{entry?.area || '-'}</td>
+                              <td>{entry?.outletName || '-'}</td>
                             </tr>
                           ))}
                         </tbody>
