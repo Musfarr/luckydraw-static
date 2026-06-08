@@ -687,7 +687,7 @@ const LuckyDraw = () => {
                                 winnerData.giveaway.id === '1300_cc_car' ? yaris :
                                 winnerData.giveaway.id === 'motor_bike' ? 'assets/images/Bike.png' :
                                 winnerData.giveaway.id === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
-                                winnerData.giveaway.id === 'led' ? 'assets/images/Smart-Led.png' :
+                                winnerData.giveaway.id === 'led' ? 'assets/images/Smart-LED.png' :
                                 winnerData.giveaway.id === 'voucher' ? 'assets/images/Voucher.png' :
                                 '/src/assets/images/gift.png'
                               }
@@ -836,7 +836,7 @@ const LuckyDraw = () => {
                                  giveaway.id === '1300_cc_car' ? yaris :
                                  giveaway.id === 'motor_bike' ? 'assets/images/Bike.png' :
                                  giveaway.id === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
-                                 giveaway.id === 'led' ? 'assets/images/Smart-Led.png' :
+                                 giveaway.id === 'led' ? 'assets/images/Smart-LED.png' :
                                  giveaway.id === 'voucher' ? 'assets/images/Voucher.png' :
                                  '/src/assets/images/gift.png'}
                               alt={giveaway.name} 
@@ -998,7 +998,7 @@ const LuckyDraw = () => {
                             selectedGiveaway === '1300_cc_car' ? yaris :
                             selectedGiveaway === 'motor_bike' ? 'assets/images/Bike.png' :
                             selectedGiveaway === 'mobile_phone' ? 'assets/images/Smart-phone.png' :
-                            selectedGiveaway === 'led' ? 'assets/images/Smart-Led.png' :
+                            selectedGiveaway === 'led' ? 'assets/images/Smart-LED.png' :
                             selectedGiveaway === 'voucher' ? 'assets/images/Voucher.png' :
                             '/src/assets/images/gift.png'
                           }
