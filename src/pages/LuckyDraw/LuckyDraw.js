@@ -35,7 +35,7 @@ const BASE_GIVEAWAY_CONFIG = {
     { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Winner Total', limit: 1, limitType: 'global' },
   ],
   Platinum: [
-    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 20, limitType: 'region' },
+    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 4, limitType: 'region' },
 
   ],
   Gold: [
