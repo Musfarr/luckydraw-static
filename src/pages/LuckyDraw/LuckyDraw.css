@@ -16,6 +16,7 @@
   background-attachment: fixed;
   background-size: 100% 100%;
   background-repeat: no-repeat;
+  min-height:100vh ;
 }
 
 /* Home Component Styles */
@@ -651,7 +652,7 @@
   width: 250px;
   height: 250px;
   border-radius: 50%;
-  background: linear-gradient(45deg, #ffd700, #ffed4e, #ffd700, #fbbf24);
+  background: linear-gradient(45deg, #a8200d, #dc3545, #e4e4e4, #ffffff);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -1338,6 +1339,22 @@
   transform: scale(0.5);
   opacity: 0;
   animation: unfold 0.5s ease-out 0.1s forwards;
+}
+
+.bulk-modal-content {
+  display: block;
+  background: #fff;
+  border-radius: 20px;
+  padding: 32px;
+  width: 90%;
+  max-width: 900px;
+  max-height: 85vh;
+  overflow-y: auto;
+  position: relative;
+  animation: unfold 0.5s ease-out 0.1s forwards;
+  transform: scale(0.5);
+  opacity: 0;
+  margin: auto;
 }
 
 /* Animation keyframes for modal transitions */

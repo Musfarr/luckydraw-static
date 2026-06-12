@@ -1,6 +1,8 @@
 import React, { useState } from "react";
 import { View, ViewOff } from "@carbon/icons-react";
 import { useNavigate } from "react-router-dom";
+import Swal from 'sweetalert2';
+import { apiPost } from "../../Utils/apiServices";
 
 const Login = () => {
   const navigate = useNavigate();
@@ -14,15 +16,29 @@ const Login = () => {
 
   const handleLogin = (e) => {
     e.preventDefault();
+    if (!user.email || !user.password) {
+      Swal.fire({ icon: 'warning', title: 'Missing Fields', text: 'Please enter email and password' });
+      return;
+    }
     setLoading(true);
-
-    // Static login - any credentials work
-    setTimeout(() => {
-      localStorage.setItem("token", "static-token");
-      localStorage.setItem("user", JSON.stringify({ name: "Admin", role: "admin" }));
-      setLoading(false);
-      navigate("/home");
-    }, 500);
+    apiPost(
+      '/api/login',
+      (response) => {
+        localStorage.setItem('token', response.token);
+        localStorage.setItem('user', JSON.stringify(response.userData));
+        setLoading(false);
+        navigate('/home');
+      },
+      (error) => {
+        setLoading(false);
+        Swal.fire({
+          icon: 'error',
+          title: 'Login Failed',
+          text: error?.response?.data?.message || 'Invalid email or password',
+        });
+      },
+      { email: user.email, password: user.password }
+    );
   };
 
   return (
