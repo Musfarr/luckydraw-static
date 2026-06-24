@@ -201,10 +201,10 @@ const Home = () => {
                                           <th className="table-header-cell">S.No</th>
                                           <th className="table-header-cell">Name</th>
                                           <th className="table-header-cell">Contact Number</th>
-                                          <th className="table-header-cell">Outlet Name</th>
+                                          {/* <th className="table-header-cell">Outlet Name</th>
                                           <th className="table-header-cell">CNIC</th>
                                           <th className="table-header-cell">City</th>
-                                          <th className="table-header-cell">Invoice Number</th>
+                                          <th className="table-header-cell">Invoice Number</th> */}
                                         </tr>
                                       </thead>
                                       <tbody>
@@ -217,10 +217,10 @@ const Home = () => {
                                             <td className="table-cell">{(currentPage - 1) * ITEMS_PER_PAGE + index + 1}</td>
                                             <td className="table-cell">{customer.Name}</td>
                                             <td className="table-cell">{customer.Contact}</td>
-                                            <td className="table-cell">{customer.Store}</td>
+                                            {/* <td className="table-cell">{customer.Store}</td>
                                             <td className="table-cell-code">{customer.Cnic}</td>
                                             <td className="table-cell">{customer.City}</td>
-                                            <td className="table-cell">{customer.invoice_number}</td>
+                                            <td className="table-cell">{customer.invoice_number}</td> */}
                                           </tr>
                                         ))}
                                       </tbody>

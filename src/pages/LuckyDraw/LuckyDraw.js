@@ -578,7 +578,7 @@ const LuckyDraw = () => {
           </div>
 
           {/* Eligible Participants List */}
-          {selectedGiveaway && selectedStore && (
+          {/* {selectedGiveaway && selectedStore && (
             <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
               <div className="uk-card uk-card-default uk-card-body participants-card">
                 <h3 className="uk-card-title">Eligible Participants</h3>
@@ -623,7 +623,7 @@ const LuckyDraw = () => {
                 )}
               </div>
             </div>
-          )}
+          )} */}
 
           {/* Draw Section */}
           {selectedGiveaway && selectedStore && (
