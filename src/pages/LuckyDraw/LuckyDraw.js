@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+﻿import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../Context/AuthProvider";
 import { useDistributorData } from "../../Context/DistributorDataProvider";
 import { apiGetasync } from "../../Utils/apiServices";
@@ -42,8 +42,8 @@ const BASE_GIVEAWAY_CONFIG = {
     { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '7 Per Region', limit: 7, limitType: 'region' }
   ],
   Silver: [
-    { id: 'daraz_gift_card', name: 'Daraz 40K Gift Card', icon: '🎁', description: '9 Per Region', limit: 9, limitType: 'region' },
-    { id: 'tv', name: 'LED TV', icon: '📺', description: '5 Per Region', limit: 5, limitType: 'region' },
+    { id: 'daraz_gift_card', name: 'Daraz 40K Gift Card', icon: '🎁', description: '9 Per Region', limit: 8, limitType: 'region' },
+    { id: 'tv', name: 'LED TV', icon: '📺', description: '5 Per Region', limit: 6, limitType: 'region' },
     
   ],
   Bronze: [
