@@ -106,7 +106,12 @@ const LuckyDraw = () => {
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const itemsPerPage = 30;
   const historyItemsPerPage = 50;
-  const role = 'admin';
+  const role = auth.user.role;
+  const name = auth.user.name;
+
+
+  // console.log(auth , " authhh")
+
 
   // React Query â€” fetch all participants (no pagination, full pool for draw)
   const { data: participantsData, isLoading: participantsLoading } = useQuery({
@@ -320,6 +325,7 @@ const LuckyDraw = () => {
       wonGiveaway: giveaway.name,
       wonDate: new Date().toLocaleString(),
       giveawayId: giveaway.id,
+      DrawUser: auth.user.email,
     };
     try {
       await addWinnerMutation.mutateAsync(record);
@@ -347,6 +353,8 @@ const LuckyDraw = () => {
           wonGiveaway: giveaway.name,
           wonDate: new Date().toLocaleString(),
           giveawayId: giveaway.id,
+          DrawUser: auth.user.email,
+
         };
         await addWinnerMutation.mutateAsync(record);
       }
