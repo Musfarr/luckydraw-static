@@ -1,4 +1,4 @@
-﻿import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import { useAuth } from "../../Context/AuthProvider";
 import Swal from 'sweetalert2';
 import { CSVLink } from "react-csv";
@@ -41,29 +41,29 @@ const GROCERY_STORES = [
 
 // Store-specific giveaway limits — keys match GROCERY_STORES ids
 const STORE_GIVEAWAY_LIMITS = {
-  'al_fatah':     { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0,  'mobile_phone': 0,  'led': 0,  'voucher': 100 },
-  'rainbow':      { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 5,  'mobile_phone': 6,  'led': 0,  'voucher': 50  },
-  'risen':        { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4,  'mobile_phone': 6,  'led': 0,  'voucher': 50  },
-  'rahim':        { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3,  'mobile_phone': 6,  'led': 0,  'voucher': 50  },
-  'euro':         { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3,  'mobile_phone': 6,  'led': 0,  'voucher': 50  },
-  'lateef_multan':{ '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2,  'mobile_phone': 6,  'led': 0,  'voucher': 20  },
-  'imtiaz':       { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0,  'mobile_phone': 8,  'led': 25, 'voucher': 0   },
-  'chase_up':     { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0,  'mobile_phone': 2,  'led': 5,  'voucher': 0   },
-  'kifayah':      { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0,  'mobile_phone': 4,  'led': 5,  'voucher': 0   },
-  'bin_hashim':   { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 8,  'mobile_phone': 2,  'led': 5,  'voucher': 0   },
-  'chase_plus':   { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4,  'mobile_phone': 3,  'led': 4,  'voucher': 0   },
-  'diamond':      { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2,  'mobile_phone': 3,  'led': 4,  'voucher': 0   },
-  'dawood':       { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1,  'mobile_phone': 3,  'led': 4,  'voucher': 0   },
-  'max_bachat':   { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1,  'mobile_phone': 3,  'led': 4,  'voucher': 0   },
-  'ideal_mart':   { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2,  'mobile_phone': 2,  'led': 4,  'voucher': 0   },
-  'pcc':          { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0,  'mobile_phone': 0,  'led': 0,  'voucher': 110 },
-  'savemart':     { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 11, 'mobile_phone': 11, 'led': 11, 'voucher': 40  },
-  'gelani':       { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 6,  'mobile_phone': 6,  'led': 6,  'voucher': 0   },
-  'mcc':          { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4,  'mobile_phone': 4,  'led': 4,  'voucher': 0   },
-  'asian_mall':   { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3,  'mobile_phone': 3,  'led': 3,  'voucher': 0   },
-  'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1,  'mobile_phone': 1,  'led': 1,  'voucher': 0   },
-  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3,  'mobile_phone': 3,  'led': 3,  'voucher': 0   },
-  'hbk':          { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2,  'mobile_phone': 2,  'led': 2,  'voucher': 0   },
+  'al_fatah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 100 },
+  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 5, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
+  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
+  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
+  'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 6, 'led': 0, 'voucher': 20 },
+  'imtiaz': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 8, 'led': 25, 'voucher': 0 },
+  'chase_up': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 2, 'led': 5, 'voucher': 0 },
+  'kifayah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 4, 'led': 5, 'voucher': 0 },
+  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 8, 'mobile_phone': 2, 'led': 5, 'voucher': 0 },
+  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'ideal_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
+  'pcc': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
+  'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 11, 'mobile_phone': 11, 'led': 11, 'voucher': 40 },
+  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 6, 'mobile_phone': 6, 'led': 6, 'voucher': 0 },
+  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 4, 'voucher': 0 },
+  'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
+  'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
+  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
+  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
 };
 
 const BASE_GIVEAWAY_CONFIG = {
@@ -110,7 +110,9 @@ const LuckyDraw = () => {
   const name = auth.user.name;
 
 
-  // console.log(auth , " authhh")
+
+
+  console.log(auth, " authhh")
 
 
   // React Query â€” fetch all participants (no pagination, full pool for draw)
@@ -183,9 +185,18 @@ const LuckyDraw = () => {
     [selectedStore]
   );
 
-  // Check if a participant has already won (by invoice_number)
-  const isExcluded = (invoice_number) =>
-    winners.some(w => w.invoice_number === invoice_number);
+  // Normalize invoice numbers to eliminate discrepancies from whitespace, casing, or data types
+  const normalizeInvoice = (val) => {
+    if (val === null || val === undefined) return '';
+    return String(val).trim().toLowerCase();
+  };
+
+  // Check if a participant has already won (by normalized invoice_number)
+  const isExcluded = (invoice_number, winnersList = winners) => {
+    const clean = normalizeInvoice(invoice_number);
+    if (!clean) return true; // Exclude empty/invalid invoices
+    return (winnersList || []).some(w => normalizeInvoice(w.invoice_number) === clean);
+  };
 
   // Check if per-store giveaway limit is reached
   const isGiveawayLimitReached = (giveaway) => {
@@ -194,7 +205,7 @@ const LuckyDraw = () => {
     if (limit === 0) return true;
     const awarded = winners.filter(w =>
       w.giveawayId === giveaway.id &&
-      (w.parsedOutlet || '').toLowerCase() === selectedStoreName.toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
     ).length;
     return awarded >= limit;
   };
@@ -204,20 +215,33 @@ const LuckyDraw = () => {
     if (!selectedStore) return 0;
     return winners.filter(w =>
       w.giveawayId === giveaway.id &&
-      (w.parsedOutlet || '').toLowerCase() === selectedStoreName.toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
     ).length;
   };
 
-  // Eligible pool: store match + not excluded + giveaway limit not reached
+  // Eligible pool: store match + not excluded + deduplicated by unique invoice + giveaway limit not reached
   const eligibleParticipantsList = useMemo(() => {
     if (!participants.length || !selectedStore || !selectedGiveaway) return [];
     const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
     if (!giveaway || isGiveawayLimitReached(giveaway)) return [];
-    return participants.filter(p =>
-      (p.Store || '').toLowerCase() === selectedStore.toLowerCase() &&
-      !isExcluded(p.invoice_number)
+
+    const winnerInvoices = new Set(
+      winners.map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
     );
-  }, [participants, selectedStore, selectedGiveaway, winners, selectedStoreName]);
+    const seenInvoices = new Set();
+    const result = [];
+    const targetStore = selectedStore.trim().toLowerCase();
+
+    for (const p of participants) {
+      const inv = normalizeInvoice(p.invoice_number);
+      const store = (p.Store || '').trim().toLowerCase();
+      if (inv && store === targetStore && !winnerInvoices.has(inv) && !seenInvoices.has(inv)) {
+        seenInvoices.add(inv);
+        result.push(p);
+      }
+    }
+    return result;
+  }, [participants, selectedStore, selectedGiveaway, winners, selectedStoreName, allGiveaways]);
 
   // Search filter on eligible list
   const searchFilteredParticipants = useMemo(() => {
@@ -254,8 +278,11 @@ const LuckyDraw = () => {
 
   useEffect(() => { setHistoryCurrentPage(1); }, [historySearchQuery]);
 
-  // Start the lucky draw â€” refetches winners first for freshness
+  // Start the lucky draw â€” refetches winners first for freshness & ensures strict invoice uniqueness
   const startLuckyDraw = async () => {
+    if (isSpinning || showWheelModal || showWinnerModal || bulkWinners) {
+      return;
+    }
     if (!selectedGiveaway) {
       Swal.fire({ title: 'Select Reward', text: 'Please select a reward before starting', icon: 'warning' });
       return;
@@ -271,7 +298,7 @@ const LuckyDraw = () => {
     const storeLimit = STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0;
     const wonCount = currentWinners.filter(w =>
       w.giveawayId === selectedGiveaway &&
-      (w.parsedOutlet || '').toLowerCase() === selectedStoreName.toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
     ).length;
 
     if (storeLimit === 0 || wonCount >= storeLimit) {
@@ -279,20 +306,37 @@ const LuckyDraw = () => {
       return;
     }
 
-    const freshEligible = participants.filter(p =>
-      (p.Store || '').toLowerCase() === selectedStore.toLowerCase() &&
-      !currentWinners.some(w => w.invoice_number === p.invoice_number)
+    const winnerInvoices = new Set(
+      currentWinners.map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
     );
+
+    // Filter and strictly deduplicate by invoice so no invoice appears twice in draw pool
+    const seenInvoices = new Set();
+    const freshEligible = [];
+    const targetStore = selectedStore.trim().toLowerCase();
+
+    for (const p of participants) {
+      const inv = normalizeInvoice(p.invoice_number);
+      const store = (p.Store || '').trim().toLowerCase();
+      if (inv && store === targetStore && !winnerInvoices.has(inv) && !seenInvoices.has(inv)) {
+        seenInvoices.add(inv);
+        freshEligible.push(p);
+      }
+    }
 
     if (freshEligible.length === 0) {
       Swal.fire({ title: 'No Eligible Participants', text: 'No eligible participants for this store and reward', icon: 'warning' });
       return;
     }
 
-    // Bulk draw for voucher: pick all remaining slots at once
+    // Bulk draw for voucher: pick all remaining slots at once using Fisher-Yates shuffle
     if (giveaway.id === 'voucher') {
-      const remaining = storeLimit - wonCount;
-      const shuffled = [...freshEligible].sort(() => Math.random() - 0.5);
+      const remaining = Math.min(storeLimit - wonCount, freshEligible.length);
+      const shuffled = [...freshEligible];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
       const picked = shuffled.slice(0, remaining);
       setBulkWinners({ winners: picked, giveaway });
       return;
@@ -310,12 +354,22 @@ const LuckyDraw = () => {
     }, 10000);
   };
 
-  // Confirm and persist winner to DB
+  // Confirm and persist winner to DB with duplicate check
   const handleConfirmWinner = async () => {
     if (!winnerData) return;
     const { winner, giveaway } = winnerData;
+    const cleanInv = normalizeInvoice(winner.invoice_number);
+
+    // Double check that invoice hasn't already been recorded
+    if (winners.some(w => normalizeInvoice(w.invoice_number) === cleanInv)) {
+      Swal.fire({ title: 'Already Won', text: 'This invoice has already won a prize.', icon: 'warning' });
+      setShowWinnerModal(false);
+      setWinnerData(null);
+      return;
+    }
+
     const record = {
-      invoice_number: winner.invoice_number,
+      invoice_number: String(winner.invoice_number || '').trim(),
       Name: winner.Name,
       Contact: winner.Contact,
       Cnic: winner.Cnic,
@@ -330,20 +384,39 @@ const LuckyDraw = () => {
     try {
       await addWinnerMutation.mutateAsync(record);
       setShowWinnerModal(false);
+      setWinnerData(null);
     } catch {
       Swal.fire({ title: 'Error', text: 'Failed to save winner. Please try again.', icon: 'error' });
     }
   };
 
-  // Confirm and persist all bulk (voucher) winners
+  // Confirm and persist all bulk (voucher) winners with strict uniqueness
   const handleConfirmBulkWinners = async () => {
     if (!bulkWinners) return;
     setIsBulkSaving(true);
     const { winners: picked, giveaway } = bulkWinners;
+
+    // Deduplicate picked list by invoice
+    const uniquePickedMap = new Map();
+    picked.forEach(p => {
+      const inv = normalizeInvoice(p.invoice_number);
+      if (inv && !uniquePickedMap.has(inv)) {
+        uniquePickedMap.set(inv, p);
+      }
+    });
+    const uniquePicked = Array.from(uniquePickedMap.values());
+
     try {
-      for (const winner of picked) {
+      const { data: latestWinners } = await refetchWinners();
+      const existingInvoices = new Set(
+        (latestWinners || []).map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
+      );
+
+      const toSave = uniquePicked.filter(w => !existingInvoices.has(normalizeInvoice(w.invoice_number)));
+
+      for (const winner of toSave) {
         const record = {
-          invoice_number: winner.invoice_number,
+          invoice_number: String(winner.invoice_number || '').trim(),
           Name: winner.Name,
           Contact: winner.Contact,
           Cnic: winner.Cnic,
@@ -354,12 +427,11 @@ const LuckyDraw = () => {
           wonDate: new Date().toLocaleString(),
           giveawayId: giveaway.id,
           DrawUser: auth.user.email,
-
         };
         await addWinnerMutation.mutateAsync(record);
       }
       setBulkWinners(null);
-      Swal.fire({ title: 'Done!', text: `${picked.length} voucher winners saved successfully.`, icon: 'success', timer: 2000, showConfirmButton: false });
+      Swal.fire({ title: 'Done!', text: `${toSave.length} voucher winners saved successfully.`, icon: 'success', timer: 2000, showConfirmButton: false });
     } catch {
       Swal.fire({ title: 'Error', text: 'Failed to save some winners. Please try again.', icon: 'error' });
     } finally {
@@ -430,25 +502,25 @@ const LuckyDraw = () => {
 
           {/* Bulk Voucher Winners Modal */}
           {bulkWinners && (
-            <div className="winner-modal-overlay" style={{overflowY: 'auto', alignItems: 'flex-start', paddingTop: '40px'}}>
+            <div className="winner-modal-overlay" style={{ overflowY: 'auto', alignItems: 'flex-start', paddingTop: '40px' }}>
               <div className="bulk-modal-content">
-                <h2 style={{textAlign: 'center', color: '#e2178d', marginBottom: '8px'}}>Voucher Winners</h2>
-                <p style={{textAlign: 'center', color: '#666', marginBottom: '24px'}}>{selectedStoreName} &mdash; {bulkWinners.winners.length} winners selected</p>
-                <div style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px'}}>
+                <h2 style={{ textAlign: 'center', color: '#e2178d', marginBottom: '8px' }}>Voucher Winners</h2>
+                <p style={{ textAlign: 'center', color: '#666', marginBottom: '24px' }}>{selectedStoreName} &mdash; {bulkWinners.winners.length} winners selected</p>
+                <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
                   {bulkWinners.winners.map((w, i) => (
-                    <div key={w.invoice_number || i} style={{background: '#f8f9fa', borderRadius: '12px', padding: '12px', border: '1px solid #e5e5e5'}}>
-                      <div style={{fontWeight: '700', fontSize: '14px', marginBottom: '4px'}}>{w.Name}</div>
-                      <div style={{fontSize: '12px', color: '#555'}}><strong>Invoice:</strong> {w.invoice_number}</div>
-                      <div style={{fontSize: '12px', color: '#555'}}><strong>Contact:</strong> {w.Contact}</div>
-                      <div style={{fontSize: '12px', color: '#555'}}><strong>City:</strong> {w.City}</div>
+                    <div key={w.invoice_number || i} style={{ background: '#f8f9fa', borderRadius: '12px', padding: '12px', border: '1px solid #e5e5e5' }}>
+                      <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>{w.Name}</div>
+                      <div style={{ fontSize: '12px', color: '#555' }}><strong>Invoice:</strong> {w.invoice_number}</div>
+                      <div style={{ fontSize: '12px', color: '#555' }}><strong>Contact:</strong> {w.Contact}</div>
+                      <div style={{ fontSize: '12px', color: '#555' }}><strong>City:</strong> {w.City}</div>
                     </div>
                   ))}
                 </div>
-                <div style={{display: 'flex', gap: '12px', justifyContent: 'center'}}>
-                  <button className="winner-close-btn" onClick={handleConfirmBulkWinners} disabled={isBulkSaving} style={{minWidth: '160px'}}>
+                <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
+                  <button className="winner-close-btn" onClick={handleConfirmBulkWinners} disabled={isBulkSaving} style={{ minWidth: '160px' }}>
                     {isBulkSaving ? `Saving... (${bulkWinners.winners.length})` : `Confirm & Save All`}
                   </button>
-                  <button className="winner-close-btn" onClick={() => setBulkWinners(null)} disabled={isBulkSaving} style={{minWidth: '120px', background: '#999'}}>
+                  <button className="winner-close-btn" onClick={() => setBulkWinners(null)} disabled={isBulkSaving} style={{ minWidth: '120px', background: '#999' }}>
                     Cancel
                   </button>
                 </div>
@@ -464,7 +536,7 @@ const LuckyDraw = () => {
                 <div className="winner-info-overlay">
                   <div className="winner-announcement">
                     <div className="giveaway-icon">
-                      <img style={{width: '70%', objectFit: 'contain'}} src={getGiveawayImage(winnerData.giveaway.id)} alt={winnerData.giveaway.name} />
+                      <img style={{ width: '70%', objectFit: 'contain' }} src={getGiveawayImage(winnerData.giveaway.id)} alt={winnerData.giveaway.name} />
                     </div>
                     <div className="winner-header">
                       <h2 className="winner-title">Congratulations!</h2>
@@ -511,22 +583,22 @@ const LuckyDraw = () => {
             </button>
           </div>
 
-          <div className="uk-width-1-1 uk-flex uk-flex-center main-content-card" style={{alignItems: 'baseline', padding: '26px 20px'}}>
+          <div className="uk-width-1-1 uk-flex uk-flex-center main-content-card" style={{ alignItems: 'baseline', padding: '26px 20px' }}>
             <div className="uk-margin-remove">
               <img className="logo-image" src='assets/images/nfllogo.png' alt="NFL Logo" />
             </div>
           </div>
 
           {/* Store & Reward Selection */}
-          <div className="uk-width-1-1" style={{paddingLeft: '15px'}}>
+          <div className="uk-width-1-1" style={{ paddingLeft: '15px' }}>
             <div className="uk-card uk-card-default uk-card-body tier-selection-card">
-              <div className="uk-flex uk-flex-between uk-flex-middle" style={{marginBottom: '20px'}}>
-                <h3 className="uk-card-title" style={{margin: 0}}>Select Store & Reward</h3>
+              <div className="uk-flex uk-flex-between uk-flex-middle" style={{ marginBottom: '20px' }}>
+                <h3 className="uk-card-title" style={{ margin: 0 }}>Select Store & Reward</h3>
                 <div className="store-selector">
-                  <label style={{marginRight: '10px', fontWeight: 'bold'}}>Select Store:</label>
+                  <label style={{ marginRight: '10px', fontWeight: 'bold' }}>Select Store:</label>
                   <select
                     className="uk-select"
-                    style={{width: '200px', padding: '8px', borderRadius: '4px'}}
+                    style={{ width: '200px', padding: '8px', borderRadius: '4px' }}
                     value={selectedStore}
                     onChange={(e) => { setSelectedStore(e.target.value); setSelectedGiveaway(''); }}
                   >
@@ -536,9 +608,9 @@ const LuckyDraw = () => {
                 </div>
               </div>
 
-              <div className="giveaway-selection" style={{marginTop: '20px'}}>
-                <h3 className="uk-card-title" style={{marginBottom: '20px'}}></h3>
-                <div className="giveaway-grid" style={{display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px'}}>
+              <div className="giveaway-selection" style={{ marginTop: '20px' }}>
+                <h3 className="uk-card-title" style={{ marginBottom: '20px' }}></h3>
+                <div className="giveaway-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
                   {allGiveaways.map((giveaway) => {
                     const storeLimit = selectedStore ? (STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0) : 0;
                     const wonCount = getStoreWonCount(giveaway);
@@ -551,11 +623,11 @@ const LuckyDraw = () => {
                         onClick={() => !disabled && setSelectedGiveaway(giveaway.id)}
                         style={{ opacity: disabled ? 0.5 : 1, cursor: disabled ? 'not-allowed' : 'pointer', padding: '20px', borderRadius: '12px', boxShadow: '0 2px 8px rgba(0,0,0,0.1)', textAlign: 'center' }}
                       >
-                        <div className="giveaway-icon" style={{marginBottom: '15px'}}>
-                          <img style={{width: '120px', height: '120px', objectFit: 'contain'}} src={getGiveawayImage(giveaway.id)} alt={giveaway.name} />
+                        <div className="giveaway-icon" style={{ marginBottom: '15px' }}>
+                          <img style={{ width: '120px', height: '120px', objectFit: 'contain' }} src={getGiveawayImage(giveaway.id)} alt={giveaway.name} />
                         </div>
-                        <h5 style={{margin: '10px 0', fontSize: '16px', fontWeight: '600'}}>{giveaway.name}</h5>
-                        <p style={{margin: 0, fontSize: '14px', color: remaining === 0 ? '#999' : '#e71b19'}}>
+                        <h5 style={{ margin: '10px 0', fontSize: '16px', fontWeight: '600' }}>{giveaway.name}</h5>
+                        <p style={{ margin: 0, fontSize: '14px', color: remaining === 0 ? '#999' : '#e71b19' }}>
                           {selectedStore ? (remaining === 0 ? 'Fully Awarded' : `Remaining: ${remaining} / ${storeLimit}`) : 'Select a store to see limit'}
                         </p>
                       </div>
@@ -565,16 +637,16 @@ const LuckyDraw = () => {
               </div>
 
               {selectedGiveaway && selectedStore && (
-                <div className="filter-section" style={{marginTop: '20px'}}>
-                  <div className="uk-card uk-card-default uk-card-body" style={{borderRadius: '20px'}}>
-                    <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{gap: '16px'}}>
+                <div className="filter-section" style={{ marginTop: '20px' }}>
+                  <div className="uk-card uk-card-default uk-card-body" style={{ borderRadius: '20px' }}>
+                    <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{ gap: '16px' }}>
                       <div>
                         <div className="uk-text-meta">Selected Store</div>
-                        <div style={{fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2'}}>{selectedStoreName}</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>{selectedStoreName}</div>
                       </div>
-                      <div style={{textAlign: 'right'}}>
+                      <div style={{ textAlign: 'right' }}>
                         <div className="uk-text-meta">Eligible Participants</div>
-                        <div style={{fontSize: '32px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2'}}>
+                        <div style={{ fontSize: '32px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
                           {participantsLoading ? '...' : eligibleParticipantsList.length}
                         </div>
                       </div>
@@ -635,7 +707,7 @@ const LuckyDraw = () => {
 
           {/* Draw Section */}
           {selectedGiveaway && selectedStore && (
-            <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
+            <div className="uk-width-1-1@m" style={{ paddingLeft: '15px' }}>
               <div className="uk-card uk-card-default uk-card-body draw-card">
                 <h3 className="uk-card-title">{allGiveaways.find(g => g.id === selectedGiveaway)?.name} Draw {selectedStoreName}</h3>
                 <div className="draw-wheel-container">
@@ -655,13 +727,13 @@ const LuckyDraw = () => {
           )}
 
           {/* Draw History */}
-          <div className="uk-width-1-1" style={{paddingLeft: '15px'}}>
+          <div className="uk-width-1-1" style={{ paddingLeft: '15px' }}>
             <div className="uk-card uk-card-default uk-card-body history-card">
               <div className="uk-flex uk-flex-between uk-flex-middle uk-margin-bottom">
                 <h3 className="uk-card-title">Draw History ({winners.length})</h3>
                 {winners.length > 0 && (
-                  <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
-                    <CSVLink data={csvData} headers={csvHeaders} filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`} className="uk-button uk-button-primary uk-button-small" style={{textDecoration: 'none', color: 'white'}}>
+                  <div className="uk-flex uk-flex-middle" style={{ gap: '10px' }}>
+                    <CSVLink data={csvData} headers={csvHeaders} filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`} className="uk-button uk-button-primary uk-button-small" style={{ textDecoration: 'none', color: 'white' }}>
                       Export CSV
                     </CSVLink>
                     {role === 'admin' && (
@@ -673,7 +745,7 @@ const LuckyDraw = () => {
 
               {winners.length > 0 && (
                 <div className="uk-margin-bottom">
-                  <input className="uk-input" type="text" placeholder="Search by name, invoice or giveaway..." value={historySearchQuery} onChange={(e) => setHistorySearchQuery(e.target.value)} style={{maxWidth: '400px'}} />
+                  <input className="uk-input" type="text" placeholder="Search by name, invoice or giveaway..." value={historySearchQuery} onChange={(e) => setHistorySearchQuery(e.target.value)} style={{ maxWidth: '400px' }} />
                   <div className="uk-margin-small-top uk-text-small uk-text-muted">
                     Showing {paginatedHistoryData.length} of {filteredHistoryData.length} results
                   </div>
@@ -716,7 +788,7 @@ const LuckyDraw = () => {
                   </div>
 
                   {historyTotalPages > 1 && (
-                    <div className="uk-flex uk-flex-center uk-flex-middle uk-margin-top" style={{gap: '10px'}}>
+                    <div className="uk-flex uk-flex-center uk-flex-middle uk-margin-top" style={{ gap: '10px' }}>
                       <button className="uk-button uk-button-default uk-button-small" onClick={() => setHistoryCurrentPage(1)} disabled={historyCurrentPage === 1}>First</button>
                       <button className="uk-button uk-button-default uk-button-small" onClick={() => setHistoryCurrentPage(p => Math.max(1, p - 1))} disabled={historyCurrentPage === 1}>Previous</button>
                       <span className="uk-text-small">Page {historyCurrentPage} of {historyTotalPages}</span>

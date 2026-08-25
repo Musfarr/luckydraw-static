@@ -3,9 +3,11 @@ import { View, ViewOff } from "@carbon/icons-react";
 import { useNavigate } from "react-router-dom";
 import Swal from 'sweetalert2';
 import { apiPost } from "../../Utils/apiServices";
+import { useAuth } from "../../Context/AuthProvider";
 
 const Login = () => {
   const navigate = useNavigate();
+  const { setAuth } = useAuth();
 
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
@@ -26,6 +28,10 @@ const Login = () => {
       (response) => {
         localStorage.setItem('token', response.token);
         localStorage.setItem('user', JSON.stringify(response.userData));
+        setAuth({
+          token: response.token,
+          user: response.userData || {},
+        });
         setLoading(false);
         navigate('/home');
       },
