@@ -42,28 +42,28 @@ const GROCERY_STORES = [
 // Store-specific giveaway limits — keys match GROCERY_STORES ids
 const STORE_GIVEAWAY_LIMITS = {
   'al_fatah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 100 },
-  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 5, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
-  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
-  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
-  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 6, 'led': 0, 'voucher': 50 },
+  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 4, 'led': 0, 'voucher': 27 },
+  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 29 },
+  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 4, 'led': 0, 'voucher': 27 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 4, 'voucher': 22 },
   'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 6, 'led': 0, 'voucher': 20 },
-  'imtiaz': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 8, 'led': 25, 'voucher': 0 },
-  'chase_up': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 2, 'led': 5, 'voucher': 0 },
-  'kifayah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 4, 'led': 5, 'voucher': 0 },
-  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 8, 'mobile_phone': 2, 'led': 5, 'voucher': 0 },
-  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
-  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
-  'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
-  'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 3, 'led': 4, 'voucher': 0 },
+  'imtiaz': { '660_cc_car': 0, '1300_cc_car': 2, 'motor_bike': 0, 'mobile_phone': 16, 'led': 50, 'voucher': 0 },
+  'chase_up': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 0 },
+  'kifayah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 2, 'voucher': 0 },
+  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
+  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
+  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 1, 'led': 4, 'voucher': 0 },
+  'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
   'ideal_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
   'pcc': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
-  'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 11, 'mobile_phone': 11, 'led': 11, 'voucher': 40 },
-  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 6, 'mobile_phone': 6, 'led': 6, 'voucher': 0 },
-  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 4, 'voucher': 0 },
-  'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
+  'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 9, 'mobile_phone': 6, 'led': 6, 'voucher': 23 },
+  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 3, 'voucher': 0 },
+  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
+  'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 2, 'led': 3, 'voucher': 0 },
   'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
-  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 3, 'led': 3, 'voucher': 0 },
-  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 0, 'voucher': 0 },
 };
 
 const BASE_GIVEAWAY_CONFIG = {
@@ -106,8 +106,9 @@ const LuckyDraw = () => {
   const [historySearchQuery, setHistorySearchQuery] = useState('');
   const itemsPerPage = 30;
   const historyItemsPerPage = 50;
-  const role = auth.user.role;
-  const name = auth.user.name;
+  const role = auth?.user?.role;
+  const name = auth?.user?.name;
+  const isAdmin = role === 'admin';
 
 
 
@@ -461,30 +462,47 @@ const LuckyDraw = () => {
     });
   };
 
-  // CSV export â€” local, from API winners data
-  const csvData = winners.map((entry, index) => ({
-    'S.No': index + 1,
-    'Date & Time': entry.wonDate,
-    'Winner Name': entry.Name,
-    'Invoice Code': entry.invoice_number,
-    'Outlet Name': entry.parsedOutlet || '-',
-    'Giveaway': entry.wonGiveaway,
-    'Phone': entry.Contact || '-',
-    'City': entry.City || '-',
-    'CNIC': entry.Cnic || '-',
-  }));
+  // CSV export — local, from API winners data
+  const csvData = winners.map((entry, index) => {
+    if (isAdmin) {
+      return {
+        'S.No': index + 1,
+        'Date & Time': entry.wonDate,
+        'Winner Name': entry.Name,
+        'Invoice Code': entry.invoice_number,
+        'Outlet Name': entry.parsedOutlet || '-',
+        'Giveaway': entry.wonGiveaway,
+        'Phone': entry.Contact || '-',
+        'City': entry.City || '-',
+        'CNIC': entry.Cnic || '-',
+      };
+    }
+    return {
+      'Name': entry.Name,
+      'wonDate': entry.wonDate,
+      'Store': entry.parsedOutlet || entry.Store || '-',
+      'Invoice number': entry.invoice_number,
+    };
+  });
 
-  const csvHeaders = [
-    { label: 'S.No', key: 'S.No' },
-    { label: 'Date & Time', key: 'Date & Time' },
-    { label: 'Winner Name', key: 'Winner Name' },
-    { label: 'Invoice Code', key: 'Invoice Code' },
-    { label: 'Outlet Name', key: 'Outlet Name' },
-    { label: 'Giveaway', key: 'Giveaway' },
-    { label: 'Phone', key: 'Phone' },
-    { label: 'City', key: 'City' },
-    { label: 'CNIC', key: 'CNIC' },
-  ];
+  const csvHeaders = isAdmin
+    ? [
+        { label: 'S.No', key: 'S.No' },
+        { label: 'Date & Time', key: 'Date & Time' },
+        { label: 'Winner Name', key: 'Winner Name' },
+        { label: 'Invoice Code', key: 'Invoice Code' },
+        { label: 'Outlet Name', key: 'Outlet Name' },
+        { label: 'Giveaway', key: 'Giveaway' },
+        { label: 'Phone', key: 'Phone' },
+        { label: 'City', key: 'City' },
+        { label: 'CNIC', key: 'CNIC' },
+      ]
+    : [
+        { label: 'Name', key: 'Name' },
+        { label: 'wonDate', key: 'wonDate' },
+        { label: 'Store', key: 'Store' },
+        { label: 'Invoice number', key: 'Invoice number' },
+      ];
 
   return (
     <div className="lucky-draw-container">
@@ -548,18 +566,18 @@ const LuckyDraw = () => {
                         <span className="info-value prize-name">{winnerData.giveaway.name}</span>
                       </div>
                       <div className="winner-details">
-                        <div className="detail-row">
+                        {/* <div className="detail-row">
                           <span className="info-label">Invoice:</span>
                           <span className="info-value">{winnerData.winner.invoice_number || '-'}</span>
-                        </div>
-                        <div className="detail-row">
+                        </div> */}
+                        {/* <div className="detail-row">
                           <span className="info-label">Phone:</span>
                           <span className="info-value">{winnerData.winner.Contact || '-'}</span>
-                        </div>
-                        <div className="detail-row">
+                        </div> */}
+                        {/* <div className="detail-row">
                           <span className="info-label">City:</span>
                           <span className="info-value">{winnerData.winner.City || '-'}</span>
-                        </div>
+                        </div> */}
                         <div className="detail-row">
                           <span className="info-label">Store:</span>
                           <span className="info-value">{selectedStoreName}</span>
@@ -762,25 +780,47 @@ const LuckyDraw = () => {
                     <table className="uk-table uk-table-small uk-table-divider uk-table-hover">
                       <thead>
                         <tr className="uk-text-center">
-                          <th className="uk-text-center">Date & Time</th>
-                          <th className="uk-text-center">Winner</th>
-                          <th className="uk-text-center">Invoice Code</th>
-                          <th className="uk-text-center">Giveaway</th>
-                          <th className="uk-text-center">Phone</th>
-                          <th className="uk-text-center">City</th>
-                          <th className="uk-text-center">Outlet Name</th>
+                          {isAdmin ? (
+                            <>
+                              <th className="uk-text-center">Date & Time</th>
+                              <th className="uk-text-center">Winner</th>
+                              <th className="uk-text-center">Invoice Code</th>
+                              <th className="uk-text-center">Giveaway</th>
+                              <th className="uk-text-center">Phone</th>
+                              <th className="uk-text-center">City</th>
+                              <th className="uk-text-center">Outlet Name</th>
+                            </>
+                          ) : (
+                            <>
+                              <th className="uk-text-center">Name</th>
+                              <th className="uk-text-center">wonDate</th>
+                              <th className="uk-text-center">Store</th>
+                              <th className="uk-text-center">Invoice number</th>
+                            </>
+                          )}
                         </tr>
                       </thead>
                       <tbody>
                         {paginatedHistoryData.map((entry, index) => (
                           <tr key={entry._id || `${entry.invoice_number}-${index}`} className="uk-text-center">
-                            <td>{entry.wonDate}</td>
-                            <td>{entry.Name}</td>
-                            <td>{entry.invoice_number}</td>
-                            <td>{entry.wonGiveaway}</td>
-                            <td>{entry.Contact || '-'}</td>
-                            <td>{entry.City || '-'}</td>
-                            <td>{entry.parsedOutlet || '-'}</td>
+                            {isAdmin ? (
+                              <>
+                                <td>{entry.wonDate}</td>
+                                <td>{entry.Name}</td>
+                                <td>{entry.invoice_number}</td>
+                                <td>{entry.wonGiveaway}</td>
+                                <td>{entry.Contact || '-'}</td>
+                                <td>{entry.City || '-'}</td>
+                                <td>{entry.parsedOutlet || '-'}</td>
+                              </>
+                            ) : (
+                              <>
+                                <td>{entry.Name}</td>
+                                <td>{entry.wonDate}</td>
+                                <td>{entry.parsedOutlet || entry.Store || '-'}</td>
+                                <td>{entry.invoice_number}</td>
+                              </>
+                            )}
                           </tr>
                         ))}
                       </tbody>
