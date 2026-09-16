@@ -42,28 +42,28 @@ const GROCERY_STORES = [
 // Store-specific giveaway limits — keys match GROCERY_STORES ids
 const STORE_GIVEAWAY_LIMITS = {
   'al_fatah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 100 },
-  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 4, 'led': 0, 'voucher': 27 },
-  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 29 },
-  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 4, 'led': 0, 'voucher': 27 },
-  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 4, 'voucher': 22 },
+  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 4, 'led': 0, 'voucher': 25 },
+  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 28 },
+  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 27 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 4, 'voucher': 21 },
   'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 6, 'led': 0, 'voucher': 20 },
-  'imtiaz': { '660_cc_car': 0, '1300_cc_car': 2, 'motor_bike': 0, 'mobile_phone': 16, 'led': 50, 'voucher': 0 },
+  'imtiaz': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 8, 'led': 25, 'voucher': 0 },
   'chase_up': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 0 },
   'kifayah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 2, 'voucher': 0 },
   'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
-  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
+  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
   'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 1, 'led': 4, 'voucher': 0 },
   'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
   'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
   'ideal_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
   'pcc': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
   'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 9, 'mobile_phone': 6, 'led': 6, 'voucher': 23 },
-  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 3, 'voucher': 0 },
+  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 3, 'voucher': 0 },
   'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
   'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 2, 'led': 3, 'voucher': 0 },
   'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
-  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
-  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 0, 'voucher': 0 },
+  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
 };
 
 const BASE_GIVEAWAY_CONFIG = {
@@ -487,22 +487,22 @@ const LuckyDraw = () => {
 
   const csvHeaders = isAdmin
     ? [
-        { label: 'S.No', key: 'S.No' },
-        { label: 'Date & Time', key: 'Date & Time' },
-        { label: 'Winner Name', key: 'Winner Name' },
-        { label: 'Invoice Code', key: 'Invoice Code' },
-        { label: 'Outlet Name', key: 'Outlet Name' },
-        { label: 'Giveaway', key: 'Giveaway' },
-        { label: 'Phone', key: 'Phone' },
-        { label: 'City', key: 'City' },
-        { label: 'CNIC', key: 'CNIC' },
-      ]
+      { label: 'S.No', key: 'S.No' },
+      { label: 'Date & Time', key: 'Date & Time' },
+      { label: 'Winner Name', key: 'Winner Name' },
+      { label: 'Invoice Code', key: 'Invoice Code' },
+      { label: 'Outlet Name', key: 'Outlet Name' },
+      { label: 'Giveaway', key: 'Giveaway' },
+      { label: 'Phone', key: 'Phone' },
+      { label: 'City', key: 'City' },
+      { label: 'CNIC', key: 'CNIC' },
+    ]
     : [
-        { label: 'Name', key: 'Name' },
-        { label: 'wonDate', key: 'wonDate' },
-        { label: 'Store', key: 'Store' },
-        { label: 'Invoice number', key: 'Invoice number' },
-      ];
+      { label: 'Name', key: 'Name' },
+      { label: 'wonDate', key: 'wonDate' },
+      { label: 'Store', key: 'Store' },
+      { label: 'Invoice number', key: 'Invoice number' },
+    ];
 
   return (
     <div className="lucky-draw-container">
@@ -751,11 +751,13 @@ const LuckyDraw = () => {
                 <h3 className="uk-card-title">Draw History ({winners.length})</h3>
                 {winners.length > 0 && (
                   <div className="uk-flex uk-flex-middle" style={{ gap: '10px' }}>
-                    <CSVLink data={csvData} headers={csvHeaders} filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`} className="uk-button uk-button-primary uk-button-small" style={{ textDecoration: 'none', color: 'white' }}>
-                      Export CSV
-                    </CSVLink>
-                    {role === 'admin' && (
-                      <button className="uk-button uk-button-danger uk-button-small" onClick={clearHistory}>Clear History</button>
+                    {isAdmin && (
+                      <>
+                        <CSVLink data={csvData} headers={csvHeaders} filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`} className="uk-button uk-button-primary uk-button-small" style={{ textDecoration: 'none', color: 'white' }}>
+                          Export CSV
+                        </CSVLink>
+                        <button className="uk-button uk-button-danger uk-button-small" onClick={clearHistory}>Clear History</button>
+                      </>
                     )}
                   </div>
                 )}
