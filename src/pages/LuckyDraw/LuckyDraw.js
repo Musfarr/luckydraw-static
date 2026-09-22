@@ -42,27 +42,27 @@ const GROCERY_STORES = [
 // Store-specific giveaway limits — keys match GROCERY_STORES ids
 const STORE_GIVEAWAY_LIMITS = {
   'al_fatah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 100 },
-  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 4, 'led': 0, 'voucher': 25 },
-  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 28 },
-  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 27 },
-  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 4, 'voucher': 21 },
-  'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 6, 'led': 0, 'voucher': 20 },
+  'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 11 },
+  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 16 },
+  'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 28 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 11 },
+  'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 0, 'voucher': 16 },
   'imtiaz': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 8, 'led': 25, 'voucher': 0 },
-  'chase_up': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 0 },
-  'kifayah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 2, 'voucher': 0 },
-  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
-  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
+  'chase_up': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
+  'kifayah': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 2, 'voucher': 0 },
+  'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
+  'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
   'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 1, 'led': 4, 'voucher': 0 },
-  'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
   'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
   'ideal_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
-  'pcc': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
-  'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 9, 'mobile_phone': 6, 'led': 6, 'voucher': 23 },
-  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 3, 'voucher': 0 },
-  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
-  'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 3, 'mobile_phone': 2, 'led': 3, 'voucher': 0 },
+  'pcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
+  'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 6, 'voucher': 16 },
+  'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 2, 'voucher': 0 },
+  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
+  'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
   'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
-  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
+  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
   'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
 };
 
@@ -99,31 +99,85 @@ const LuckyDraw = () => {
   const [showWheelModal, setShowWheelModal] = useState(false);
   const [winnerData, setWinnerData] = useState(null);
   const [bulkWinners, setBulkWinners] = useState(null);
-  const [isBulkSaving, setIsBulkSaving] = useState(false);
-  const [currentPage, setCurrentPage] = useState(1);
-  const [searchQuery, setSearchQuery] = useState('');
   const [historyCurrentPage, setHistoryCurrentPage] = useState(1);
   const [historySearchQuery, setHistorySearchQuery] = useState('');
-  const itemsPerPage = 30;
   const historyItemsPerPage = 50;
   const role = auth?.user?.role;
-  const name = auth?.user?.name;
   const isAdmin = role === 'admin';
 
+  // Local storage for sales team store-specific tier selections
+  const [storeSelectedTier, setStoreSelectedTier] = useState(() => {
+    try {
+      const saved = localStorage.getItem('unilever_sales_store_tiers');
+      return saved ? JSON.parse(saved) : {};
+    } catch (e) {
+      return {};
+    }
+  });
 
+  // React Query — fetch active tier from DB
+  const { data: activeTierData } = useQuery({
+    queryKey: ['activeTier'],
+    queryFn: () => apiGetasync(`${baseUrl}/api/active-tier`),
+    staleTime: 5000,
+    refetchInterval: 10000,
+  });
 
+  const activeTier = (activeTierData?.activeTier || 't1').toLowerCase();
+  const completedTiers = activeTierData?.completedTiers || [];
 
-  console.log(auth, " authhh")
+  // Mutation — update active tier (admin only, sequential 1-way)
+  const updateTierMutation = useMutation({
+    mutationFn: (newTier) => axios.put(`${baseUrl}/api/active-tier`, { activeTier: newTier }, {
+      headers: { 'x-auth-token': localStorage.getItem('token') },
+    }),
+    onSuccess: (res, newTier) => {
+      queryClient.invalidateQueries({ queryKey: ['activeTier'] });
+      queryClient.invalidateQueries({ queryKey: ['winners'] });
+      Swal.fire({
+        title: 'Tier Updated',
+        text: `Active draw tier is now set to ${String(newTier).toUpperCase()}`,
+        icon: 'success',
+        timer: 1500,
+        showConfirmButton: false,
+      });
+    },
+    onError: (err) => {
+      const msg = err?.response?.data?.message || 'Failed to update active tier';
+      Swal.fire({ title: 'Error', text: msg, icon: 'error' });
+    }
+  });
 
+  // Mutation — complete current tier and advance (admin only)
+  const completeTierMutation = useMutation({
+    mutationFn: () => axios.post(`${baseUrl}/api/complete-tier`, {}, {
+      headers: { 'x-auth-token': localStorage.getItem('token') },
+    }),
+    onSuccess: (res) => {
+      queryClient.invalidateQueries({ queryKey: ['activeTier'] });
+      queryClient.invalidateQueries({ queryKey: ['winners'] });
+      Swal.fire({
+        title: 'Tier Advanced',
+        text: res.data?.message || 'Tier marked completed and advanced successfully',
+        icon: 'success',
+        timer: 1800,
+        showConfirmButton: false,
+      });
+    },
+    onError: (err) => {
+      const msg = err?.response?.data?.message || 'Failed to advance tier';
+      Swal.fire({ title: 'Error', text: msg, icon: 'error' });
+    }
+  });
 
-  // React Query â€” fetch all participants (no pagination, full pool for draw)
+  // React Query — fetch all participants (no pagination, full pool for draw)
   const { data: participantsData, isLoading: participantsLoading } = useQuery({
     queryKey: ['allParticipants'],
     queryFn: () => apiGetasync(`${baseUrl}/api/new-customer-data`),
     staleTime: 300000,
   });
 
-  // React Query â€” fetch winners for exclusion and history
+  // React Query — fetch winners for exclusion and history
   const { data: winnersData, refetch: refetchWinners } = useQuery({
     queryKey: ['winners'],
     queryFn: () => apiGetasync(`${baseUrl}/api/winners-data`),
@@ -131,9 +185,9 @@ const LuckyDraw = () => {
   });
 
   const participants = participantsData?.data || [];
-  const winners = winnersData || [];
+  const winners = useMemo(() => winnersData || [], [winnersData]);
 
-  // Mutation â€” persist a winner to DB
+  // Mutation — persist a winner to DB
   const addWinnerMutation = useMutation({
     mutationFn: (record) => axios.post(`${baseUrl}/api/add-winner`, record, {
       headers: { 'x-auth-token': localStorage.getItem('token') },
@@ -141,9 +195,9 @@ const LuckyDraw = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['winners'] }),
   });
 
-  // Mutation â€” clear all winners
+  // Mutation — clear winners for the active tier
   const clearWinnersMutation = useMutation({
-    mutationFn: () => axios.delete(`${baseUrl}/api/clear-winners-data`, {
+    mutationFn: (tierToClear) => axios.delete(`${baseUrl}/api/clear-winners-data?tier=${tierToClear}`, {
       headers: { 'x-auth-token': localStorage.getItem('token') },
     }),
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['winners'] }),
@@ -170,7 +224,7 @@ const LuckyDraw = () => {
   // Flatten all giveaways into a single list
   const allGiveaways = useMemo(() => Object.values(BASE_GIVEAWAY_CONFIG).flat(), []);
 
-  // Giveaway id â†’ image src
+  // Giveaway id -> image src
   const getGiveawayImage = (id) => ({
     '660_cc_car': 'assets/images/Alto.png',
     '1300_cc_car': yaris,
@@ -186,80 +240,132 @@ const LuckyDraw = () => {
     [selectedStore]
   );
 
-  // Normalize invoice numbers to eliminate discrepancies from whitespace, casing, or data types
-  const normalizeInvoice = (val) => {
+  // Normalize helper for invoice, CNIC, and contact strings
+  const normalizeVal = (val) => {
     if (val === null || val === undefined) return '';
     return String(val).trim().toLowerCase();
   };
 
-  // Check if a participant has already won (by normalized invoice_number)
-  const isExcluded = (invoice_number, winnersList = winners) => {
-    const clean = normalizeInvoice(invoice_number);
-    if (!clean) return true; // Exclude empty/invalid invoices
-    return (winnersList || []).some(w => normalizeInvoice(w.invoice_number) === clean);
+  // Helper to check if a winner belongs to the specified tier
+  const isWinnerInTier = (winner, targetTier) => {
+    const wTier = (winner.wonTier || 't1').trim().toLowerCase();
+    const tTier = (targetTier || 't1').trim().toLowerCase();
+    return wTier === tTier || (tTier === 't1' && wTier === 'n/a');
   };
 
-  // Check if per-store giveaway limit is reached
+  // Helper to check if a store has completed all prizes for a tier
+  const isTierCompletedForStore = (storeId, tierToCheck, winnersList = winners) => {
+    if (!storeId) return false;
+    const storeLimits = STORE_GIVEAWAY_LIMITS[storeId] || {};
+    const storeObj = GROCERY_STORES.find(s => s.id === storeId);
+    const storeName = storeObj?.name || '';
+
+    const activeLimits = Object.entries(storeLimits).filter(([_, limit]) => limit > 0);
+    if (activeLimits.length === 0) return false;
+
+    return activeLimits.every(([limitKey, limit]) => {
+      const giveaway = allGiveaways.find(g => g.limitKey === limitKey);
+      if (!giveaway) return true;
+      const count = (winnersList || []).filter(w =>
+        w.giveawayId === giveaway.id &&
+        (w.parsedOutlet || '').trim().toLowerCase() === storeName.trim().toLowerCase() &&
+        isWinnerInTier(w, tierToCheck)
+      ).length;
+      return count >= limit;
+    });
+  };
+
+  // Current draw tier: Admin uses global activeTier; Sales team uses store-specific tier
+  const currentDrawTier = useMemo(() => {
+    if (isAdmin) return activeTier;
+    if (!selectedStore) return 't1';
+
+    const saved = storeSelectedTier[selectedStore];
+    const t1Done = isTierCompletedForStore(selectedStore, 't1');
+    const t2Done = isTierCompletedForStore(selectedStore, 't2');
+
+    if (saved === 't3' && t2Done) return 't3';
+    if (saved === 't2' && t1Done) return 't2';
+    if (t2Done) return 't3';
+    if (t1Done) return 't2';
+    return 't1';
+  }, [isAdmin, activeTier, selectedStore, storeSelectedTier, winners]);
+
+  // Check if per-store giveaway limit is reached for the current tier
   const isGiveawayLimitReached = (giveaway) => {
     if (!selectedStore) return true;
     const limit = STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0;
     if (limit === 0) return true;
     const awarded = winners.filter(w =>
       w.giveawayId === giveaway.id &&
-      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+      isWinnerInTier(w, currentDrawTier)
     ).length;
     return awarded >= limit;
   };
 
-  // Won count for a giveaway at the selected store
+  // Won count for a giveaway at the selected store for the current tier
   const getStoreWonCount = (giveaway) => {
     if (!selectedStore) return 0;
     return winners.filter(w =>
       w.giveawayId === giveaway.id &&
-      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+      isWinnerInTier(w, currentDrawTier)
     ).length;
   };
 
-  // Eligible pool: store match + not excluded + deduplicated by unique invoice + giveaway limit not reached
+  // Eligible pool: store match + triple-key not excluded (CNIC, Mobile, Invoice) + deduplicated
   const eligibleParticipantsList = useMemo(() => {
     if (!participants.length || !selectedStore || !selectedGiveaway) return [];
     const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
     if (!giveaway || isGiveawayLimitReached(giveaway)) return [];
 
-    const winnerInvoices = new Set(
-      winners.map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
-    );
+    const winnerInvoices = new Set();
+    const winnerCnics = new Set();
+    const winnerContacts = new Set();
+
+    winners.forEach(w => {
+      const inv = normalizeVal(w.invoice_number);
+      const cnic = normalizeVal(w.Cnic);
+      const contact = normalizeVal(w.Contact);
+      if (inv) winnerInvoices.add(inv);
+      if (cnic) winnerCnics.add(cnic);
+      if (contact) winnerContacts.add(contact);
+    });
+
     const seenInvoices = new Set();
+    const seenCnics = new Set();
+    const seenContacts = new Set();
     const result = [];
     const targetStore = selectedStore.trim().toLowerCase();
 
     for (const p of participants) {
-      const inv = normalizeInvoice(p.invoice_number);
+      const inv = normalizeVal(p.invoice_number);
+      const cnic = normalizeVal(p.Cnic);
+      const contact = normalizeVal(p.Contact);
       const store = (p.Store || '').trim().toLowerCase();
-      if (inv && store === targetStore && !winnerInvoices.has(inv) && !seenInvoices.has(inv)) {
-        seenInvoices.add(inv);
-        result.push(p);
-      }
+
+      if (!inv || store !== targetStore) continue;
+
+      // Triple-key exclusion against all existing winners
+      if (winnerInvoices.has(inv)) continue;
+      if (cnic && winnerCnics.has(cnic)) continue;
+      if (contact && winnerContacts.has(contact)) continue;
+
+      // Deduplicate within the eligible pool
+      if (seenInvoices.has(inv)) continue;
+      if (cnic && seenCnics.has(cnic)) continue;
+      if (contact && seenContacts.has(contact)) continue;
+
+      seenInvoices.add(inv);
+      if (cnic) seenCnics.add(cnic);
+      if (contact) seenContacts.add(contact);
+
+      result.push(p);
     }
     return result;
-  }, [participants, selectedStore, selectedGiveaway, winners, selectedStoreName, allGiveaways]);
+  }, [participants, selectedStore, selectedGiveaway, winners, selectedStoreName, allGiveaways, currentDrawTier]);
 
-  // Search filter on eligible list
-  const searchFilteredParticipants = useMemo(() => {
-    if (!searchQuery.trim()) return eligibleParticipantsList;
-    const q = searchQuery.toLowerCase();
-    return eligibleParticipantsList.filter(p =>
-      (p.Name || '').toLowerCase().includes(q) ||
-      (p.invoice_number || '').toLowerCase().includes(q) ||
-      (p.Contact || '').toLowerCase().includes(q)
-    );
-  }, [eligibleParticipantsList, searchQuery]);
-
-  const totalPages = Math.ceil(searchFilteredParticipants.length / itemsPerPage);
-  const startIndex = (currentPage - 1) * itemsPerPage;
-  const paginatedParticipants = searchFilteredParticipants.slice(startIndex, startIndex + itemsPerPage);
-
-  useEffect(() => { setCurrentPage(1); }, [selectedGiveaway, selectedStore, searchQuery]);
 
   // History from API: search filtered + paginated
   const filteredHistoryData = useMemo(() => {
@@ -269,7 +375,11 @@ const LuckyDraw = () => {
     return winners.filter(e =>
       (e.invoice_number || '').toLowerCase().includes(q) ||
       (e.Name || '').toLowerCase().includes(q) ||
-      (e.wonGiveaway || '').toLowerCase().includes(q)
+      (e.Contact || '').toLowerCase().includes(q) ||
+      (e.Cnic || '').toLowerCase().includes(q) ||
+      (e.wonGiveaway || '').toLowerCase().includes(q) ||
+      (e.wonTier || '').toLowerCase().includes(q) ||
+      (e.parsedOutlet || '').toLowerCase().includes(q)
     );
   }, [winners, historySearchQuery]);
 
@@ -279,7 +389,7 @@ const LuckyDraw = () => {
 
   useEffect(() => { setHistoryCurrentPage(1); }, [historySearchQuery]);
 
-  // Start the lucky draw â€” refetches winners first for freshness & ensures strict invoice uniqueness
+  // Start the lucky draw — random selection with IMMEDIATE AUTO-SAVE (no reconfirmation / no cheat room)
   const startLuckyDraw = async () => {
     if (isSpinning || showWheelModal || showWinnerModal || bulkWinners) {
       return;
@@ -299,38 +409,68 @@ const LuckyDraw = () => {
     const storeLimit = STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0;
     const wonCount = currentWinners.filter(w =>
       w.giveawayId === selectedGiveaway &&
-      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase()
+      (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+      isWinnerInTier(w, currentDrawTier)
     ).length;
 
     if (storeLimit === 0 || wonCount >= storeLimit) {
-      Swal.fire({ title: 'Limit Reached', text: `All ${giveaway.name} prizes for ${selectedStoreName} have been awarded`, icon: 'info' });
+      Swal.fire({
+        title: 'Limit Reached',
+        text: `All ${giveaway.name} prizes for ${selectedStoreName} in Tier ${currentDrawTier.toUpperCase()} have been awarded`,
+        icon: 'info'
+      });
       return;
     }
 
-    const winnerInvoices = new Set(
-      currentWinners.map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
-    );
+    // Build fresh exclusion sets (triple-key: invoice, CNIC, mobile)
+    const winnerInvoices = new Set();
+    const winnerCnics = new Set();
+    const winnerContacts = new Set();
 
-    // Filter and strictly deduplicate by invoice so no invoice appears twice in draw pool
+    currentWinners.forEach(w => {
+      const inv = normalizeVal(w.invoice_number);
+      const cnic = normalizeVal(w.Cnic);
+      const contact = normalizeVal(w.Contact);
+      if (inv) winnerInvoices.add(inv);
+      if (cnic) winnerCnics.add(cnic);
+      if (contact) winnerContacts.add(contact);
+    });
+
     const seenInvoices = new Set();
+    const seenCnics = new Set();
+    const seenContacts = new Set();
     const freshEligible = [];
     const targetStore = selectedStore.trim().toLowerCase();
 
     for (const p of participants) {
-      const inv = normalizeInvoice(p.invoice_number);
+      const inv = normalizeVal(p.invoice_number);
+      const cnic = normalizeVal(p.Cnic);
+      const contact = normalizeVal(p.Contact);
       const store = (p.Store || '').trim().toLowerCase();
-      if (inv && store === targetStore && !winnerInvoices.has(inv) && !seenInvoices.has(inv)) {
-        seenInvoices.add(inv);
-        freshEligible.push(p);
-      }
+
+      if (!inv || store !== targetStore) continue;
+
+      if (winnerInvoices.has(inv)) continue;
+      if (cnic && winnerCnics.has(cnic)) continue;
+      if (contact && winnerContacts.has(contact)) continue;
+
+      if (seenInvoices.has(inv)) continue;
+      if (cnic && seenCnics.has(cnic)) continue;
+      if (contact && seenContacts.has(contact)) continue;
+
+      seenInvoices.add(inv);
+      if (cnic) seenCnics.add(cnic);
+      if (contact) seenContacts.add(contact);
+
+      freshEligible.push(p);
     }
 
     if (freshEligible.length === 0) {
-      Swal.fire({ title: 'No Eligible Participants', text: 'No eligible participants for this store and reward', icon: 'warning' });
+      Swal.fire({ title: 'No Eligible Participants', text: 'No eligible participants found for this store and reward', icon: 'warning' });
       return;
     }
 
-    // Bulk draw for voucher: pick all remaining slots at once using Fisher-Yates shuffle
+    // Bulk draw for voucher: pick all remaining slots at once & save immediately
     if (giveaway.id === 'voucher') {
       const remaining = Math.min(storeLimit - wonCount, freshEligible.length);
       const shuffled = [...freshEligible];
@@ -339,11 +479,64 @@ const LuckyDraw = () => {
         [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
       }
       const picked = shuffled.slice(0, remaining);
-      setBulkWinners({ winners: picked, giveaway });
+
+      setIsSpinning(true);
+      const savedWinners = [];
+      try {
+        for (const p of picked) {
+          const record = {
+            invoice_number: String(p.invoice_number || '').trim(),
+            Name: p.Name,
+            Contact: p.Contact,
+            Cnic: p.Cnic,
+            City: p.City,
+            parsedOutlet: selectedStoreName,
+            wonTier: currentDrawTier.toLowerCase(),
+            wonGiveaway: giveaway.name,
+            wonDate: new Date().toLocaleString(),
+            giveawayId: giveaway.id,
+            DrawUser: auth?.user?.email || '',
+          };
+          await addWinnerMutation.mutateAsync(record);
+          savedWinners.push(p);
+        }
+        await refetchWinners();
+        setBulkWinners({ winners: savedWinners, giveaway });
+      } catch (err) {
+        const msg = err?.response?.data?.message || 'Failed to save voucher winners';
+        Swal.fire({ title: 'Error', text: msg, icon: 'error' });
+      } finally {
+        setIsSpinning(false);
+      }
       return;
     }
 
+    // Single winner draw: select completely randomly and save immediately
     const selected = freshEligible[Math.floor(Math.random() * freshEligible.length)];
+    const record = {
+      invoice_number: String(selected.invoice_number || '').trim(),
+      Name: selected.Name,
+      Contact: selected.Contact,
+      Cnic: selected.Cnic,
+      City: selected.City,
+      parsedOutlet: selectedStoreName,
+      wonTier: currentDrawTier.toLowerCase(),
+      wonGiveaway: giveaway.name,
+      wonDate: new Date().toLocaleString(),
+      giveawayId: giveaway.id,
+      DrawUser: auth?.user?.email || '',
+    };
+
+    try {
+      await addWinnerMutation.mutateAsync(record);
+      await refetchWinners();
+    } catch (err) {
+      const msg = err?.response?.data?.message || 'Failed to save winner. Please try again.';
+      Swal.fire({ title: 'Draw Failed', text: msg, icon: 'error' });
+      return;
+    }
+
+    // Winner is now safely persisted in the database — run the animation & show result
     setWinnerData({ winner: selected, giveaway });
     setIsSpinning(true);
     setShowWheelModal(true);
@@ -355,96 +548,11 @@ const LuckyDraw = () => {
     }, 10000);
   };
 
-  // Confirm and persist winner to DB with duplicate check
-  const handleConfirmWinner = async () => {
-    if (!winnerData) return;
-    const { winner, giveaway } = winnerData;
-    const cleanInv = normalizeInvoice(winner.invoice_number);
-
-    // Double check that invoice hasn't already been recorded
-    if (winners.some(w => normalizeInvoice(w.invoice_number) === cleanInv)) {
-      Swal.fire({ title: 'Already Won', text: 'This invoice has already won a prize.', icon: 'warning' });
-      setShowWinnerModal(false);
-      setWinnerData(null);
-      return;
-    }
-
-    const record = {
-      invoice_number: String(winner.invoice_number || '').trim(),
-      Name: winner.Name,
-      Contact: winner.Contact,
-      Cnic: winner.Cnic,
-      City: winner.City,
-      parsedOutlet: selectedStoreName,
-      wonTier: 'N/A',
-      wonGiveaway: giveaway.name,
-      wonDate: new Date().toLocaleString(),
-      giveawayId: giveaway.id,
-      DrawUser: auth.user.email,
-    };
-    try {
-      await addWinnerMutation.mutateAsync(record);
-      setShowWinnerModal(false);
-      setWinnerData(null);
-    } catch {
-      Swal.fire({ title: 'Error', text: 'Failed to save winner. Please try again.', icon: 'error' });
-    }
-  };
-
-  // Confirm and persist all bulk (voucher) winners with strict uniqueness
-  const handleConfirmBulkWinners = async () => {
-    if (!bulkWinners) return;
-    setIsBulkSaving(true);
-    const { winners: picked, giveaway } = bulkWinners;
-
-    // Deduplicate picked list by invoice
-    const uniquePickedMap = new Map();
-    picked.forEach(p => {
-      const inv = normalizeInvoice(p.invoice_number);
-      if (inv && !uniquePickedMap.has(inv)) {
-        uniquePickedMap.set(inv, p);
-      }
-    });
-    const uniquePicked = Array.from(uniquePickedMap.values());
-
-    try {
-      const { data: latestWinners } = await refetchWinners();
-      const existingInvoices = new Set(
-        (latestWinners || []).map(w => normalizeInvoice(w.invoice_number)).filter(Boolean)
-      );
-
-      const toSave = uniquePicked.filter(w => !existingInvoices.has(normalizeInvoice(w.invoice_number)));
-
-      for (const winner of toSave) {
-        const record = {
-          invoice_number: String(winner.invoice_number || '').trim(),
-          Name: winner.Name,
-          Contact: winner.Contact,
-          Cnic: winner.Cnic,
-          City: winner.City,
-          parsedOutlet: selectedStoreName,
-          wonTier: 'N/A',
-          wonGiveaway: giveaway.name,
-          wonDate: new Date().toLocaleString(),
-          giveawayId: giveaway.id,
-          DrawUser: auth.user.email,
-        };
-        await addWinnerMutation.mutateAsync(record);
-      }
-      setBulkWinners(null);
-      Swal.fire({ title: 'Done!', text: `${toSave.length} voucher winners saved successfully.`, icon: 'success', timer: 2000, showConfirmButton: false });
-    } catch {
-      Swal.fire({ title: 'Error', text: 'Failed to save some winners. Please try again.', icon: 'error' });
-    } finally {
-      setIsBulkSaving(false);
-    }
-  };
-
-  // Clear all winners via API
+  // Clear winners for active tier via API (Admin only)
   const clearHistory = () => {
     Swal.fire({
-      title: 'Clear History?',
-      text: 'This will permanently remove all draw results',
+      title: `Clear Tier ${currentDrawTier.toUpperCase()} History?`,
+      text: `This will permanently remove all draw results for Tier ${currentDrawTier.toUpperCase()}`,
       icon: 'warning',
       showCancelButton: true,
       confirmButtonText: 'Clear',
@@ -453,8 +561,8 @@ const LuckyDraw = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         try {
-          await clearWinnersMutation.mutateAsync();
-          Swal.fire({ title: 'Cleared', text: 'All draw history has been removed', icon: 'success', timer: 1500, showConfirmButton: false });
+          await clearWinnersMutation.mutateAsync(currentDrawTier);
+          Swal.fire({ title: 'Cleared', text: `All draw history for Tier ${currentDrawTier.toUpperCase()} has been removed`, icon: 'success', timer: 1500, showConfirmButton: false });
         } catch {
           Swal.fire({ title: 'Error', text: 'Failed to clear history', icon: 'error' });
         }
@@ -468,17 +576,20 @@ const LuckyDraw = () => {
       return {
         'S.No': index + 1,
         'Date & Time': entry.wonDate,
+        'Tier': (entry.wonTier || 't1').toUpperCase(),
         'Winner Name': entry.Name,
-        'Invoice Code': entry.invoice_number,
-        'Outlet Name': entry.parsedOutlet || '-',
-        'Giveaway': entry.wonGiveaway,
-        'Phone': entry.Contact || '-',
-        'City': entry.City || '-',
         'CNIC': entry.Cnic || '-',
+        'Phone': entry.Contact || '-',
+        'Invoice Code': entry.invoice_number,
+        'Giveaway': entry.wonGiveaway,
+        'City': entry.City || '-',
+        'Outlet Name': entry.parsedOutlet || '-',
+        'Drawn By': entry.DrawUser || '-',
       };
     }
     return {
       'Name': entry.Name,
+      'Tier': (entry.wonTier || 't1').toUpperCase(),
       'wonDate': entry.wonDate,
       'Store': entry.parsedOutlet || entry.Store || '-',
       'Invoice number': entry.invoice_number,
@@ -489,16 +600,19 @@ const LuckyDraw = () => {
     ? [
       { label: 'S.No', key: 'S.No' },
       { label: 'Date & Time', key: 'Date & Time' },
+      { label: 'Tier', key: 'Tier' },
       { label: 'Winner Name', key: 'Winner Name' },
-      { label: 'Invoice Code', key: 'Invoice Code' },
-      { label: 'Outlet Name', key: 'Outlet Name' },
-      { label: 'Giveaway', key: 'Giveaway' },
-      { label: 'Phone', key: 'Phone' },
-      { label: 'City', key: 'City' },
       { label: 'CNIC', key: 'CNIC' },
+      { label: 'Phone', key: 'Phone' },
+      { label: 'Invoice Code', key: 'Invoice Code' },
+      { label: 'Giveaway', key: 'Giveaway' },
+      { label: 'City', key: 'City' },
+      { label: 'Outlet Name', key: 'Outlet Name' },
+      { label: 'Drawn By', key: 'Drawn By' },
     ]
     : [
       { label: 'Name', key: 'Name' },
+      { label: 'Tier', key: 'Tier' },
       { label: 'wonDate', key: 'wonDate' },
       { label: 'Store', key: 'Store' },
       { label: 'Invoice number', key: 'Invoice number' },
@@ -518,35 +632,35 @@ const LuckyDraw = () => {
             </div>
           )}
 
-          {/* Bulk Voucher Winners Modal */}
+          {/* Bulk Voucher Winners Modal (Already Saved) */}
           {bulkWinners && (
             <div className="winner-modal-overlay" style={{ overflowY: 'auto', alignItems: 'flex-start', paddingTop: '40px' }}>
               <div className="bulk-modal-content">
-                <h2 style={{ textAlign: 'center', color: '#e2178d', marginBottom: '8px' }}>Voucher Winners</h2>
-                <p style={{ textAlign: 'center', color: '#666', marginBottom: '24px' }}>{selectedStoreName} &mdash; {bulkWinners.winners.length} winners selected</p>
+                <h2 style={{ textAlign: 'center', color: '#e2178d', marginBottom: '8px' }}>Voucher Winners (Saved)</h2>
+                <p style={{ textAlign: 'center', color: '#666', marginBottom: '24px' }}>
+                  {selectedStoreName} &mdash; {bulkWinners.winners.length} winners saved for Tier {currentDrawTier.toUpperCase()}
+                </p>
                 <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px', marginBottom: '24px' }}>
                   {bulkWinners.winners.map((w, i) => (
                     <div key={w.invoice_number || i} style={{ background: '#f8f9fa', borderRadius: '12px', padding: '12px', border: '1px solid #e5e5e5' }}>
                       <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>{w.Name}</div>
                       <div style={{ fontSize: '12px', color: '#555' }}><strong>Invoice:</strong> {w.invoice_number}</div>
                       <div style={{ fontSize: '12px', color: '#555' }}><strong>Contact:</strong> {w.Contact}</div>
+                      <div style={{ fontSize: '12px', color: '#555' }}><strong>CNIC:</strong> {w.Cnic || '-'}</div>
                       <div style={{ fontSize: '12px', color: '#555' }}><strong>City:</strong> {w.City}</div>
                     </div>
                   ))}
                 </div>
                 <div style={{ display: 'flex', gap: '12px', justifyContent: 'center' }}>
-                  <button className="winner-close-btn" onClick={handleConfirmBulkWinners} disabled={isBulkSaving} style={{ minWidth: '160px' }}>
-                    {isBulkSaving ? `Saving... (${bulkWinners.winners.length})` : `Confirm & Save All`}
-                  </button>
-                  <button className="winner-close-btn" onClick={() => setBulkWinners(null)} disabled={isBulkSaving} style={{ minWidth: '120px', background: '#999' }}>
-                    Cancel
+                  <button className="winner-close-btn" onClick={() => setBulkWinners(null)} style={{ minWidth: '160px' }}>
+                    Close
                   </button>
                 </div>
               </div>
             </div>
           )}
 
-          {/* Winner Announcement Modal */}
+          {/* Winner Announcement Modal (Already Saved) */}
           {showWinnerModal && winnerData && (
             <div className="winner-modal-overlay">
               <div className="winner-modal-content">
@@ -566,26 +680,26 @@ const LuckyDraw = () => {
                         <span className="info-value prize-name">{winnerData.giveaway.name}</span>
                       </div>
                       <div className="winner-details">
-                        {/* <div className="detail-row">
-                          <span className="info-label">Invoice:</span>
-                          <span className="info-value">{winnerData.winner.invoice_number || '-'}</span>
-                        </div> */}
-                        {/* <div className="detail-row">
-                          <span className="info-label">Phone:</span>
-                          <span className="info-value">{winnerData.winner.Contact || '-'}</span>
-                        </div> */}
-                        {/* <div className="detail-row">
-                          <span className="info-label">City:</span>
-                          <span className="info-value">{winnerData.winner.City || '-'}</span>
-                        </div> */}
+                        <div className="detail-row">
+                          <span className="info-label">Tier:</span>
+                          <span className="info-value" style={{ textTransform: 'uppercase', fontWeight: 'bold', color: '#e2178d' }}>
+                            {currentDrawTier}
+                          </span>
+                        </div>
                         <div className="detail-row">
                           <span className="info-label">Store:</span>
                           <span className="info-value">{selectedStoreName}</span>
                         </div>
                       </div>
                     </div>
-                    <button className="winner-close-btn" onClick={handleConfirmWinner} disabled={addWinnerMutation.isPending}>
-                      {addWinnerMutation.isPending ? 'Saving...' : 'Great!'}
+                    <button
+                      className="winner-close-btn"
+                      onClick={() => {
+                        setShowWinnerModal(false);
+                        setWinnerData(null);
+                      }}
+                    >
+                      Close
                     </button>
                   </div>
                 </div>
@@ -610,24 +724,174 @@ const LuckyDraw = () => {
           {/* Store & Reward Selection */}
           <div className="uk-width-1-1" style={{ paddingLeft: '15px' }}>
             <div className="uk-card uk-card-default uk-card-body tier-selection-card">
-              <div className="uk-flex uk-flex-between uk-flex-middle" style={{ marginBottom: '20px' }}>
-                <h3 className="uk-card-title" style={{ margin: 0 }}>Select Store & Reward</h3>
-                <div className="store-selector">
-                  <label style={{ marginRight: '10px', fontWeight: 'bold' }}>Select Store:</label>
-                  <select
-                    className="uk-select"
-                    style={{ width: '200px', padding: '8px', borderRadius: '4px' }}
-                    value={selectedStore}
-                    onChange={(e) => { setSelectedStore(e.target.value); setSelectedGiveaway(''); }}
+              <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{ marginBottom: '20px', gap: '15px' }}>
+                <div className="uk-flex uk-flex-middle" style={{ gap: '12px' }}>
+                  <h3 className="uk-card-title" style={{ margin: 0 }}>Select Store & Reward</h3>
+                  <span
+                    style={{
+                      background: '#fce4ec',
+                      color: '#e2178d',
+                      padding: '4px 12px',
+                      borderRadius: '16px',
+                      fontWeight: '700',
+                      fontSize: '13px',
+                      letterSpacing: '0.5px'
+                    }}
                   >
-                    <option value="">-- Select Store --</option>
-                    {GROCERY_STORES.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
-                  </select>
+                    ACTIVE TIER: {currentDrawTier.toUpperCase()}
+                  </span>
+                </div>
+
+                <div className="uk-flex uk-flex-middle uk-flex-wrap" style={{ gap: '15px' }}>
+                  {/* Tier Selector */}
+                  <div className="tier-selector uk-flex uk-flex-middle">
+                    <label style={{ marginRight: '8px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Draw Tier:</label>
+                    {isAdmin ? (
+                      <div className="uk-flex uk-flex-middle" style={{ gap: '8px' }}>
+                        <select
+                          className="uk-select"
+                          style={{
+                            width: '140px',
+                            padding: '8px',
+                            borderRadius: '6px',
+                            fontWeight: '600',
+                            borderColor: '#e2178d'
+                          }}
+                          value={activeTier}
+                          disabled={updateTierMutation.isPending}
+                          onChange={(e) => {
+                            const newT = e.target.value;
+                            if (newT === activeTier) return;
+                            Swal.fire({
+                              title: `Switch to ${newT.toUpperCase()}?`,
+                              text: `This will change the active draw tier to ${newT.toUpperCase()} for all users. Rewards will track against ${newT.toUpperCase()} counts.`,
+                              icon: 'question',
+                              showCancelButton: true,
+                              confirmButtonText: 'Yes, Switch Tier',
+                              cancelButtonText: 'Cancel',
+                              confirmButtonColor: '#e2178d'
+                            }).then((result) => {
+                              if (result.isConfirmed) {
+                                updateTierMutation.mutate(newT);
+                              }
+                            });
+                          }}
+                        >
+                          <option value="t1" disabled={completedTiers.includes('t1') && activeTier !== 't1'}>
+                            Tier 1 (T1) {completedTiers.includes('t1') ? '✓' : ''}
+                          </option>
+                          <option value="t2" disabled={(!completedTiers.includes('t1') && activeTier !== 't2') || (completedTiers.includes('t2') && activeTier !== 't2')}>
+                            Tier 2 (T2) {!completedTiers.includes('t1') && activeTier !== 't2' ? '(Locked)' : completedTiers.includes('t2') ? '✓' : ''}
+                          </option>
+                          <option value="t3" disabled={!completedTiers.includes('t2') && activeTier !== 't3'}>
+                            Tier 3 (T3) {!completedTiers.includes('t2') && activeTier !== 't3' ? '(Locked)' : ''}
+                          </option>
+                        </select>
+                        {activeTier !== 't3' && (
+                          <button
+                            className="uk-button uk-button-small"
+                            style={{
+                              backgroundColor: '#e2178d',
+                              color: '#fff',
+                              borderRadius: '4px',
+                              fontSize: '11px',
+                              padding: '0 8px',
+                              fontWeight: '600',
+                              whiteSpace: 'nowrap'
+                            }}
+                            disabled={completeTierMutation.isPending}
+                            onClick={() => {
+                              Swal.fire({
+                                title: `Complete Tier ${activeTier.toUpperCase()}?`,
+                                text: `This will mark Tier ${activeTier.toUpperCase()} as completed and advance to the next tier. This cannot be undone.`,
+                                icon: 'warning',
+                                showCancelButton: true,
+                                confirmButtonText: 'Yes, Complete & Advance',
+                                cancelButtonText: 'Cancel',
+                                confirmButtonColor: '#e2178d'
+                              }).then((result) => {
+                                if (result.isConfirmed) {
+                                  completeTierMutation.mutate();
+                                }
+                              });
+                            }}
+                          >
+                            Mark Tier Complete →
+                          </button>
+                        )}
+                      </div>
+                    ) : (
+                      <select
+                        className="uk-select"
+                        style={{
+                          width: '150px',
+                          padding: '8px',
+                          borderRadius: '6px',
+                          fontWeight: '600',
+                          borderColor: '#e2178d'
+                        }}
+                        value={currentDrawTier}
+                        onChange={(e) => {
+                          const newT = e.target.value;
+                          if (!selectedStore) {
+                            Swal.fire({ title: 'Select Store', text: 'Please select a store first.', icon: 'info' });
+                            return;
+                          }
+                          const updated = { ...storeSelectedTier, [selectedStore]: newT };
+                          setStoreSelectedTier(updated);
+                          try {
+                            localStorage.setItem('unilever_sales_store_tiers', JSON.stringify(updated));
+                          } catch (err) { }
+                          setSelectedGiveaway('');
+                        }}
+                      >
+                        <option
+                          value="t1"
+                          disabled={
+                            (selectedStore && isTierCompletedForStore(selectedStore, 't1') && (currentDrawTier === 't2' || currentDrawTier === 't3'))
+                          }
+                        >
+                          Tier 1 (T1) {selectedStore && isTierCompletedForStore(selectedStore, 't1') ? '✓' : ''}
+                        </option>
+                        <option
+                          value="t2"
+                          disabled={
+                            !selectedStore ||
+                            !isTierCompletedForStore(selectedStore, 't1') ||
+                            (isTierCompletedForStore(selectedStore, 't2') && currentDrawTier === 't3')
+                          }
+                        >
+                          Tier 2 (T2) {!selectedStore || !isTierCompletedForStore(selectedStore, 't1') ? '(Locked)' : isTierCompletedForStore(selectedStore, 't2') ? '✓' : ''}
+                        </option>
+                        <option
+                          value="t3"
+                          disabled={
+                            !selectedStore ||
+                            !isTierCompletedForStore(selectedStore, 't2')
+                          }
+                        >
+                          Tier 3 (T3) {!selectedStore || !isTierCompletedForStore(selectedStore, 't2') ? '(Locked)' : ''}
+                        </option>
+                      </select>
+                    )}
+                  </div>
+
+                  <div className="store-selector uk-flex uk-flex-middle">
+                    <label style={{ marginRight: '8px', fontWeight: 'bold', whiteSpace: 'nowrap' }}>Select Store:</label>
+                    <select
+                      className="uk-select"
+                      style={{ width: '180px', padding: '8px', borderRadius: '4px' }}
+                      value={selectedStore}
+                      onChange={(e) => { setSelectedStore(e.target.value); setSelectedGiveaway(''); }}
+                    >
+                      <option value="">-- Select Store --</option>
+                      {GROCERY_STORES.map(s => <option key={s.id} value={s.id}>{s.name}</option>)}
+                    </select>
+                  </div>
                 </div>
               </div>
 
               <div className="giveaway-selection" style={{ marginTop: '20px' }}>
-                <h3 className="uk-card-title" style={{ marginBottom: '20px' }}></h3>
                 <div className="giveaway-grid" style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fill, minmax(200px, 1fr))', gap: '20px' }}>
                   {allGiveaways.map((giveaway) => {
                     const storeLimit = selectedStore ? (STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0) : 0;
@@ -659,8 +923,10 @@ const LuckyDraw = () => {
                   <div className="uk-card uk-card-default uk-card-body" style={{ borderRadius: '20px' }}>
                     <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{ gap: '16px' }}>
                       <div>
-                        <div className="uk-text-meta">Selected Store</div>
-                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>{selectedStoreName}</div>
+                        <div className="uk-text-meta">Selected Store & Tier</div>
+                        <div style={{ fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
+                          {selectedStoreName} &mdash; {currentDrawTier.toUpperCase()}
+                        </div>
                       </div>
                       <div style={{ textAlign: 'right' }}>
                         <div className="uk-text-meta">Eligible Participants</div>
@@ -675,59 +941,11 @@ const LuckyDraw = () => {
             </div>
           </div>
 
-          {/* Eligible Participants List */}
-          {/* {selectedGiveaway && selectedStore && (
-            <div className="uk-width-1-1@m" style={{paddingLeft: '15px'}}>
-              <div className="uk-card uk-card-default uk-card-body participants-card">
-                <h3 className="uk-card-title">Eligible Participants</h3>
-                <p className="uk-text-small uk-text-muted">
-                  {selectedStoreName} â€” {allGiveaways.find(g => g.id === selectedGiveaway)?.name}
-                  {participantsLoading && ' Â· Loading...'}
-                </p>
-                <div className="uk-margin" style={{marginBottom: '20px'}}>
-                  <div className="uk-inline uk-width-1-1">
-                    <span className="uk-form-icon" uk-icon="icon: search"></span>
-                    <input className="uk-input" type="text" placeholder="Search by name, invoice or contact..." value={searchQuery} onChange={(e) => setSearchQuery(e.target.value)} />
-                  </div>
-                  {searchQuery && <p className="uk-text-small uk-text-muted" style={{marginTop: '5px'}}>Found {searchFilteredParticipants.length} result(s) matching "{searchQuery}"</p>}
-                </div>
-                <div className="participants-list" style={{display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '12px'}}>
-                  {paginatedParticipants.map((p, i) => (
-                    <div key={p._id || p.invoice_number || i} className="participant-item">
-                      <div className="participant-info">
-                        <h5>{p.Name}</h5>
-                        <p><strong>Invoice:</strong> {p.invoice_number}</p>
-                        <p><strong>Contact:</strong> {p.Contact}</p>
-                        <p><strong>City:</strong> {p.City}</p>
-                        <p><strong>Outlet:</strong> {p.Store}</p>
-                      </div>
-                    </div>
-                  ))}
-                  {eligibleParticipantsList.length === 0 && !participantsLoading && (
-                    <p className="uk-text-center uk-text-muted">No eligible participants for this store</p>
-                  )}
-                </div>
-                {totalPages > 1 && (
-                  <div className="uk-flex uk-flex-between uk-flex-middle" style={{marginTop: '20px', padding: '10px', borderTop: '1px solid #e5e5e5'}}>
-                    <div className="uk-text-small uk-text-muted">
-                      Showing {startIndex + 1}â€“{Math.min(startIndex + itemsPerPage, searchFilteredParticipants.length)} of {searchFilteredParticipants.length}
-                    </div>
-                    <div className="uk-flex uk-flex-middle" style={{gap: '10px'}}>
-                      <button className="uk-button uk-button-small uk-button-default" onClick={() => setCurrentPage(p => Math.max(1, p - 1))} disabled={currentPage === 1}>Previous</button>
-                      <span className="uk-text-small">Page {currentPage} of {totalPages}</span>
-                      <button className="uk-button uk-button-small uk-button-default" onClick={() => setCurrentPage(p => Math.min(totalPages, p + 1))} disabled={currentPage === totalPages}>Next</button>
-                    </div>
-                  </div>
-                )}
-              </div>
-            </div>
-          )} */}
-
           {/* Draw Section */}
           {selectedGiveaway && selectedStore && (
             <div className="uk-width-1-1@m" style={{ paddingLeft: '15px' }}>
               <div className="uk-card uk-card-default uk-card-body draw-card">
-                <h3 className="uk-card-title">{allGiveaways.find(g => g.id === selectedGiveaway)?.name} Draw {selectedStoreName}</h3>
+                <h3 className="uk-card-title">{allGiveaways.find(g => g.id === selectedGiveaway)?.name} Draw {selectedStoreName} ({currentDrawTier.toUpperCase()})</h3>
                 <div className="draw-wheel-container">
                   <div className={`draw-wheel ${isSpinning ? 'spinning' : ''}`}>
                     <div className="prize-circle">
@@ -756,7 +974,9 @@ const LuckyDraw = () => {
                         <CSVLink data={csvData} headers={csvHeaders} filename={`lucky-draw-winners-${new Date().toISOString().split('T')[0]}.csv`} className="uk-button uk-button-primary uk-button-small" style={{ textDecoration: 'none', color: 'white' }}>
                           Export CSV
                         </CSVLink>
-                        <button className="uk-button uk-button-danger uk-button-small" onClick={clearHistory}>Clear History</button>
+                        <button className="uk-button uk-button-danger uk-button-small" onClick={clearHistory}>
+                          Clear {currentDrawTier.toUpperCase()} History
+                        </button>
                       </>
                     )}
                   </div>
@@ -765,7 +985,7 @@ const LuckyDraw = () => {
 
               {winners.length > 0 && (
                 <div className="uk-margin-bottom">
-                  <input className="uk-input" type="text" placeholder="Search by name, invoice or giveaway..." value={historySearchQuery} onChange={(e) => setHistorySearchQuery(e.target.value)} style={{ maxWidth: '400px' }} />
+                  <input className="uk-input" type="text" placeholder="Search by name, invoice, giveaway or tier..." value={historySearchQuery} onChange={(e) => setHistorySearchQuery(e.target.value)} style={{ maxWidth: '400px' }} />
                   <div className="uk-margin-small-top uk-text-small uk-text-muted">
                     Showing {paginatedHistoryData.length} of {filteredHistoryData.length} results
                   </div>
@@ -785,16 +1005,20 @@ const LuckyDraw = () => {
                           {isAdmin ? (
                             <>
                               <th className="uk-text-center">Date & Time</th>
+                              <th className="uk-text-center">Tier</th>
                               <th className="uk-text-center">Winner</th>
+                              <th className="uk-text-center">CNIC</th>
+                              <th className="uk-text-center">Phone</th>
                               <th className="uk-text-center">Invoice Code</th>
                               <th className="uk-text-center">Giveaway</th>
-                              <th className="uk-text-center">Phone</th>
                               <th className="uk-text-center">City</th>
                               <th className="uk-text-center">Outlet Name</th>
+                              <th className="uk-text-center">Drawn By</th>
                             </>
                           ) : (
                             <>
                               <th className="uk-text-center">Name</th>
+                              <th className="uk-text-center">Tier</th>
                               <th className="uk-text-center">wonDate</th>
                               <th className="uk-text-center">Store</th>
                               <th className="uk-text-center">Invoice number</th>
@@ -808,16 +1032,28 @@ const LuckyDraw = () => {
                             {isAdmin ? (
                               <>
                                 <td>{entry.wonDate}</td>
+                                <td>
+                                  <span style={{ fontWeight: '700', textTransform: 'uppercase', color: '#e2178d', background: '#fce4ec', padding: '2px 8px', borderRadius: '10px', fontSize: '12px' }}>
+                                    {(entry.wonTier || 't1').toUpperCase()}
+                                  </span>
+                                </td>
                                 <td>{entry.Name}</td>
+                                <td>{entry.Cnic || '-'}</td>
+                                <td>{entry.Contact || '-'}</td>
                                 <td>{entry.invoice_number}</td>
                                 <td>{entry.wonGiveaway}</td>
-                                <td>{entry.Contact || '-'}</td>
                                 <td>{entry.City || '-'}</td>
                                 <td>{entry.parsedOutlet || '-'}</td>
+                                <td>{entry.DrawUser || '-'}</td>
                               </>
                             ) : (
                               <>
                                 <td>{entry.Name}</td>
+                                <td>
+                                  <span style={{ fontWeight: '700', textTransform: 'uppercase', color: '#e2178d', background: '#fce4ec', padding: '2px 8px', borderRadius: '10px', fontSize: '12px' }}>
+                                    {(entry.wonTier || 't1').toUpperCase()}
+                                  </span>
+                                </td>
                                 <td>{entry.wonDate}</td>
                                 <td>{entry.parsedOutlet || entry.Store || '-'}</td>
                                 <td>{entry.invoice_number}</td>
