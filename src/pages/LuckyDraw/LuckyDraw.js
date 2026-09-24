@@ -43,26 +43,26 @@ const GROCERY_STORES = [
 const STORE_GIVEAWAY_LIMITS = {
   'al_fatah': { '660_cc_car': 1, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 100 },
   'rainbow': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 11 },
-  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 16 },
+  'risen': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 18 },
   'rahim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 3, 'led': 0, 'voucher': 28 },
-  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 11 },
+  'euro': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 3, 'voucher': 12 },
   'lateef_multan': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 0, 'voucher': 16 },
   'imtiaz': { '660_cc_car': 0, '1300_cc_car': 1, 'motor_bike': 0, 'mobile_phone': 8, 'led': 25, 'voucher': 0 },
   'chase_up': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
   'kifayah': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 2, 'voucher': 0 },
   'bin_hashim': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
   'chase_plus': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 1, 'voucher': 0 },
-  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 1, 'led': 4, 'voucher': 0 },
+  'diamond': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 0, 'led': 2, 'voucher': 0 },
   'dawood': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
   'max_bachat': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
   'ideal_mart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 4, 'voucher': 0 },
   'pcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 110 },
   'savemart': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 4, 'mobile_phone': 4, 'led': 6, 'voucher': 16 },
   'gelani': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 2, 'voucher': 0 },
-  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
+  'mcc': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 0, 'voucher': 0 },
   'asian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 0, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
   'mushtaq_chai': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 1, 'led': 1, 'voucher': 0 },
-  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 1, 'voucher': 0 },
+  'italian_mall': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 2, 'mobile_phone': 2, 'led': 2, 'voucher': 0 },
   'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
 };
 
@@ -645,8 +645,8 @@ const LuckyDraw = () => {
                     <div key={w.invoice_number || i} style={{ background: '#f8f9fa', borderRadius: '12px', padding: '12px', border: '1px solid #e5e5e5' }}>
                       <div style={{ fontWeight: '700', fontSize: '14px', marginBottom: '4px' }}>{w.Name}</div>
                       <div style={{ fontSize: '12px', color: '#555' }}><strong>Invoice:</strong> {w.invoice_number}</div>
-                      <div style={{ fontSize: '12px', color: '#555' }}><strong>Contact:</strong> {w.Contact}</div>
-                      <div style={{ fontSize: '12px', color: '#555' }}><strong>CNIC:</strong> {w.Cnic || '-'}</div>
+                      {/* <div style={{ fontSize: '12px', color: '#555' }}><strong>Contact:</strong> {w.Contact}</div> */}
+                      {/* <div style={{ fontSize: '12px', color: '#555' }}><strong>CNIC:</strong> {w.Cnic || '-'}</div> */}
                       <div style={{ fontSize: '12px', color: '#555' }}><strong>City:</strong> {w.City}</div>
                     </div>
                   ))}
