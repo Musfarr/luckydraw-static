@@ -7,6 +7,8 @@ import { toast } from "react-toastify";
 import { ValidateEmail } from "../../Utils/regexFunctions";
 import { useAuth } from "../../Context/AuthProvider";
 import { useNavigate } from "react-router-dom";
+import { USE_MOCK_BACKEND } from "../../Utils/appConfig";
+import { mockLogin } from "../../Utils/mockApi";
 
 const baseUrl = process.env.REACT_APP_BASEURL;
 
@@ -40,6 +42,25 @@ const Login = () => {
     setErrorEnable(true);
     e.preventDefault();
     setLoading(true);
+
+    // UI-only mode: any credentials are accepted (no backend call)
+    if (USE_MOCK_BACKEND) {
+      const response = await mockLogin(user.email, user.password);
+      const { token, userData } = response.data;
+
+      localStorage.setItem("token", token);
+      localStorage.setItem("user", JSON.stringify(userData));
+
+      setLoading(false);
+      toast.success("Login successful", {
+        position: toast.POSITION.TOP_RIGHT,
+        autoClose: 800,
+      });
+      setTimeout(() => {
+        window.location.href = "/home";
+      }, 1000);
+      return;
+    }
 
     if (user.email && user.password && emailError === "Valid Email Address") {
       try {
@@ -135,10 +156,10 @@ const Login = () => {
                         }}
                       />
 
-                      {user.email === "" && errorEnable && (
+                      {!USE_MOCK_BACKEND && user.email === "" && errorEnable && (
                         <div className="errors">Email is Required</div>
                       )}
-                      {user.email !== "" &&
+                      {!USE_MOCK_BACKEND && user.email !== "" &&
                         emailError !== "Valid Email Address" && (
                           <div className="errors">Invalid Email Address</div>
                         )}
@@ -169,7 +190,7 @@ const Login = () => {
                         ))}
                     </div>
                   </div>
-                  {user.password === "" && errorEnable && (
+                  {!USE_MOCK_BACKEND && user.password === "" && errorEnable && (
                     <div className="uk-width-1-1 errors">
                       Password is Required
                     </div>

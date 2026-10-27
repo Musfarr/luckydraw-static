@@ -5,14 +5,11 @@ import Spinner from "../../reusables/Spinner";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../../Context/AuthProvider";
 import { useQuery } from "@tanstack/react-query";
-// import lifeboylogo from "../../assets/images/gllogo.png";
-// import campaignlogo from "../../assets/images/WINTERPLAN.png";
 import "../LuckyDraw/LuckyDraw.css";
-
-import yaris from "../../assets/images/yaris2x.png";
-import gold_1_tola from "../../assets/images/barr.png";
-import samsung_a06 from "../../assets/images/tv.png";
-import daraz_gift_card from "../../assets/images/CARD.png";
+import CampaignHeader from "../../components/common/CampaignHeader/CampaignHeader";
+import campaignVisual from "../../assets/images/jeetkibaazi-visual.jpg";
+import { USE_MOCK_BACKEND, GIVEAWAY_CONFIG, TIER_IMAGES, clearSession } from "../../Utils/appConfig";
+import { mockGetCustomerData } from "../../Utils/mockApi";
 
 
 const baseUrl = process.env.REACT_APP_BASEURL;
@@ -42,6 +39,9 @@ const Home = () => {
   const {data: dashboardData , isLoading: dashboardLoading , error: dashboardError, isFetching} = useQuery({
     queryKey: ['dashboardData', currentPage, debouncedSearch],
     queryFn: () => {
+      if (USE_MOCK_BACKEND) {
+        return mockGetCustomerData({ region, page: currentPage, limit: 100, search: debouncedSearch });
+      }
       const params = new URLSearchParams({
         page: currentPage,
         region:region,
@@ -81,15 +81,12 @@ const Home = () => {
       } else if (key === 'total_amount') {
         va = a.total_amount || 0;
         vb = b.total_amount || 0;
-      } else if (key === 'platinum_entries') {
-        va = a.entry_count?.platinum || 0;
-        vb = b.entry_count?.platinum || 0;
-      } else if (key === 'gold_entries') {
-        va = a.entry_count?.gold || 0;
-        vb = b.entry_count?.gold || 0;
       } else if (key === 'silver_entries') {
         va = a.entry_count?.silver || 0;
         vb = b.entry_count?.silver || 0;
+      } else if (key === 'bronze_entries') {
+        va = a.entry_count?.bronze || 0;
+        vb = b.entry_count?.bronze || 0;
       } else {
         va = a[key];
         vb = b[key];
@@ -112,11 +109,10 @@ const Home = () => {
 
   // Calculate total entry counts from current page data
   const totalCounts = data?.reduce((acc, customer) => {
-    acc.platinum += customer.entry_count?.platinum || 0;
-    acc.gold += customer.entry_count?.gold || 0;
     acc.silver += customer.entry_count?.silver || 0;
+    acc.bronze += customer.entry_count?.bronze || 0;
     return acc;
-  }, { platinum: 0, gold: 0, silver: 0 }) || { platinum: 0, gold: 0, silver: 0 };
+  }, { silver: 0, bronze: 0 }) || { silver: 0, bronze: 0 };
 
   // Pagination handlers
   const handlePageChange = (newPage) => {
@@ -183,7 +179,7 @@ const Home = () => {
               <button
                 className="header-action-btn logout"
                 onClick={() => {
-                  localStorage.clear();
+                  clearSession();
                   setAuth({ token: null, user: {} });
                   navigate('/');
                 }}
@@ -196,34 +192,29 @@ const Home = () => {
                     <div className="analyticsWhatsappContent analytics-content">
                       <div className="uk-grid " style={{ alignItems: "baseline" }} uk-grid="">
 
-                      <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
-                        <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/gllogo.png' alt="Winter Plan Logo" />
-                        </div>
-                        <div className="uk-flex uk-flex-center" style={{gap: '20px'}}>
-                          {data && data.length > 0 && (
-                            <button 
-                              onClick={() => navigate('/luckydraw')} 
-                              className="draw-button"
-                            >
-                              🎲 Start Lucky Draw
-                            </button>
-                          )}
-                          {/* <button
-                            className="header-action-btn logout"
-                            onClick={() => {
-                              localStorage.clear();
-                              setAuth({ token: null, user: {} });
-                              navigate('/');
-                            }}
+                      <CampaignHeader geoName={region}>
+                        {data && data.length > 0 && (
+                          <button
+                            onClick={() => navigate('/luckydraw')}
+                            className="draw-button"
                           >
-                            Logout
-                          </button> */}
+                            🎲 Start Lucky Draw
+                          </button>
+                        )}
+                      </CampaignHeader>
+
+                      <div className="uk-width-1-1 main-content-card campaign-hero">
+                        <img className="campaign-hero-visual" src={campaignVisual} alt="Jeet ki Baazi - Winner Takes All" />
+                        <div className="campaign-hero-text">
+                          <h2>Lucky Draw - {region} Geo</h2>
+                          <p>Two slabs, one winner at a time. Pick a slab, run the draw and reveal the winning outlet.</p>
+                          <div className="campaign-hero-stats">
+                            <div><strong>{pagination?.total || 0}</strong><span>Outlets</span></div>
+                            <div><strong>{GIVEAWAY_CONFIG.Silver[0].limit}</strong><span>Silver gifts</span></div>
+                            <div><strong>{GIVEAWAY_CONFIG.Bronze[0].limit}</strong><span>Bronze gifts</span></div>
+                          </div>
                         </div>
-                        <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/WINTERPLAN.png' alt="Campaign Logo" />
-                        </div>
-                      </div>                        
+                      </div>
 
                         <div className="uk-width-1-1 uk-margin-remove">
                           <div className="overviewMainContent " >
@@ -232,42 +223,24 @@ const Home = () => {
                                 <div className="uk-width-1-1 main-content-card">
                                   <div className=" uk-padding " style={{paddingTop:0}}>
                                     <div className="tier-buttons-home">
-                                      <div className="tier-card-home tier-platinum">
-                                        <div className="tier-icon"><img style={{width: '100px'}} src={yaris} alt="Yaris" /></div>
-                                        <div className="tier-content">
-                                          <h4 className="tier-name">PLATINUM</h4>
-                                          <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.platinum} Entries</span> */}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      
-                                      <div className="tier-card-home tier-gold">
-                                        <div className="tier-icon"><img style={{width: '100px'}} src={gold_1_tola} alt="Gold" /></div>
-                                        <div className="tier-content">
-                                          <h4 className="tier-name">GOLD</h4>
-                                          <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.gold} Entries</span> */}
-                                          </div>
-                                        </div>
-                                      </div>
-                                      
                                       <div className="tier-card-home tier-silver">
-                                        <div className="tier-icon"><img style={{width: '60px'}} src={samsung_a06} alt="Silver" /></div>
+                                        <div className="tier-icon"><img style={{width: '110px'}} src={TIER_IMAGES.Silver} alt="Silver" /></div>
                                         <div className="tier-content">
                                           <h4 className="tier-name">SILVER</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
+                                            <span className="tier-value">{GIVEAWAY_CONFIG.Silver[0].name}</span>
+                                            <span className="tier-count">{GIVEAWAY_CONFIG.Silver[0].description}</span>
                                           </div>
                                         </div>
                                       </div>
 
                                       <div className="tier-card-home tier-bronze">
-                                        <div className="tier-icon"><img style={{width: '60px'}} src={daraz_gift_card} alt="Bronze" /></div>
+                                        <div className="tier-icon"><img style={{width: '110px'}} src={TIER_IMAGES.Bronze} alt="Bronze" /></div>
                                         <div className="tier-content">
-                                          <h4 className="tier-name">Bronze</h4>
+                                          <h4 className="tier-name">BRONZE</h4>
                                           <div className="tier-stats">
-                                            {/* <span className="tier-value">{totalCounts.silver} Entries</span> */}
+                                            <span className="tier-value">{GIVEAWAY_CONFIG.Bronze[0].name}</span>
+                                            <span className="tier-count">{GIVEAWAY_CONFIG.Bronze[0].description}</span>
                                           </div>
                                         </div>
                                       </div>
@@ -307,8 +280,6 @@ const Home = () => {
                                           <th className="table-header-cell">Outlet Name</th>
                                           <th className="table-header-cell">Outlet Code</th>
                                           <th className="table-header-cell">Total Amount</th>
-                                          <th className="table-header-cell">Platinum Entries</th>
-                                          <th className="table-header-cell">Gold Entries</th>
                                           <th className="table-header-cell">Silver Entries</th>
                                           <th className="table-header-cell">Bronze Entries</th>
                                         </tr>
@@ -320,12 +291,6 @@ const Home = () => {
                                             <td className="table-cell">{customer["Customer Name"]}</td>
                                             <td className="table-cell-code">{customer["Customer Code"]}</td>
                                             <td className="table-cell">{customer["Invoice - Value (GSV)"]?.toLocaleString() || 0}</td>
-                                            <td className="table-cell-entries table-cell-entries-platinum">
-                                              <span className="entry-badge entry-badge-platinum">{customer.Platinum || 0}</span>
-                                            </td>
-                                            <td className="table-cell-entries table-cell-entries-gold">
-                                              <span className="entry-badge entry-badge-gold">{customer.Gold || 0}</span>
-                                            </td>
                                             <td className="table-cell-entries table-cell-entries-silver">
                                               <span className="entry-badge entry-badge-silver">{customer.Silver || 0}</span>
                                             </td>
@@ -336,7 +301,7 @@ const Home = () => {
                                         ))}
                                         {(!data || data.length === 0) && (
                                           <tr>
-                                            <td colSpan="7" className="uk-text-center empty-state">No customers found</td>
+                                            <td colSpan="6" className="uk-text-center empty-state">No customers found</td>
                                           </tr>
                                         )}
                                       </tbody>

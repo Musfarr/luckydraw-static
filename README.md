@@ -91,3 +91,13 @@ For open source projects, say how it is licensed.
 
 ## Project status
 If you have run out of energy or time for your project, put a note at the top of the README saying that development has slowed down or stopped completely. Someone may choose to fork your project or volunteer to step in as a maintainer or owner, allowing your project to keep going. You can also make an explicit request for maintainers.
+
+## Jeet ki Baazi - UI-only mode
+
+The portal currently runs without a backend. `REACT_APP_USE_MOCK_BACKEND` (default `true`) switches every screen to the static data in `src/Utils/mockApi.js`:
+
+- Login accepts any email and password. Use an email containing a Geo name (e.g. `lahore@jeetkibaazi.com`) to sign in as that Geo, or pick a Geo chip on the login page. The 11 Geos are listed in `src/Utils/appConfig.js`.
+- Each Geo gets its own generated outlet list. Draw results are kept in `localStorage` (use "Clear History" on the draw page to reset).
+- Slabs: Silver - Samsung Mobile A07 (40 gifts per Geo), Bronze - PKR 1K Off Invoice Incentive (400 gifts per Geo).
+
+The API code is untouched. Set `REACT_APP_USE_MOCK_BACKEND=false` to call the backend again.

@@ -8,55 +8,37 @@ import { useQuery } from "@tanstack/react-query";
 import { CSVLink } from "react-csv";
 import { useNavigate } from "react-router-dom";
 import "./LuckyDraw.css";
-import yaris from "../../assets/images/yaris2x.png";
-import gold_1_tola from "../../assets/images/barr.png";
-import coin from "../../assets/images/ss.png";
 import Lottie from 'react-lottie';
 import confetti from "../../assets/Confetti.json";
 import wheel from "../../assets/Countdownnew.json";
-import lifeboylogo from "../../assets/images/lifeboylogo.png";
-import campaignlogo from "../../assets/images/campaignlogo.png";
-
-
-// silver assets
-
-import microwave_oven from "../../assets/images/microwave.png";
-import tv from "../../assets/images/tv.png";
-import samsung_a06 from "../../assets/images/samsung.png";
-import iron from "../../assets/images/iron2x.png";
-import food_factory from "../../assets/images/foodfactory.png";
-import juicer from "../../assets/images/juicer.png";
-import washing_machine from "../../assets/images/WASHINGmachine.png";
-import daraz_gift_card from "../../assets/images/CARD.png";
 import axios from "axios";
+import CampaignHeader from "../../components/common/CampaignHeader/CampaignHeader";
+import {
+  USE_MOCK_BACKEND,
+  GIVEAWAY_CONFIG as BASE_GIVEAWAY_CONFIG,
+  GIVEAWAY_IMAGES,
+  TIER_IMAGES,
+  DRAW_ANIMATION_MS,
+  clearSession,
+} from "../../Utils/appConfig";
+import {
+  mockGetCustomerData,
+  mockGetWinners,
+  mockAddWinner,
+  mockAddWinners,
+  mockClearWinners,
+} from "../../Utils/mockApi";
 
-const BASE_GIVEAWAY_CONFIG = {
-  Car: [
-    { id: 'car', name: 'Yaris Giveaway', icon: '🚗', description: '1 Winner Total', limit: 1, limitType: 'global' },
-  ],
-  Platinum: [
-    { id: 'gold_1_tola', name: '1 Tola Gold', icon: '🥇', description: '4 Per Region', limit: 4, limitType: 'region' },
+const BULK_COUNT_OPTIONS = ['10', '20', '50', '100', 'all'];
 
-  ],
-  Gold: [
-    { id: 'gold_5_grams', name: '5 Grams Gold', icon: '🏅', description: '7 Per Region', limit: 7, limitType: 'region' }
-  ],
-  Silver: [
-    { id: 'daraz_gift_card', name: 'Daraz 40K Gift Card', icon: '🎁', description: '9 Per Region', limit: 8, limitType: 'region' },
-    { id: 'tv', name: 'LED TV', icon: '📺', description: '5 Per Region', limit: 6, limitType: 'region' },
-    
-  ],
-  Bronze: [
-    { id: 'daraz_gift_card_5k', name: 'Daraz 5K Gift Card', icon: '🎁', description: '90 Per Region', limit: 90, limitType: 'region' },
-  ]
-};
+const getGiveawayImage = (id) => GIVEAWAY_IMAGES[id] || '/src/assets/images/gift.png';
 
 const baseUrl = process.env.REACT_APP_BASEURL;
 
 const LuckyDraw = () => {
   const navigate = useNavigate();
   const { auth, setAuth } = useAuth();
-  const [selectedTier, setSelectedTier] = useState('Platinum');
+  const [selectedTier, setSelectedTier] = useState('Silver');
   const [selectedGiveaway, setSelectedGiveaway] = useState('');
   const [eligibleParticipants, setEligibleParticipants] = useState([]);
   const [winner, setWinner] = useState(null);
@@ -75,6 +57,8 @@ const LuckyDraw = () => {
   const itemsPerPage = 30;
   const [historyCurrentPage, setHistoryCurrentPage] = useState(1);
   const [historySearchQuery, setHistorySearchQuery] = useState('');
+  const [rollingName, setRollingName] = useState('');
+  const [bulkCount, setBulkCount] = useState('10');
   const [filteredWinnersData, setFilteredWinnersData] = useState([]);
   const historyItemsPerPage = 50;
 
@@ -85,6 +69,9 @@ const LuckyDraw = () => {
   const { data: dashboardData, isLoading: dashboardLoading, error: dashboardError } = useQuery({
     queryKey: ['luckyDrawData'],
     queryFn: () => {
+      if (USE_MOCK_BACKEND) {
+        return mockGetCustomerData({ region: name });
+      }
       const params = new URLSearchParams({
         region: name,
 
@@ -103,6 +90,9 @@ const LuckyDraw = () => {
     const { data: winnersData, isLoading: winnersLoading, error: winnersError ,refetch: refetchWinnersData } = useQuery({
       queryKey: ['winnerData'],
       queryFn: () => {
+        if (USE_MOCK_BACKEND) {
+          return mockGetWinners();
+        }
         return apiGetasync(`${baseUrl}/api/winners-data`);
       },
       staleTime: 0, // 30 minutes
@@ -127,24 +117,8 @@ const LuckyDraw = () => {
     },
   };
 
-    // Giveaway configuration by tier with limits
-  const giveawayConfig = useMemo(() => {
-    
-    
-    const { Car, ...rest } = BASE_GIVEAWAY_CONFIG;
-
-    const Carconfig = {
-      Car
-    };
-
-    const restconfig = { ...rest };
-
-    if (role !== 'admin') {
-      return restconfig;
-    }
-      return Carconfig;
-  }, [role]);
-  
+    // Giveaway configuration by tier with limits (Silver and Bronze, per Geo)
+  const giveawayConfig = BASE_GIVEAWAY_CONFIG;
 
 
 
@@ -175,6 +149,16 @@ useEffect(() => {
       setDrawHistory(JSON.parse(savedHistory));
     }
    }, []);
+
+  // Shuffle outlet names inside the wheel modal while the draw is "spinning"
+  useEffect(() => {
+    if (!showWheelModal || eligibleParticipants.length === 0) return undefined;
+    const timer = setInterval(() => {
+      const pick = eligibleParticipants[Math.floor(Math.random() * eligibleParticipants.length)];
+      setRollingName(pick['Customer Name'] || '');
+    }, 90);
+    return () => clearInterval(timer);
+  }, [showWheelModal, eligibleParticipants]);
 
   useEffect(() => {
     const availableTiers = Object.keys(giveawayConfig);
@@ -528,6 +512,14 @@ useEffect(() => {
     return picked;
   };
 
+  const getGiveawayLimit = (giveawayId) =>
+    Object.values(giveawayConfig).flat().find(g => g.id === giveawayId)?.limit || 0;
+
+  // Gifts already awarded in the logged in Geo for the selected giveaway
+  const awardedInGeo = (winnersData || []).filter(
+    (w) => w.giveawayId === selectedGiveaway && (w.region || '').toLowerCase().trim() === name.toLowerCase().trim()
+  ).length;
+
   const startLuckyDraw = async () => {
     if (!selectedGiveaway) {
       Swal.fire({
@@ -552,6 +544,15 @@ useEffect(() => {
     }
 
     const participants = filterParticipants();
+    if (awardedInGeo >= getGiveawayLimit(selectedGiveaway)) {
+      Swal.fire({
+        title: 'All Gifts Awarded',
+        text: `All ${getGiveawayLimit(selectedGiveaway)} gifts for ${name || 'this Geo'} have already been drawn`,
+        icon: 'info',
+        confirmButtonText: 'OK'
+      });
+      return;
+    }
     if (participants.length === 0) {
       Swal.fire({
         title: 'No Eligible Participants',
@@ -564,8 +565,10 @@ useEffect(() => {
 
     const giveaway = giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway);
 
-    if (selectedTier === 'Bronze' && selectedGiveaway === 'daraz_gift_card_5k') {
-      const drawCount = Math.min(90, participants.length);
+    // Bronze gifts are drawn in bursts (10 / 20 / 50 / 100 / all remaining of the Geo); Silver is drawn one winner at a time
+    if (selectedTier === 'Bronze') {
+      const requested = bulkCount === 'all' ? Infinity : Number(bulkCount);
+      const drawCount = Math.min(requested, Math.max(giveaway.limit - awardedInGeo, 0), participants.length);
       const selectedWinners = pickUniqueWeightedWinners(participants, drawCount);
 
       setEligibleParticipants(participants);
@@ -589,9 +592,11 @@ useEffect(() => {
           wonDate: new Date().toLocaleString()
         }));
 
-        const results = await Promise.allSettled(
-          winnerPayloads.map((payload) => axios.post(`${baseUrl}/api/add-winner`, payload))
-        );
+        const results = USE_MOCK_BACKEND
+          ? await mockAddWinners(winnerPayloads).then(() => [])
+          : await Promise.allSettled(
+              winnerPayloads.map((payload) => axios.post(`${baseUrl}/api/add-winner`, payload))
+            );
 
         const failedCount = results.filter((result) => result.status === 'rejected').length;
 
@@ -616,7 +621,7 @@ useEffect(() => {
         });
         setWinner({ ...selectedWinners[0], giveaway });
         setShowWinnerModal(true);
-      }, 10000);
+      }, DRAW_ANIMATION_MS);
 
       return;
     }
@@ -679,7 +684,11 @@ useEffect(() => {
       };
 
       try {
-        await axios.post(`${baseUrl}/api/add-winner`, excludedWinner);
+        if (USE_MOCK_BACKEND) {
+          await mockAddWinner(excludedWinner);
+        } else {
+          await axios.post(`${baseUrl}/api/add-winner`, excludedWinner);
+        }
         refetchWinnersData();
       }
       
@@ -699,7 +708,7 @@ useEffect(() => {
             
       // Show winner modal
       setShowWinnerModal(true);
-    }, 10000);
+    }, DRAW_ANIMATION_MS);
   };
 
  
@@ -716,7 +725,11 @@ useEffect(() => {
       if (result.isConfirmed) {
 
         try {
-          await axios.delete(`${baseUrl}/api/clear-winners-data`);
+          if (USE_MOCK_BACKEND) {
+            await mockClearWinners();
+          } else {
+            await axios.delete(`${baseUrl}/api/clear-winners-data`);
+          }
           refetchWinnersData();
         } catch (error) {
           console.log(error);
@@ -874,6 +887,10 @@ useEffect(() => {
               <div className="winner-modal-overlay">
                 <div className="winner-modal-content">
                   <Lottie options={wheelOptions}  width={400} height={400} />
+                  <div className="rolling-name-box">
+                    <span className="rolling-name-label">Drawing {selectedTier} winner{selectedTier === 'Bronze' ? 's' : ''}...</span>
+                    <span className="rolling-name">{rollingName || '\u00a0'}</span>
+                  </div>
                 </div>
               </div>
             )}
@@ -890,12 +907,12 @@ useEffect(() => {
                           <div className="giveaway-icon">
                             <img 
                               style={{width: '70%', objectFit: 'contain'}} 
-                              src={daraz_gift_card}
+                              src={getGiveawayImage(winnerData.giveaway.id)}
                               alt={winnerData.giveaway.name} 
                             />
                           </div>
                           <div className="winner-header">
-                            <h2 className="winner-title">🎉 Bronze Bulk Draw Complete!</h2>
+                            <h2 className="winner-title">🎉 {winnerData.tier} Draw Complete!</h2>
                             <h1 className="winner-name">{winnerData.winners?.length || 0} Winners Selected</h1>
                           </div>
 
@@ -934,20 +951,7 @@ useEffect(() => {
                           <div className="giveaway-icon">
                             <img 
                               style={{width: '70%', objectFit: 'contain'}} 
-                              src={
-                                winnerData.giveaway.id === 'car' ? yaris :
-                                winnerData.giveaway.id === 'gold_1_tola' ? gold_1_tola :
-                                winnerData.giveaway.id === 'gold_5_grams' ? coin :
-                                winnerData.giveaway.id === 'microwave_oven' ? microwave_oven :
-                                winnerData.giveaway.id === 'samsung_a06' ? samsung_a06 :
-                                winnerData.giveaway.id === 'iron' ? iron :
-                                winnerData.giveaway.id === 'food_factory' ? food_factory :
-                                winnerData.giveaway.id === 'juicer' ? juicer :
-                                winnerData.giveaway.id === 'washing_machine' ? washing_machine :
-                                winnerData.giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
-                                winnerData.giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
-                                '/src/assets/images/gift.png'
-                              }
+                              src={getGiveawayImage(winnerData.giveaway.id)}
                               alt={winnerData.giveaway.name} 
                             />
                           </div>
@@ -1018,7 +1022,7 @@ useEffect(() => {
               <button
                 className="header-action-btn logout"
                 onClick={() => {
-                  localStorage.clear();
+                  clearSession();
                   setAuth({ token: null, user: {} });
                   navigate('/');
                 }}
@@ -1026,21 +1030,14 @@ useEffect(() => {
                 Logout
               </button>
             </div>
-              <div className="  uk-width-1-1 uk-flex uk-flex-between main-content-card " style={{alignItems: 'baseline', padding: '16px 50px'}}> 
-                        <div className="uk-margin-remove">
-                          <img className="logo-image" src='assets/images/gllogo.png' alt="Lifeboy Logo" />
-                        </div>
-                        <div className="uk-margin-remove">
-                          <img className="logo-image" src="assets/images/WINTERPLAN.png" alt="Campaign Logo" />
-                        </div>
-                      </div>
+              <CampaignHeader geoName={name} />
 
             
 
             {/* Tier Selection */}
             <div className="uk-width-1-1 " style={{paddingLeft: '15px'}}>
               
-              <div className="uk-card uk-card-default uk-card-body tier-selection-card" style={{backgroundImage: 'url(/src/assets/images/green bg.png)'}}>
+              <div className="uk-card uk-card-default uk-card-body tier-selection-card">
                 <h3 className="uk-card-title">Select Tier & Giveaway</h3>
                 
                 <div className="tier-buttons-home">
@@ -1052,11 +1049,7 @@ useEffect(() => {
                       style={{ cursor: 'pointer' }}
                     >
                       <div className="tier-icon">
-                        {tier === 'Car' ? <img style={{width: '150px'}} src={yaris} alt="Yaris" /> :
-                        tier === 'Platinum' ? <img style={{width: '150px'}} src={gold_1_tola} alt="Yaris" /> :
-                         tier === 'Gold' ? <img style={{width: '150px'}} src={coin} alt="Gold" /> :
-                         tier === 'Silver' ? <img style={{width: '80px'}} src={tv} alt="Gold" /> :
-                          <img style={{width: '150px'}} src={daraz_gift_card} alt="Silver" />}
+                        <img style={{width: '120px'}} src={TIER_IMAGES[tier]} alt={tier} />
                       </div>
                       <div className="tier-content">
                         <h4 className="tier-name">{tier.toUpperCase()}</h4>
@@ -1081,24 +1074,7 @@ useEffect(() => {
                           <div className="giveaway-icon"><img style={{width: '40%'}} 
                           
                           
-                          src={ giveaway.id === 'car' ? yaris :
-                             giveaway.id === 'gold_1_tola' ? gold_1_tola :
-                             giveaway.id === 'gold_5_grams' ? coin :
-                             giveaway.id === 'microwave_oven' ? microwave_oven :
-                             giveaway.id === 'samsung_a06' ? samsung_a06 :
-                             giveaway.id === 'iron' ? iron :
-                             giveaway.id === 'food_factory' ? food_factory :
-                             giveaway.id === 'juicer' ? juicer :
-                             giveaway.id === 'washing_machine' ? washing_machine :
-                             giveaway.id === 'daraz_gift_card' ? daraz_gift_card :
-                             giveaway.id === 'daraz_gift_card_5k' ? daraz_gift_card :
-                             giveaway.id === 'tv' ? tv :
-                             '/src/assets/images/gift.png'}
-                          
-                          
-                          
-                          
-                          
+                          src={getGiveawayImage(giveaway.id)}
                           alt={giveaway.name} /></div>
                           <h5>{giveaway.name}</h5>
                           <p>{giveaway.description}</p>
@@ -1111,20 +1087,20 @@ useEffect(() => {
                 {/* Geographic Filters */}
                 {selectedGiveaway && data && (
                   <div className="filter-section">
-                    <h4>Filter Participants by Location:</h4>
+                    <h4>Draw Geo & Eligible Outlets:</h4>
                     <div className="uk-grid uk-grid-small uk-margin-small-top" uk-grid="">
                       <div className="uk-width-1-1 uk-margin-small-top">
                         <div className="uk-card uk-card-default uk-card-body " style={{ borderRadius:'20px' }} >
                           <div className="uk-flex uk-flex-between uk-flex-middle uk-flex-wrap" style={{ gap: '16px' }}>
                             <div>
-                              <div className="uk-text-meta">Draw Region</div>
-                              <div style={{ fontSize: '28px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
+                              <div className="uk-text-meta">Draw Geo</div>
+                              <div style={{ fontSize: '28px', fontWeight: '700', color: '#e8430f', lineHeight: '1.2' }}>
                                 {displayedRegion}
                               </div>
                             </div>
                             <div style={{ textAlign: 'right' }}>
                               <div className="uk-text-meta">Eligible Participants</div>
-                              <div style={{ fontSize: '32px', fontWeight: '700', color: '#e2178d', lineHeight: '1.2' }}>
+                              <div style={{ fontSize: '32px', fontWeight: '700', color: '#e8430f', lineHeight: '1.2' }}>
                                 {displayedParticipantsCount}
                               </div>
                             </div>
@@ -1132,7 +1108,7 @@ useEffect(() => {
                           <div className="filter-summary uk-margin-small-top">
                             <span className="uk-text-small uk-text-muted">
                               {selectedZone && <span className="filter-tag">Zone: {selectedZone}</span>}
-                              {displayedRegion && <span className="filter-tag">Region: {displayedRegion}</span>}
+                              {displayedRegion && <span className="filter-tag">Geo: {displayedRegion}</span>}
                               {selectedArea && <span className="filter-tag">Area: {selectedArea}</span>}
                             </span>
                           </div>
@@ -1263,32 +1239,40 @@ useEffect(() => {
                   <h3 className="uk-card-title">
                     {giveawayConfig[selectedTier]?.find(g => g.id === selectedGiveaway)?.name} Draw
                   </h3>
+                  <p className="draw-progress">
+                    {awardedInGeo} of {getGiveawayLimit(selectedGiveaway)} gifts awarded in {name || 'this Geo'}
+                  </p>
                   
                   <div className="draw-wheel-container">
                     <div className={`draw-wheel ${isSpinning ? 'spinning' : ''}`}>
                       <div className="prize-circle">
                         <img 
                           className="prize-circle-image"
-                          src={
-                            selectedGiveaway === 'car' ? yaris :
-                            selectedGiveaway === 'tv' ? tv :
-                            selectedGiveaway === 'gold_1_tola' ? gold_1_tola :
-                            selectedGiveaway === 'gold_5_grams' ? coin :
-                            selectedGiveaway === 'microwave_oven' ? microwave_oven :
-                            selectedGiveaway === 'samsung_a06' ? samsung_a06 :
-                            selectedGiveaway === 'iron' ? iron :
-                            selectedGiveaway === 'food_factory' ? food_factory :
-                            selectedGiveaway === 'juicer' ? juicer :
-                            selectedGiveaway === 'washing_machine' ? washing_machine :
-                            selectedGiveaway === 'daraz_gift_card' ? daraz_gift_card :
-                            selectedGiveaway === 'daraz_gift_card_5k' ? daraz_gift_card :
-                            '/src/assets/images/gift.png'
-                          }
+                          src={getGiveawayImage(selectedGiveaway)}
                           alt={giveawayConfig[selectedTier].find(g => g.id === selectedGiveaway)?.name} 
                         />
                       </div>
                     </div>
                   </div>
+
+                  {selectedTier === 'Bronze' && (
+                    <div className="bulk-count-picker">
+                      <span className="bulk-count-label">Winners per draw</span>
+                      <div className="bulk-count-options">
+                        {BULK_COUNT_OPTIONS.map((option) => (
+                          <button
+                            key={option}
+                            type="button"
+                            className={`bulk-count-btn ${bulkCount === option ? 'active' : ''}`}
+                            onClick={() => setBulkCount(option)}
+                            disabled={isSpinning}
+                          >
+                            {option === 'all' ? 'All' : option}
+                          </button>
+                        ))}
+                      </div>
+                    </div>
+                  )}
 
                   <div className="draw-controls">
                     <button 
@@ -1333,7 +1317,7 @@ useEffect(() => {
                         📊 Export CSV
                       </CSVLink>
 
-                      {role === 'admin' && (
+                      {(role === 'admin' || USE_MOCK_BACKEND) && (
                         <button 
                           className="uk-button uk-button-danger uk-button-small"
                           onClick={clearHistory}

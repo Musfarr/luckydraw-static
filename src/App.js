@@ -18,6 +18,7 @@ import {
 } from "./Routes/Route";
 import NotFound from "./pages/404/NotFound";
 import { SetupInterceptor } from "./Utils/apiServices";
+import { USE_MOCK_BACKEND } from "./Utils/appConfig";
 
 
 
@@ -27,7 +28,8 @@ function App() {
   // Interceptors On 
 
   useEffect(() => {
-    SetupInterceptor();
+    // Backend is detached in UI-only mode, so there are no API responses to intercept
+    if (!USE_MOCK_BACKEND) SetupInterceptor();
   }, []);
 
 
