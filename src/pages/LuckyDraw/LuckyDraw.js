@@ -66,6 +66,26 @@ const STORE_GIVEAWAY_LIMITS = {
   'hbk': { '660_cc_car': 0, '1300_cc_car': 0, 'motor_bike': 1, 'mobile_phone': 0, 'led': 0, 'voucher': 0 },
 };
 
+// City-wise giveaway limits for Imtiaz store
+const IMTIAZ_CITY_LIMITS = {
+  'karachi':     { '1300_cc_car': 1, 'mobile_phone': 5, 'led': 8 },
+  'lahore':      { '1300_cc_car': 0, 'mobile_phone': 1, 'led': 5 },
+  'islamabad':   { '1300_cc_car': 0, 'mobile_phone': 2, 'led': 3 },
+  'faisalabad':  { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'multan':      { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'peshawar':    { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'quetta':      { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 0 },
+  'gujranwala':  { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'gujrat':      { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'sialkot':     { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'bahawalpur':  { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'sargodha':    { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+  'sahiwal':     { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 0 },
+  'vehari':      { '1300_cc_car': 0, 'mobile_phone': 0, 'led': 1 },
+};
+
+const isImtiazStore = (storeId) => (storeId || '').trim().toLowerCase() === 'imtiaz';
+
 const BASE_GIVEAWAY_CONFIG = {
   Car: [
     { id: '1300_cc_car', name: '1300 CC Car (Yaris)', description: 'Per Store Limit', limitType: 'store', limitKey: '1300_cc_car' },
@@ -203,6 +223,14 @@ const LuckyDraw = () => {
     onSuccess: () => queryClient.invalidateQueries({ queryKey: ['winners'] }),
   });
 
+  // Mutation — delete a single winner (admin only), frees that prize slot
+  const deleteWinnerMutation = useMutation({
+    mutationFn: (winnerId) => axios.delete(`${baseUrl}/api/winner/${winnerId}`, {
+      headers: { 'x-auth-token': localStorage.getItem('token') },
+    }),
+    onSuccess: () => queryClient.invalidateQueries({ queryKey: ['winners'] }),
+  });
+
   const confettiOptions = {
     loop: true,
     autoplay: true,
@@ -246,6 +274,27 @@ const LuckyDraw = () => {
     return String(val).trim().toLowerCase();
   };
 
+  // Normalize city helper for Imtiaz city-wise allocation
+  const normalizeCity = (city) => {
+    if (!city) return '';
+    const c = String(city).trim().toLowerCase();
+    if (c === 'khi' || c.includes('karachi')) return 'karachi';
+    if (c === 'lhr' || c.includes('lahore')) return 'lahore';
+    if (c === 'isb' || c.includes('islamabad')) return 'islamabad';
+    if (c === 'fsd' || c.includes('faisalabad')) return 'faisalabad';
+    if (c === 'mux' || c.includes('multan')) return 'multan';
+    if (c === 'pew' || c.includes('peshawar')) return 'peshawar';
+    if (c.includes('quetta')) return 'quetta';
+    if (c === 'grw' || c.includes('gujranwala')) return 'gujranwala';
+    if (c.includes('gujrat')) return 'gujrat';
+    if (c === 'skt' || c.includes('sialkot')) return 'sialkot';
+    if (c === 'bwp' || c.includes('bahawalpur')) return 'bahawalpur';
+    if (c === 'sgd' || c.includes('sargodha')) return 'sargodha';
+    if (c === 'swl' || c.includes('sahiwal')) return 'sahiwal';
+    if (c.includes('vehari')) return 'vehari';
+    return c;
+  };
+
   // Helper to check if a winner belongs to the specified tier
   const isWinnerInTier = (winner, targetTier) => {
     const wTier = (winner.wonTier || 't1').trim().toLowerCase();
@@ -256,10 +305,29 @@ const LuckyDraw = () => {
   // Helper to check if a store has completed all prizes for a tier
   const isTierCompletedForStore = (storeId, tierToCheck, winnersList = winners) => {
     if (!storeId) return false;
-    const storeLimits = STORE_GIVEAWAY_LIMITS[storeId] || {};
     const storeObj = GROCERY_STORES.find(s => s.id === storeId);
     const storeName = storeObj?.name || '';
 
+    // City-wise completion check for Imtiaz
+    if (isImtiazStore(storeId)) {
+      return Object.entries(IMTIAZ_CITY_LIMITS).every(([city, cityLimits]) => {
+        const activeLimits = Object.entries(cityLimits).filter(([_, limit]) => limit > 0);
+        if (activeLimits.length === 0) return true;
+        return activeLimits.every(([limitKey, limit]) => {
+          const giveaway = allGiveaways.find(g => g.limitKey === limitKey);
+          if (!giveaway) return true;
+          const count = (winnersList || []).filter(w =>
+            w.giveawayId === giveaway.id &&
+            (w.parsedOutlet || '').trim().toLowerCase() === storeName.trim().toLowerCase() &&
+            normalizeCity(w.City) === city &&
+            isWinnerInTier(w, tierToCheck)
+          ).length;
+          return count >= limit;
+        });
+      });
+    }
+
+    const storeLimits = STORE_GIVEAWAY_LIMITS[storeId] || {};
     const activeLimits = Object.entries(storeLimits).filter(([_, limit]) => limit > 0);
     if (activeLimits.length === 0) return false;
 
@@ -275,25 +343,47 @@ const LuckyDraw = () => {
     });
   };
 
+  // A tier is done for a store when its quotas are filled, or when admin has marked it complete globally
+  const isTierDoneForStore = (storeId, tierToCheck) =>
+    completedTiers.includes(tierToCheck) || isTierCompletedForStore(storeId, tierToCheck);
+
   // Current draw tier: Admin uses global activeTier; Sales team uses store-specific tier
   const currentDrawTier = useMemo(() => {
     if (isAdmin) return activeTier;
     if (!selectedStore) return 't1';
 
     const saved = storeSelectedTier[selectedStore];
-    const t1Done = isTierCompletedForStore(selectedStore, 't1');
-    const t2Done = isTierCompletedForStore(selectedStore, 't2');
+    const t1Done = isTierDoneForStore(selectedStore, 't1');
+    const t2Done = isTierDoneForStore(selectedStore, 't2');
 
+    // Honour the store's saved tier while it is unlocked and still has prizes left
+    if (saved === 't1' && !t1Done) return 't1';
+    if (saved === 't2' && t1Done && !t2Done) return 't2';
     if (saved === 't3' && t2Done) return 't3';
-    if (saved === 't2' && t1Done) return 't2';
     if (t2Done) return 't3';
     if (t1Done) return 't2';
     return 't1';
-  }, [isAdmin, activeTier, selectedStore, storeSelectedTier, winners]);
+  }, [isAdmin, activeTier, completedTiers, selectedStore, storeSelectedTier, winners]);
 
   // Check if per-store giveaway limit is reached for the current tier
   const isGiveawayLimitReached = (giveaway) => {
     if (!selectedStore) return true;
+
+    // City-wise limit check for Imtiaz: limit reached when all cities' quotas for this giveaway are exhausted
+    if (isImtiazStore(selectedStore)) {
+      return Object.entries(IMTIAZ_CITY_LIMITS).every(([city, cityLimits]) => {
+        const cityLimit = cityLimits[giveaway.limitKey] || 0;
+        if (cityLimit === 0) return true;
+        const awarded = winners.filter(w =>
+          w.giveawayId === giveaway.id &&
+          (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+          normalizeCity(w.City) === city &&
+          isWinnerInTier(w, currentDrawTier)
+        ).length;
+        return awarded >= cityLimit;
+      });
+    }
+
     const limit = STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0;
     if (limit === 0) return true;
     const awarded = winners.filter(w =>
@@ -319,6 +409,26 @@ const LuckyDraw = () => {
     if (!participants.length || !selectedStore || !selectedGiveaway) return [];
     const giveaway = allGiveaways.find(g => g.id === selectedGiveaway);
     if (!giveaway || isGiveawayLimitReached(giveaway)) return [];
+
+    // For Imtiaz, pre-calculate which cities still have remaining quota for this giveaway
+    let eligibleCities = null;
+    if (isImtiazStore(selectedStore)) {
+      eligibleCities = new Set();
+      Object.entries(IMTIAZ_CITY_LIMITS).forEach(([city, cityLimits]) => {
+        const cityLimit = cityLimits[giveaway.limitKey] || 0;
+        if (cityLimit === 0) return;
+        const awarded = winners.filter(w =>
+          w.giveawayId === giveaway.id &&
+          (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+          normalizeCity(w.City) === city &&
+          isWinnerInTier(w, currentDrawTier)
+        ).length;
+        if (awarded < cityLimit) {
+          eligibleCities.add(city);
+        }
+      });
+      if (eligibleCities.size === 0) return [];
+    }
 
     const winnerInvoices = new Set();
     const winnerCnics = new Set();
@@ -346,6 +456,12 @@ const LuckyDraw = () => {
       const store = (p.Store || '').trim().toLowerCase();
 
       if (!inv || store !== targetStore) continue;
+
+      // City filter for Imtiaz: only participants from cities with remaining quota
+      if (eligibleCities !== null) {
+        const pCity = normalizeCity(p.City);
+        if (!eligibleCities.has(pCity)) continue;
+      }
 
       // Triple-key exclusion against all existing winners
       if (winnerInvoices.has(inv)) continue;
@@ -413,13 +529,41 @@ const LuckyDraw = () => {
       isWinnerInTier(w, currentDrawTier)
     ).length;
 
-    if (storeLimit === 0 || wonCount >= storeLimit) {
-      Swal.fire({
-        title: 'Limit Reached',
-        text: `All ${giveaway.name} prizes for ${selectedStoreName} in Tier ${currentDrawTier.toUpperCase()} have been awarded`,
-        icon: 'info'
+    // City-aware limit check for Imtiaz vs standard store check
+    let eligibleCities = null;
+    if (isImtiazStore(selectedStore)) {
+      eligibleCities = new Set();
+      Object.entries(IMTIAZ_CITY_LIMITS).forEach(([city, cityLimits]) => {
+        const cityLimit = cityLimits[giveaway.limitKey] || 0;
+        if (cityLimit === 0) return;
+        const awarded = currentWinners.filter(w =>
+          w.giveawayId === selectedGiveaway &&
+          (w.parsedOutlet || '').trim().toLowerCase() === selectedStoreName.trim().toLowerCase() &&
+          normalizeCity(w.City) === city &&
+          isWinnerInTier(w, currentDrawTier)
+        ).length;
+        if (awarded < cityLimit) {
+          eligibleCities.add(city);
+        }
       });
-      return;
+
+      if (eligibleCities.size === 0) {
+        Swal.fire({
+          title: 'Limit Reached',
+          text: `All ${giveaway.name} prizes across all cities for ${selectedStoreName} in Tier ${currentDrawTier.toUpperCase()} have been awarded`,
+          icon: 'info'
+        });
+        return;
+      }
+    } else {
+      if (storeLimit === 0 || wonCount >= storeLimit) {
+        Swal.fire({
+          title: 'Limit Reached',
+          text: `All ${giveaway.name} prizes for ${selectedStoreName} in Tier ${currentDrawTier.toUpperCase()} have been awarded`,
+          icon: 'info'
+        });
+        return;
+      }
     }
 
     // Build fresh exclusion sets (triple-key: invoice, CNIC, mobile)
@@ -449,6 +593,12 @@ const LuckyDraw = () => {
       const store = (p.Store || '').trim().toLowerCase();
 
       if (!inv || store !== targetStore) continue;
+
+      // City filter for Imtiaz: only participants from cities with remaining quota
+      if (eligibleCities !== null) {
+        const pCity = normalizeCity(p.City);
+        if (!eligibleCities.has(pCity)) continue;
+      }
 
       if (winnerInvoices.has(inv)) continue;
       if (cnic && winnerCnics.has(cnic)) continue;
@@ -570,6 +720,28 @@ const LuckyDraw = () => {
     });
   };
 
+  // Delete a single winner via API (Admin only)
+  const deleteWinner = (entry) => {
+    Swal.fire({
+      title: 'Delete Winner?',
+      text: `${entry.Name || '-'} (${entry.wonGiveaway || '-'}, ${(entry.wonTier || 't1').toUpperCase()}, ${entry.parsedOutlet || '-'} ${entry.City || ''}, Invoice ${entry.invoice_number || '-'}). The prize slot will be available to draw again.`,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonText: 'Delete',
+      cancelButtonText: 'Cancel',
+      confirmButtonColor: '#e71b19',
+    }).then(async (result) => {
+      if (result.isConfirmed) {
+        try {
+          await deleteWinnerMutation.mutateAsync(entry._id);
+          Swal.fire({ title: 'Deleted', text: `${entry.Name || 'Winner'} has been removed`, icon: 'success', timer: 1500, showConfirmButton: false });
+        } catch (err) {
+          Swal.fire({ title: 'Error', text: err?.response?.data?.message || 'Failed to delete winner', icon: 'error' });
+        }
+      }
+    });
+  };
+
   // CSV export — local, from API winners data
   const csvData = winners.map((entry, index) => {
     if (isAdmin) {
@@ -674,6 +846,12 @@ const LuckyDraw = () => {
                       <h2 className="winner-title">Congratulations!</h2>
                       <h1 className="winner-name">{winnerData.winner.Name}</h1>
                     </div>
+		  <div className="winner-details">
+		                          <div className="detail-row">
+		                            <span className="info-label">City:</span>
+		                            <span className="info-value">{winnerData.winner.City}</span>
+		                          </div>
+		                        </div>
                     <div className="prize-info">
                       <div className="prize-won">
                         <span className="info-label">Won:</span>
@@ -848,29 +1026,29 @@ const LuckyDraw = () => {
                         <option
                           value="t1"
                           disabled={
-                            (selectedStore && isTierCompletedForStore(selectedStore, 't1') && (currentDrawTier === 't2' || currentDrawTier === 't3'))
+                            (selectedStore && isTierDoneForStore(selectedStore, 't1') && (currentDrawTier === 't2' || currentDrawTier === 't3'))
                           }
                         >
-                          Tier 1 (T1) {selectedStore && isTierCompletedForStore(selectedStore, 't1') ? '✓' : ''}
+                          Tier 1 (T1) {selectedStore && isTierDoneForStore(selectedStore, 't1') ? '✓' : ''}
                         </option>
                         <option
                           value="t2"
                           disabled={
                             !selectedStore ||
-                            !isTierCompletedForStore(selectedStore, 't1') ||
-                            (isTierCompletedForStore(selectedStore, 't2') && currentDrawTier === 't3')
+                            !isTierDoneForStore(selectedStore, 't1') ||
+                            (isTierDoneForStore(selectedStore, 't2') && currentDrawTier === 't3')
                           }
                         >
-                          Tier 2 (T2) {!selectedStore || !isTierCompletedForStore(selectedStore, 't1') ? '(Locked)' : isTierCompletedForStore(selectedStore, 't2') ? '✓' : ''}
+                          Tier 2 (T2) {selectedStore && isTierDoneForStore(selectedStore, 't2') ? '✓' : !selectedStore || !isTierDoneForStore(selectedStore, 't1') ? '(Locked)' : ''}
                         </option>
                         <option
                           value="t3"
                           disabled={
                             !selectedStore ||
-                            !isTierCompletedForStore(selectedStore, 't2')
+                            !isTierDoneForStore(selectedStore, 't2')
                           }
                         >
-                          Tier 3 (T3) {!selectedStore || !isTierCompletedForStore(selectedStore, 't2') ? '(Locked)' : ''}
+                          Tier 3 (T3) {!selectedStore || !isTierDoneForStore(selectedStore, 't2') ? '(Locked)' : ''}
                         </option>
                       </select>
                     )}
@@ -897,7 +1075,8 @@ const LuckyDraw = () => {
                     const storeLimit = selectedStore ? (STORE_GIVEAWAY_LIMITS[selectedStore]?.[giveaway.limitKey] || 0) : 0;
                     const wonCount = getStoreWonCount(giveaway);
                     const remaining = Math.max(0, storeLimit - wonCount);
-                    const disabled = !selectedStore || storeLimit === 0 || remaining === 0;
+                    const limitReached = isGiveawayLimitReached(giveaway);
+                    const disabled = !selectedStore || storeLimit === 0 || remaining === 0 || limitReached;
                     return (
                       <div
                         key={giveaway.id}
@@ -909,8 +1088,8 @@ const LuckyDraw = () => {
                           <img style={{ width: '120px', height: '120px', objectFit: 'contain' }} src={getGiveawayImage(giveaway.id)} alt={giveaway.name} />
                         </div>
                         <h5 style={{ margin: '10px 0', fontSize: '16px', fontWeight: '600' }}>{giveaway.name}</h5>
-                        <p style={{ margin: 0, fontSize: '14px', color: remaining === 0 ? '#999' : '#e71b19' }}>
-                          {selectedStore ? (remaining === 0 ? 'Fully Awarded' : `Remaining: ${remaining} / ${storeLimit}`) : 'Select a store to see limit'}
+                        <p style={{ margin: 0, fontSize: '14px', color: (remaining === 0 || limitReached) ? '#999' : '#e71b19' }}>
+                          {selectedStore ? ((remaining === 0 || limitReached) ? 'Fully Awarded' : `Remaining: ${remaining} / ${storeLimit}`) : 'Select a store to see limit'}
                         </p>
                       </div>
                     );
@@ -1014,6 +1193,7 @@ const LuckyDraw = () => {
                               <th className="uk-text-center">City</th>
                               <th className="uk-text-center">Outlet Name</th>
                               <th className="uk-text-center">Drawn By</th>
+                              <th className="uk-text-center">Action</th>
                             </>
                           ) : (
                             <>
@@ -1045,6 +1225,16 @@ const LuckyDraw = () => {
                                 <td>{entry.City || '-'}</td>
                                 <td>{entry.parsedOutlet || '-'}</td>
                                 <td>{entry.DrawUser || '-'}</td>
+                                <td>
+                                  <button
+                                    className="uk-button uk-button-danger uk-button-small"
+                                    style={{ borderRadius: '4px', fontSize: '11px', padding: '0 8px' }}
+                                    disabled={!entry._id || deleteWinnerMutation.isPending}
+                                    onClick={() => deleteWinner(entry)}
+                                  >
+                                    Delete
+                                  </button>
+                                </td>
                               </>
                             ) : (
                               <>
